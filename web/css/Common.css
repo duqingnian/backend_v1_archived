@@ -1,0 +1,447 @@
+@charset "utf-8";
+/* CSS reset for c_b*/
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, textarea, p, blockquote, th, td {
+    margin: 0;
+    padding: 0;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+table th, table td {
+    padding: 5px;
+}
+
+fieldset, img {
+    border: 0;
+}
+
+address, caption, cite, code, dfn, em, i, th, var {
+    font-style: normal;
+    font-weight: normal;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+ception, th {
+    text-align: left;
+}
+
+q:before, q:after {
+    content: '';
+}
+
+abbr, acronym {
+    border: 0;
+}
+
+a {
+    color: #666;
+    text-decoration: none;
+}
+/*for ie f6n.net*/
+a:focus {
+    outline: none;
+}
+/*for ff f6n.net*/
+a:hover {
+    text-decoration: none;
+}
+/*定位*/
+.tl {
+    text-align: left;
+}
+
+.tc {
+    text-align: center;
+}
+
+.tr {
+    text-align: right;
+}
+
+.bc {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.fl {
+    float: left;
+    display: inline;
+}
+
+.fr {
+    float: right;
+    display: inline;
+}
+
+.zoom {
+    zoom: 1
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.vam {
+    vertical-align: middle;
+}
+
+.clear {
+    clear: both;
+    height: 0;
+    line-height: 0;
+    font-size: 0;
+}
+
+p {
+    word-spacing: -1.5px;
+}
+
+li {
+    list-style: none;
+}
+
+-moz-box-sizing:content-box;
+-webkit-box-sizing:content-box;
+box-sizing:content-box;
+/*其他*/
+.cur {
+    cursor: pointer
+}
+/*原reset*/
+sup {
+    vertical-align: baseline;
+}
+
+sub {
+    vertical-align: baseline;
+}
+
+input, button, textarea, select, optgroup, option {
+    font-family: inherit;
+    font-size: inherit;
+    outline: none;
+    font-style: inherit;
+    font-weight: inherit;
+}
+
+input, button, textarea, select {
+    *font-size: 100%;
+}
+
+input, select {
+    vertical-align: middle;
+}
+
+body {
+    font: 12px/1.231 "微软雅黑","Arial Narrow",HELVETICA;
+}
+
+select, input, button, textarea, button {
+    font: 99% "微软雅黑","Arial Narrow",HELVETICA;
+}
+
+table {
+    font-size: 14px;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+pre, code, kbd, samp, tt {
+    font-family: monospace;
+    *font-size: 108%;
+    line-height: 100%;
+}
+/*title*/
+h1 {
+    font-size: 32px;
+}
+
+h2 {
+    font-size: 26px;
+}
+
+h3 {
+    font-size: 20px;
+}
+
+h4 {
+    font-size: 14px;
+}
+
+h5 {
+    font-size: 12px;
+}
+
+h6 {
+    font-size: 10px;
+}
+/*清除浮动*/
+.clearfix:after {
+    content: '';
+    display: block;
+    clear: both;
+    height: 0;
+    visibility: hidden;
+}
+
+.clearfix {
+    /*兼容 IE*/
+    zoom: 1;
+}
+/*end reset*/
+body {
+    background: #f4f4f4;
+    min-width:1200px;
+    overflow-x: hidden;
+}
+
+.content, .container {
+    margin-left: auto;
+    margin-right: auto;
+    width: 1200px;
+}
+
+/* tanchuang1 提交弹窗*/
+.tanchuang1 {
+    width:100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: url(../images/Common/tanchuangBg.png);
+    height:100%;
+    z-index:9999999;
+}
+.tanchuang1 .conBox {
+    width: 400px;
+    height: 212px;
+    padding: 20px;
+    background: #fff;
+    position: absolute;
+    left: 50%;
+    margin-left: -220px;
+    top: 50%;
+    margin-top: -80px;
+    z-index:9999999;
+}
+.tanchuang1 .conBox .tcClose {
+    width: 33px;
+    height: 90px;
+    position: absolute;
+    right: 45px;
+    top: -90px;
+    cursor: pointer;
+    z-index:999999999999999;
+}
+.tanchuang1 .conBox .box {
+    width: 398px;
+    height: 190px;
+    border: 1px solid #e5e5e5;
+    padding-top: 20px;
+    text-align: center;
+    position: relative;
+}
+.tanchuang1 .conBox .box img {
+    display: block;
+    width: 47px;
+    height: 47px;
+    margin: 0 auto;
+}
+.tanchuang1 .conBox .box h5 {
+    font-size: 24px;
+    color: #00a42b;
+    font-weight: bold;
+    margin-top: 10px;
+}
+.tanchuang1 .conBox .box p {
+    font-size: 16px;
+    color: #4d4d4d;
+    margin-top: 10px;
+}
+.tanchuang1 .conBox .box .b15 {
+    display: block;
+    width: 150px;
+    height: 52px;
+    line-height: 52px;
+    text-align: center;
+    font-size: 18px;
+    color: #fff;
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    margin-left: -75px;
+    background: #00a42b;
+    text-decoration: none;
+    z-index:999999999999999;
+    border:0px;
+}
+.tanchuang2 .conBox .box a {
+    background: #404040;
+}
+
+/*------------------------------------  新加入的代码放在下面  ---------------------------------------------*/
+
+/*关闭网站*/
+.y-close-page {
+    width:100%;
+    height:100%;
+    position:fixed;
+    left:0;
+    top:0;
+    z-index:99999;
+    background-color:#333;
+}
+.y-dialog-cont {
+    width:360px;
+    height:160px;
+    background-color:#fff;
+    margin:8% auto 0;
+    border-radius:10px;
+    text-align:center;
+    color: #666;
+}
+.y-dialog-cont p{
+    padding-top:10%;
+    font-size:18px;
+}
+.y-dialog-cont a{
+    display:block;
+    width:70px;
+    height:36px;
+    line-height:36px;
+    color:#fff;
+    border-radius:5px;
+    margin:36px auto 0;
+    text-decoration:none;
+    background:#00a42b;
+}
+
+
+
+
+@font-face {
+    font-family: "Markpro-Heavy";
+    src: url("../font/MARKPRO-HEAVY.woff2") format("woff2"),
+    url("../font/MARKPRO-HEAVY.woff") format("woff"),
+    url("../font/MARKPRO-HEAVY.ttf") format("truetype"),
+
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "MarkPro-Bold";
+    src: url("../font/DIN Medium.woff2") format("woff2"),
+    url("../font/DIN Medium.woff") format("woff"),
+    url("../font/DIN Medium.ttf") format("truetype"),
+    url("../font/DIN Medium.eot") format("embedded-opentype"),
+    url("../font/DIN Medium.svg") format("svg");
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: "Markpro-Heavy";
+    src:  url("../font/MARKPRO-HEAVY.woff") format("woff"),;
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+
+/* header */
+.header { min-width: 1200px; position: relative;  box-sizing: border-box;  width: 100%; height: 130px; background: #fff;}
+.header .hd-logo {margin-left: 30px;position: relative;top: 26%;float: left;width: 290px;font-size: 0;}
+.header .hd-logo img { width: 100%;}
+.header .hd-tit {position: relative;top: 31%;float: left;padding: 0 20px;border-left: 1px solid #e5e5e5;}
+.header .hd-tit p {font-size:20px;line-height: 1.5;color: #27282c;}
+.header .hd-list {  float: right; width: 50%;}
+.header .hd-phone { padding-right: 15px; box-sizing: border-box ; text-align: right; background:#f1f1f1; width: 100%; height: 45px; line-height: 45px;}
+.header .hd-phone span { font-size: 14px; color: #999;}
+.header .hd-phone em { border-right: 1px solid #d8d8d8; box-sizing: border-box; padding:0 15px; font-size: 14px; color: #27282c; font-family: "Markpro-Heavy"; font-weight: bold;}
+.header .hd-phone em:nth-child(2) { padding-left: 0;}
+.header .hd-phone em:nth-child(3) { border-right: none;}
+.hd-Nav { position: relative; display: block; width: 100%; height: 85px; background: #fff;}
+.hd-Nav:after { content: ''; display: block; position: absolute;left: 0; bottom: -10px; z-index: 2; width: 100%; height: 10px; background: #00a42b;}
+.hd-Nav ul {display: flex; display: -webkit-flex;width: 100%;}
+.hd-Nav li { position: relative; flex:auto; font-size: 16px; height: 85px; line-height: 85px; text-align: center;}
+.hd-Nav li > a {display: block; color: #27282c; position: relative;}
+.hd-Nav li.cur > a,.hd-Nav li:hover > a { color: #00a42b;}
+.hd-Nav .search{position:relative;top: 63%;width:25px;height: 25px;}
+.hd-Nav .search .search-btn{position:absolute;left: 10%;top: 16px;width: 50px;height: 50px;cursor:pointer;background:url(../images/Common/search-icon01.png) no-repeat center;}
+.hd-Nav .search .search-form{display:none;position:absolute;right: 10px;top: 15px;width:210px;height: 50px;background:#f2f2f2;}
+.hd-Nav .search .search-form input{display:block;padding: 10px 18px; box-sizing:border-box;width:100%;height: 50px;border:none;outline:none;background:transparent;}
+.hd-Nav .search .search-form button{display:block;position:absolute;z-index:3;top:0;right:0;width: 50px;height: 50px;border:none;outline:none;cursor:pointer;background:url(../images/Common/search-icon01.png) no-repeat center;}
+@media (max-width: 1500px) {
+    .header .hd-list { width: 58%;}
+    .hd-Nav .search .search-btn { width: 25px;}
+    .header .hd-logo {margin-left:0;}
+    .header .hd-tit {padding:0 15px;}    
+}
+
+/* header end */
+
+
+
+/* 导航下拉 */
+.y-submenu07-box {width: 225px;border: solid 1px #dedede;background-color: #fff;position: absolute;left: 50%;top: 85px;margin-left: -112px;z-index: 9999;display: none;}
+.y-submenu07-box > a {display: block;text-align: left;color: #999;font-size: 14px;position: relative;white-space: nowrap;text-overflow: ellipsis;overflow: hidden;height: 40px;line-height: 40px;text-align: center;}
+.y-submenu07-box a:before {content:'';display: none;width: 11px;height: 1px;background-color: #999;position: absolute;left: 20px;top: 20px;}
+.y-submenu07-box a:hover{ background-color: #00a42b;color: #fff;}
+.y-submenu07-box a:hover:before{background-color: #fff;}
+/* 导航下拉 End */
+
+
+/* wrap-tit */
+.wrap-tit {position: relative;text-align: center;animation: fadeinT 1s ease-out backwards; overflow: hidden;}
+.wrap-tit i {display: inline-block;position: absolute;top: 35%;width: 510px;height: 1px;background: #d0d0d0;}
+.wrap-tit .i1:after { position: absolute; right: 0; top:-1px;  z-index: 4; content:""; display:block;width: 30px; height: 3px; background: #f75a04;}
+.wrap-tit .i2:after { position: absolute; left: 0; top:-1px;  z-index: 4; content:""; display:block;width: 30px; height: 3px; background: #f75a04;}
+.wrap-tit h2 {margin-bottom: 8px;  font-size: 36px; color: #27282c; font-weight: normal;}
+.wrap-tit h2 a { color: #27282c;}
+.wrap-tit p { font-size: 18px; color: #666;}
+/* wrap-tit end */
+
+/* footer */
+.footer { overflow: hidden; position: relative; background: url("../images/Common/ft-bg.jpg") no-repeat center; width: 100%; height: auto; background-size: cover;}
+
+.ft-link { padding:30px 0;overflow: hidden; border-bottom: 1px solid #3c3c3c;}
+.ft-link dl { float: left;}
+.ft-link dl dt { float: left; padding-right:18px;font-size: 14px; color: #666; border-right: 1px solid #3f3f3f;}
+.ft-link dl dd { margin-left: 20px; float: left;}
+.ft-link dl dd a { font-size: 14px; color: #666;}
+.ft-link a:hover { color: #00a42b;}
+.ft-link > a  { float: right; font-size: 14px; color: #666;}
+
+.ft-info {  overflow: hidden; box-sizing: border-box; }
+.ft-info .ft-Top {padding: 67px 0;border-bottom: 1px solid #3f3f3f;overflow: hidden;}
+.ft-info .ft-Top .ft-logo { float: left; width:320px; padding: 45px; border: 1px solid #3f3f3f; box-sizing: border-box;}
+.ft-info .ft-Top .ft-logo img { display: block; width: 100%;}
+.ft-info .ft-Top .ft-logo p { margin-top: 25px;  display: block; width: 100%; height: 45px; line-height: 45px; font-size: 15px; color: #fff; background: #00a42b; text-align: center;}
+.ft-info .ft-Top dl {float: left;margin-left: 100px;}
+.ft-info .ft-Top .ft-lxm  {width: 270px;}
+.ft-info .ft-Top dl dt { display: block; margin-bottom: 30px;}
+.ft-info .ft-Top dl dt a { color: #fff; font-size: 20px;}
+.ft-info .ft-Top dl dd { display: block;}
+.ft-info .ft-Top dl dd a { display: block; font-size: 16px; color: #666; line-height: 33px;}
+.ft-info .ft-Top dl dd a:hover {text-decoration:underline; }
+.ft-info .ft-Top .ft-number { padding-bottom: 26px; border-bottom: 1px solid #3f3f3f;}
+.ft-info .ft-Top .ft-number p { font-size: 16px; line-height: 1.75; color: #fff;}
+.ft-info .ft-Top .ft-number p em { font-size: 18px; color: #f75a04; font-family: "Markpro-Heavy";}
+.ft-info .ft-Top .ft-number p em:nth-of-type(1) { margin-right: 30px;}
+.ft-info .ft-Top .ft-address { padding-top: 10px;}
+.ft-info .ft-Top .ft-address  { font-size: 16px; color: #666; line-height: 1.75;}
+.ft-info .ft-Bm { padding: 28px 0; overflow: hidden;}
+.ft-info .ft-Bm p { float: left; font-size: 14px; color: #666;}
+.ft-info .ft-Bm p a { margin-left: 15px; color: #666;}
+.ft-info .ft-Bm p a:hover {text-decoration:underline;}
+.ft-info .ft-Bm > a { float: right; padding-left: 20px; position: relative;}
+.ft-info .ft-Bm > a:after { content: ''; display: block; position: absolute; left: 0; top: 0; background: url("../images/Common/rel-icon01.png") no-repeat center; width: 14px; height: 14px; background-size: 100%;}
+.ft-info .ft-Bm > a:hover { text-decoration:underline;}
+/* footer end */

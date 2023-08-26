@@ -1,0 +1,143 @@
+{% extends "FrontBundle::page.html.twig" %}
+
+{% block content %}
+	<div class="layui-card">
+		<div class="layui-card-body">
+			<form class="layui-form" id="std-form" lay-filter="component-form-element">
+				<div class="layui-row layui-col-space10 layui-form-item">
+					<div class="layui-col-lg6">
+						<label class="layui-form-label">名称：</label>
+						<div class="layui-input-block">
+							<input type="text" name="name" id="name" lay-verify="required" placeholder="请输入名称" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+				</div>
+
+                <div class="layui-row layui-col-space10 layui-form-item">
+					<div class="layui-col-lg6">
+						<label class="layui-form-label">比率：</label>
+						<div class="layui-input-block">
+							<input type="text" name="percent" id="percent" lay-verify="required" placeholder="请输入比率" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+				</div>
+				
+				<div class="layui-row layui-col-space10 layui-form-item">
+					<div class="layui-col-lg6">
+						<label class="layui-form-label">支付类型：</label>
+						<div class="layui-input-block">
+							<input type="radio" id="PAY_TYPE_AJAX" name="pay_type" value="AJAX" title="AJAX" />
+							<input type="radio" id="PAY_TYPE_JUMP" name="pay_type" value="JUMP" title="跳转" checked />
+						</div>
+					</div>
+				</div>
+				
+				<div class="layui-row layui-col-space10 layui-form-item">
+					<div class="layui-col-lg6">
+						<label class="layui-form-label">别名：</label>
+						<div class="layui-input-block">
+							<input type="text" name="slug" id="slug" lay-verify="required" placeholder="请输入别名" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+				</div>
+				
+				<div class="layui-row layui-col-space10 layui-form-item">
+					<div class="layui-col-lg6">
+						<label class="layui-form-label">国家：</label>
+						<div class="layui-input-block">
+							<input type="text" name="country" id="country" lay-verify="required" placeholder="请输入国家" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+				</div>
+				
+				<div class="layui-row layui-col-space10 layui-form-item">
+					<div class="layui-col-lg6">
+						<label class="layui-form-label">货币：</label>
+						<div class="layui-input-block">
+							<input type="text" name="currency" id="currency" lay-verify="required" placeholder="请输入货币" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+				</div>
+
+                <div class="layui-row layui-col-space10 layui-form-item">
+					<div class="layui-col-lg6">
+						<label class="layui-form-label"></label>
+						<div class="layui-input-block">
+							<input type="checkbox" name="is_active" id="is_active" title="激活" lay-skin="primary" checked="">
+							<div class="layui-unselect layui-form-checkbox" lay-skin="primary">
+								<span>激活</span>
+								<i class="layui-icon layui-icon-ok"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</form>
+			<div class="layui-form-item">
+				<div class="layui-input-block">
+					<button class="layui-btn" id="btn_submit">提交</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		var id = parseInt({{ id }});
+		$(document).ready(function () {
+			submit();
+			{% if id > 0 %}
+				$('#name').val("{{ Channel.name }}");
+				$('#percent').val("{{ Channel.percent }}");
+				{% if Channel.isActive %}
+					$('#is_active').attr('checked','checked');
+				{% else %}
+					$('#is_active').removeAttr('checked');
+				{% endif %}
+				
+				$('#PAY_TYPE_AJAX').removeAttr('checked');
+				$('#PAY_TYPE_JUMP').removeAttr('checked');
+				{% if Channel.payType == "AJAX" %}$('#PAY_TYPE_AJAX').attr('checked','checked');{% endif %}
+				{% if Channel.payType == "JUMP" %}$('#PAY_TYPE_JUMP').attr('checked','checked');{% endif %}
+				$('#slug').val("{{ Channel.slug }}");
+				$('#currency').val("{{ Channel.currency }}");
+				$('#country').val("{{ Channel.country }}");
+			{% endif %}
+		});
+		
+		function submit()
+		{
+			$('#btn_submit').click(function(){
+				let can_submit = true;
+				if(can_submit&& "" == $('#name').val())
+				{
+					can_submit = false;
+					layer.msg("请输入名称");
+				}
+				if(can_submit && '' == $('#percent').val())
+				{
+					can_submit = false;
+					layer.msg("请输入比例");
+				}
+				
+				if(can_submit)
+				{
+					ajax("{{ path("front_channel") }}?action=prepare&id={{ id }}",$('#std-form').serialize(),function(json){
+						layer.alert(json.msg,{},function(){
+							if(0 == json.code)
+							{
+								parent.window.location.reload();
+							}
+						});
+					});
+				}
+			});
+		}
+	</script>
+	<script>
+		layui.config({base: '{{ asset('ui_core') }}/'}).extend({index: 'lib/index'}).use(['index', 'form'], function(){
+			var admin = layui.admin,element = layui.element,form = layui.form;
+
+			form.render(null, 'component-form-element');
+			element.render('breadcrumb', 'breadcrumb');
+		});
+	</script>
+{% endblock %}

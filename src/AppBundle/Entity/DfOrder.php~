@@ -1,0 +1,140 @@
+<?php
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="app_df_order")
+ */
+class DfOrder
+{
+    /**
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+    
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $merchant_id = 0; //商户ID
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
+    private $channel_id = 0;  //通道id
+	
+	/**
+     * @ORM\Column(type="string", length=10)
+     */
+    private $amount = '';  //支付的费用
+	
+	/**
+     * @ORM\Column(type="string", length=30)
+     */
+    private $bankname = '';  //银行名称
+	
+	/**
+     * @ORM\Column(type="string", length=30)
+     */
+    private $bank_card_no = '';  //银行卡号
+	
+	/**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $channel_order_no = ''; //通道订单号
+	
+	/**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $merchant_order_no = ''; //商户订单号
+	
+	/**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $plantform_order_no = ''; //平台订单号
+	
+	/**
+     * @ORM\Column(type="string", length=10)
+     */
+    private $channel_percent = '';  //通道百分比
+	
+	/**
+     * @ORM\Column(type="string", length=10)
+     */
+    private $merchant_percent = ''; //商户百分百
+	
+	/**
+     * @ORM\Column(type="string", length=10)
+     */
+    private $proxy_percent = ''; //代理百分百
+	
+	/**
+     * @ORM\Column(type="string", length=10)
+     */
+    private $channel_fee = '';
+	
+	/**
+     * @ORM\Column(type="string", length=10)
+     */
+    private $merchant_fee = '';
+	
+	/**
+     * @ORM\Column(type="string", length=10)
+     */
+    private $proxy_fee = '';
+	
+	/**
+     * @ORM\Column(type="string", length=10)
+     */
+    private $currency = '';  //货币
+	
+	/**
+     * @ORM\Column(type="string", length=200)
+     */
+    private $merchant_notify_url = '';  //回调地址
+	
+	/**
+     * @ORM\Column(type="string", length=200)
+     */
+    private $plantform_notify_url = '';  //回调地址
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
+    private $channel_api_code = 0;  // api code
+	
+	/**
+     * @ORM\Column(type="text")
+     */
+    private $channel_api_result = '';
+	
+	/**
+     * @ORM\Column(type="string", length=2)
+     */
+    private $plantform_notify_hooked = 'N';
+
+	/**
+     * @ORM\Column(type="string", length=2)
+     */
+    private $merchant_notify_hooked = 'N';
+	
+	/**
+     * @ORM\Column(type="text")
+     */
+    private $channel_notify_data = '';
+	
+	/**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $merchant_notify_result = '';
+
+	/**
+     * @ORM\Column(type="integer")
+     */
+    private $created_at = 0; //创建时间
+
+}
+

@@ -1,0 +1,29 @@
+front_homepage:
+    path:     /
+    defaults: { _controller: FrontBundle:Default:index }
+
+#首页
+front_home:
+    path:     /home
+    defaults: { _controller: FrontBundle:Home:index }
+
+#统计
+front_tongji:
+    path:     /tongji
+    defaults: { _controller: FrontBundle:Tongji:index }
+
+#商户
+front_merchant:
+    path:     /merchant
+    defaults: { _controller: FrontBundle:Merchant:index }    
+ 
+#渠道
+front_channel:
+    path:     /channel
+    defaults: { _controller: FrontBundle:Channel:index }
+
+#代收订单
+front_order:
+    path:     /order
+    defaults: { _controller: FrontBundle:Order:index }
+

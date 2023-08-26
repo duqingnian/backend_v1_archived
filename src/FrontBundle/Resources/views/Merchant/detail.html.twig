@@ -1,0 +1,23 @@
+{% extends "FrontBundle::page.html.twig" %}
+
+{% block content %}
+	<div class="layui-card">
+		<div class="layui-card-body">
+			<table class="model">
+				<tr>
+					<td style="text-align:left;font-weight:bold;">appid:</td>
+				</tr>
+				<tr>
+					<td style="text-align:left;font-family: Courier New;">{{ merchant.appid }}</td>
+				</tr>
+				<tr>
+					<td style="text-align:left;font-weight:bold;">app_secret:</td>
+				</tr>
+				<tr>
+					<td style="text-align:left;font-family: Courier New;">{{ merchant.appSecret }}</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+{% endblock %}

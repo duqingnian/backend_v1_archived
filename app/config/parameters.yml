@@ -1,0 +1,12 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_host: 127.0.0.1
+    database_port: null
+    database_name: backend.pay
+    database_user: root
+    database_password: a4a2a009cab3184a
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    secret: 7b83fd4d79748c7e574a470d040d72d05d96031f
