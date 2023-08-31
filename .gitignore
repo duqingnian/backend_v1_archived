@@ -25,6 +25,8 @@
 # Config
 /app/config/config.yml
 /app/config/config.ini
+# 不需要同步的文件夹
+/diff
 
 # Managed by Composer
 /app/bootstrap.php.cache
