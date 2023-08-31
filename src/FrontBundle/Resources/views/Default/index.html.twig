@@ -1,6 +1,6 @@
 {% extends "FrontBundle::layout.html.twig" %}
 
-{% block title %}平台管理端{% endblock %}
+{% block title %}平台管理端 - {{ title }}{% endblock %}
 
 {% block content %}
     <div id="LAY_app">
@@ -69,8 +69,9 @@
             <!-- 侧边菜单 -->
             <div class="layui-side layui-side-menu">
                 <div class="layui-side-scroll">
-                    <div class="layui-logo" lay-href="home/console.html">
-                        <span>平台端</span>
+                    <div class="layui-logo">
+						<img src="{{ asset('bundles/diff/logo.png') }}" style="width:36px" />
+                        <span>{{ title }}</span>
                     </div>
 
 					<!-- 活跃li用 layui-nav-itemed class -->

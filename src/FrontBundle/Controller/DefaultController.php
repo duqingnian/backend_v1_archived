@@ -7,7 +7,12 @@ class DefaultController extends \AppBundle\Controller\BaseController
 {
     public function indexAction(Request $request)
     {
-        return $this->render('FrontBundle:Default:index.html.twig');
+		$rp = $this->get('kernel')->getRootDir();
+        $diff =  realpath($rp.'/../diff/');
+        $app_json = file_get_contents($diff.'/app.json');
+        $data = json_decode($app_json,true);	
+		
+        return $this->render('FrontBundle:Default:index.html.twig',$data);
     }
 	
 	//template render
