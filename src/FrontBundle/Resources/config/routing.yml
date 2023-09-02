@@ -27,3 +27,46 @@ front_order:
     path:     /order
     defaults: { _controller: FrontBundle:Order:index }
 
+#代付
+front_pay:
+    path:     /pay
+    defaults: { _controller: FrontBundle:Pay:index }
+
+#代理
+front_proxy:
+    path:     /proxy
+    defaults: { _controller: FrontBundle:Proxy:index }
+
+#提现
+front_tixian:
+    path:     /tixian
+    defaults: { _controller: FrontBundle:Tixian:index }
+
+#充值
+front_chongzhi:
+    path:     /chongzhi
+    defaults: { _controller: FrontBundle:Chongzhi:index }
+
+#用户管理
+front_account:
+    path:     /account
+    defaults: { _controller: FrontBundle:Account:index }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
