@@ -40,7 +40,10 @@ class MerchantController extends \AppBundle\Controller\BaseController
 			$data['merchant'] = $this->db('Merchant')->findOneBy(['uid'=>$data['id']]);
 			
 			//查询渠道
-			$data['channel'] = $channels[$data['merchant']->getChannelId()];
+			if($channels[$data['merchant'])
+			{
+				$data['channel'] = $channels[$data['merchant']->getChannelId()];
+			}
 		}
 		
         return $this->render('FrontBundle:Merchant:index.html.twig',$this->data);
