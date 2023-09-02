@@ -43,7 +43,7 @@
                    <tr id="tr-{{ mt.id }}">
                         <td>{{ mt.id }}</td>
                         <td>{{ mt.display_name }}</td>
-                        <td>{{ mt.channel }}</td>
+                        <td>{{ mt.channel ? mt.channel : '???' }}</td>
                         <td>{{ mt.merchant.percent }}%</td>
                         <td>-</td>
                         <td>-</td>

@@ -41,6 +41,7 @@ class MerchantController extends \AppBundle\Controller\BaseController
 				//Merchant
 				$data['merchant'] = $this->db('Merchant')->findOneBy(['uid'=>$data['id']]);
 				
+				$data['channel'] = null;
 				if($data['merchant'])
 				{
 					//查询渠道
