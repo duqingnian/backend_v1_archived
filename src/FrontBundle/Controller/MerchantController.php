@@ -19,7 +19,7 @@ class MerchantController extends \AppBundle\Controller\BaseController
 	
 	public function _index($request)
     {
-		$where = 'a.username != "admin"';
+		$where = "a.username != 'admin'";
 		$this->data['filter_name'] = $request->query->get('filter_name','');
 		$this->data['pager'] = $this->pager($request,'user',$where,'','',20);
 		
