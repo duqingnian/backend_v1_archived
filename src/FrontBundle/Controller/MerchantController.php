@@ -34,13 +34,16 @@ class MerchantController extends \AppBundle\Controller\BaseController
 		//为每个数据生成token，防止误删
 		foreach($this->data['pager']['data'] as &$data)
 		{
-			$data['token'] = $this->_generate_token($data['id']);;
-			
-			//Merchant
-			$data['merchant'] = $this->db('Merchant')->findOneBy(['uid'=>$data['id']]);
-			
-			//查询渠道
-			$data['channel'] = $channels[$data['merchant']->getChannelId()];
+			if($data)
+			{
+				$data['token'] = $this->_generate_token($data['id']);;
+				
+				//Merchant
+				$data['merchant'] = $this->db('Merchant')->findOneBy(['uid'=>$data['id']]);
+				
+				//查询渠道
+				$data['channel'] = $channels[$data['merchant']->getChannelId()];
+			}
 		}
 		
         return $this->render('FrontBundle:Merchant:index.html.twig',$this->data);

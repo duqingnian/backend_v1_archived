@@ -35,11 +35,13 @@ class OrderController extends \AppBundle\Controller\BaseController
 			$order['channel'] = $channel;
 			$order['merchant'] = $merchant;
 			
-			/*$order['channel_data'] = ['status'=>'-'];
+			/*
+			$order['channel_data'] = ['status'=>'-'];
 			if(strlen($order['channel_api_result']) > 30)
 			{
 				$order['channel_data'] = json_decode($order['channel_api_result'],true);
-			}*/
+			}
+			*/
 		}
 		
         return $this->render('FrontBundle:Order:index.html.twig',$this->data);

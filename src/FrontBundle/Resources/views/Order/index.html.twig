@@ -62,9 +62,9 @@
 					{% for order in pager.data %}
                     <tr>
                         <td>{{ order.id }}</td>
-                        <td><div class="cell"><a href="#">{{ order.channel.name }}</a><br />{{ order.channel_order_no }}</div></td>
+                        <td><div class="cell"><a href="#">{{ order.channel ? order.channel.name : '???' }}</a><br />{{ order.channel_order_no }}</div></td>
                         <td><div class="cell">{{ order.plantform_order_no }}</div></td>
-                        <td><div class="cell"><a href="#">{{ order.merchant.name }}</a><br />{{ order.merchant_order_no }}</div></td>
+                        <td><div class="cell"><a href="#">{{ order.merchant ? order.merchant.name : '???' }}</a><br />{{ order.merchant_order_no }}</div></td>
                         <td>{{ order.amount }}</td>
                         <td>{{ order.amount - order.channel_fee }}</td>
                         <td>
