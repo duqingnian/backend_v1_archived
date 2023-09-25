@@ -17,59 +17,74 @@ class Channel
     private $id;
     
     /**
-     * @ORM\Column(type="string", length=30)
+     * @ORM\Column(type="string", length=50)
      */
-    private $icon = ''; //图标
+    private $name; //名称
 	
 	/**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=15)
      */
-    private $name = ''; //名称
+    private $country; //国家
 	
 	/**
-     * @ORM\Column(type="string", length=30)
+     * @ORM\Column(type="string", length=32)
      */
-    private $slug = ''; //slug别名
+    private $payin_appid = "";
 	
 	/**
-     * @ORM\Column(type="string", length=10)
+     * @ORM\Column(type="string", length=64)
      */
-    private $percent = ''; //费率
+    private $payin_secret = "";
 	
 	/**
-     * @ORM\Column(type="string", length=10)
+     * @ORM\Column(type="string", length=32)
      */
-    private $df_percent = ''; //代付费率
+    private $payout_appid = "";
+	
+	/**
+     * @ORM\Column(type="string", length=64)
+     */
+    private $payout_secret = "";
+	
+	/**
+     * @ORM\Column(type="decimal", scale=2)
+     */
+    private $payin_pct = 0.00;
+	
+	/**
+     * @ORM\Column(type="decimal", scale=2)
+     */
+    private $payin_sigle_fee = 0.00;
+	
+	/**
+     * @ORM\Column(type="decimal", scale=2)
+     */
+    private $payout_pct = 0.00;
+	
+	/**
+     * @ORM\Column(type="decimal", scale=2)
+     */
+    private $payout_sigle_fee = 0.00;
+	
+	/**
+     * @ORM\Column(type="string", length=15)
+     */
+    private $payin_sign_method = "md5";
+	
+	/**
+     * @ORM\Column(type="string", length=15)
+     */
+    private $payout_sign_method = "md5";
 	
 	/**
      * @ORM\Column(type="integer")
      */
-    private $is_active = 0; //是否启用
+    private $is_active = 0;
 	
 	/**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="integer")
      */
-    private $app_id = '';
-	
-	/**
-     * @ORM\Column(type="string", length=200)
-     */
-    private $app_secret = '';
-	
-	/**
-     * @ORM\Column(type="string", length=20)
-     */
-    private $pay_type = ''; //付款类型 二维码\跳转
-	
-	/**
-     * @ORM\Column(type="string", length=10)
-     */
-    private $currency = ''; //货币
-
-    /**
-     * @ORM\Column(type="string", length=30)
-     */
-    private $country = ''; //国家
+    private $created_at = 0;
 
     /**
      * Get id
@@ -79,30 +94,6 @@ class Channel
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set icon
-     *
-     * @param string $icon
-     *
-     * @return Channel
-     */
-    public function setIcon($icon)
-    {
-        $this->icon = $icon;
-
-        return $this;
-    }
-
-    /**
-     * Get icon
-     *
-     * @return string
-     */
-    public function getIcon()
-    {
-        return $this->icon;
     }
 
     /**
@@ -130,30 +121,6 @@ class Channel
     }
 
     /**
-     * Set percent
-     *
-     * @param string $percent
-     *
-     * @return Channel
-     */
-    public function setPercent($percent)
-    {
-        $this->percent = $percent;
-
-        return $this;
-    }
-
-    /**
-     * Get percent
-     *
-     * @return string
-     */
-    public function getPercent()
-    {
-        return $this->percent;
-    }
-
-    /**
      * Set isActive
      *
      * @param integer $isActive
@@ -178,123 +145,27 @@ class Channel
     }
 
     /**
-     * Set appId
+     * Set createdAt
      *
-     * @param string $appId
+     * @param integer $createdAt
      *
      * @return Channel
      */
-    public function setAppId($appId)
+    public function setCreatedAt($createdAt)
     {
-        $this->app_id = $appId;
+        $this->created_at = $createdAt;
 
         return $this;
     }
 
     /**
-     * Get appId
+     * Get createdAt
      *
-     * @return string
+     * @return integer
      */
-    public function getAppId()
+    public function getCreatedAt()
     {
-        return $this->app_id;
-    }
-
-    /**
-     * Set appSecret
-     *
-     * @param string $appSecret
-     *
-     * @return Channel
-     */
-    public function setAppSecret($appSecret)
-    {
-        $this->app_secret = $appSecret;
-
-        return $this;
-    }
-
-    /**
-     * Get appSecret
-     *
-     * @return string
-     */
-    public function getAppSecret()
-    {
-        return $this->app_secret;
-    }
-
-    /**
-     * Set payType
-     *
-     * @param string $payType
-     *
-     * @return Channel
-     */
-    public function setPayType($payType)
-    {
-        $this->pay_type = $payType;
-
-        return $this;
-    }
-
-    /**
-     * Get payType
-     *
-     * @return string
-     */
-    public function getPayType()
-    {
-        return $this->pay_type;
-    }
-
-    /**
-     * Set slug
-     *
-     * @param string $slug
-     *
-     * @return Channel
-     */
-    public function setSlug($slug)
-    {
-        $this->slug = $slug;
-
-        return $this;
-    }
-
-    /**
-     * Get slug
-     *
-     * @return string
-     */
-    public function getSlug()
-    {
-        return $this->slug;
-    }
-
-    /**
-     * Set currency
-     *
-     * @param string $currency
-     *
-     * @return Channel
-     */
-    public function setCurrency($currency)
-    {
-        $this->currency = $currency;
-
-        return $this;
-    }
-
-    /**
-     * Get currency
-     *
-     * @return string
-     */
-    public function getCurrency()
-    {
-        return $this->currency;
+        return $this->created_at;
     }
 
     /**
@@ -322,26 +193,242 @@ class Channel
     }
 
     /**
-     * Set dfPercent
+     * Set payinAppid
      *
-     * @param string $dfPercent
+     * @param string $payinAppid
      *
      * @return Channel
      */
-    public function setDfPercent($dfPercent)
+    public function setPayinAppid($payinAppid)
     {
-        $this->df_percent = $dfPercent;
+        $this->payin_appid = $payinAppid;
 
         return $this;
     }
 
     /**
-     * Get dfPercent
+     * Get payinAppid
      *
      * @return string
      */
-    public function getDfPercent()
+    public function getPayinAppid()
     {
-        return $this->df_percent;
+        return $this->payin_appid;
+    }
+
+    /**
+     * Set payinSecret
+     *
+     * @param string $payinSecret
+     *
+     * @return Channel
+     */
+    public function setPayinSecret($payinSecret)
+    {
+        $this->payin_secret = $payinSecret;
+
+        return $this;
+    }
+
+    /**
+     * Get payinSecret
+     *
+     * @return string
+     */
+    public function getPayinSecret()
+    {
+        return $this->payin_secret;
+    }
+
+    /**
+     * Set payoutAppid
+     *
+     * @param string $payoutAppid
+     *
+     * @return Channel
+     */
+    public function setPayoutAppid($payoutAppid)
+    {
+        $this->payout_appid = $payoutAppid;
+
+        return $this;
+    }
+
+    /**
+     * Get payoutAppid
+     *
+     * @return string
+     */
+    public function getPayoutAppid()
+    {
+        return $this->payout_appid;
+    }
+
+    /**
+     * Set payoutSecret
+     *
+     * @param string $payoutSecret
+     *
+     * @return Channel
+     */
+    public function setPayoutSecret($payoutSecret)
+    {
+        $this->payout_secret = $payoutSecret;
+
+        return $this;
+    }
+
+    /**
+     * Get payoutSecret
+     *
+     * @return string
+     */
+    public function getPayoutSecret()
+    {
+        return $this->payout_secret;
+    }
+
+    /**
+     * Set payinPct
+     *
+     * @param integer $payinPct
+     *
+     * @return Channel
+     */
+    public function setPayinPct($payinPct)
+    {
+        $this->payin_pct = $payinPct;
+
+        return $this;
+    }
+
+    /**
+     * Get payinPct
+     *
+     * @return integer
+     */
+    public function getPayinPct()
+    {
+        return $this->payin_pct;
+    }
+
+    /**
+     * Set payinSigleFee
+     *
+     * @param integer $payinSigleFee
+     *
+     * @return Channel
+     */
+    public function setPayinSigleFee($payinSigleFee)
+    {
+        $this->payin_sigle_fee = $payinSigleFee;
+
+        return $this;
+    }
+
+    /**
+     * Get payinSigleFee
+     *
+     * @return integer
+     */
+    public function getPayinSigleFee()
+    {
+        return $this->payin_sigle_fee;
+    }
+
+    /**
+     * Set payoutPct
+     *
+     * @param integer $payoutPct
+     *
+     * @return Channel
+     */
+    public function setPayoutPct($payoutPct)
+    {
+        $this->payout_pct = $payoutPct;
+
+        return $this;
+    }
+
+    /**
+     * Get payoutPct
+     *
+     * @return integer
+     */
+    public function getPayoutPct()
+    {
+        return $this->payout_pct;
+    }
+
+    /**
+     * Set payoutSigleFee
+     *
+     * @param integer $payoutSigleFee
+     *
+     * @return Channel
+     */
+    public function setPayoutSigleFee($payoutSigleFee)
+    {
+        $this->payout_sigle_fee = $payoutSigleFee;
+
+        return $this;
+    }
+
+    /**
+     * Get payoutSigleFee
+     *
+     * @return integer
+     */
+    public function getPayoutSigleFee()
+    {
+        return $this->payout_sigle_fee;
+    }
+
+    /**
+     * Set payinSignMethod
+     *
+     * @param string $payinSignMethod
+     *
+     * @return Channel
+     */
+    public function setPayinSignMethod($payinSignMethod)
+    {
+        $this->payin_sign_method = $payinSignMethod;
+
+        return $this;
+    }
+
+    /**
+     * Get payinSignMethod
+     *
+     * @return string
+     */
+    public function getPayinSignMethod()
+    {
+        return $this->payin_sign_method;
+    }
+
+    /**
+     * Set payoutSignMethod
+     *
+     * @param string $payoutSignMethod
+     *
+     * @return Channel
+     */
+    public function setPayoutSignMethod($payoutSignMethod)
+    {
+        $this->payout_sign_method = $payoutSignMethod;
+
+        return $this;
+    }
+
+    /**
+     * Get payoutSignMethod
+     *
+     * @return string
+     */
+    public function getPayoutSignMethod()
+    {
+        return $this->payout_sign_method;
     }
 }

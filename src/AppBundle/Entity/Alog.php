@@ -16,31 +16,25 @@ class Alog
      */
     private $id;
     
-    /**
+	/**
      * @ORM\Column(type="integer")
      */
     private $uid = 0;
 	
-    /**
+	/**
      * @ORM\Column(type="string", length=30)
      */
-    private $ttype = ''; //日志类型 LOGIN DELETE
+    private $bundle;
+	
+	/**
+     * @ORM\Column(type="text")
+     */
+    private $data;
 	
 	/**
      * @ORM\Column(type="integer")
      */
-    private $data_id = 0;
-
-    /**
-     * @ORM\Column(type="text")
-     */
-    private $content = '';  //日志内容
-    
-    /**
-     * @ORM\Column(type="integer")
-     */
     private $created_at = 0;
-	
 
     /**
      * Get id
@@ -77,75 +71,51 @@ class Alog
     }
 
     /**
-     * Set ttype
+     * Set bundle
      *
-     * @param string $ttype
+     * @param string $bundle
      *
      * @return Alog
      */
-    public function setTtype($ttype)
+    public function setBundle($bundle)
     {
-        $this->ttype = $ttype;
+        $this->bundle = $bundle;
 
         return $this;
     }
 
     /**
-     * Get ttype
+     * Get bundle
      *
      * @return string
      */
-    public function getTtype()
+    public function getBundle()
     {
-        return $this->ttype;
+        return $this->bundle;
     }
 
     /**
-     * Set dataId
+     * Set data
      *
-     * @param integer $dataId
+     * @param string $data
      *
      * @return Alog
      */
-    public function setDataId($dataId)
+    public function setData($data)
     {
-        $this->data_id = $dataId;
+        $this->data = $data;
 
         return $this;
     }
 
     /**
-     * Get dataId
-     *
-     * @return integer
-     */
-    public function getDataId()
-    {
-        return $this->data_id;
-    }
-
-    /**
-     * Set content
-     *
-     * @param string $content
-     *
-     * @return Alog
-     */
-    public function setContent($content)
-    {
-        $this->content = $content;
-
-        return $this;
-    }
-
-    /**
-     * Get content
+     * Get data
      *
      * @return string
      */
-    public function getContent()
+    public function getData()
     {
-        return $this->content;
+        return $this->data;
     }
 
     /**

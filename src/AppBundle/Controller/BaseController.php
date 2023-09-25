@@ -9,6 +9,11 @@ class BaseController extends Controller
 {
 	protected $data=[];
 
+	public function __construct()
+	{
+		//header('Access-Control-Allow-Origin:*');
+	}
+
     protected function root_path()
     {
         $rp = $this->get('kernel')->getRootDir();
@@ -37,7 +42,7 @@ class BaseController extends Controller
 			$conn = 'pad';
 			$bundle = 'PadBundle';
 		}
-		return $this->em($conn)->getRepository($bundle.':'.$name);
+		return $this->em()->getRepository($bundle.':'.$name);
     }
     protected function uid()
     {
@@ -107,7 +112,7 @@ class BaseController extends Controller
 
         return number_format($bytes, $precision) . ' ' . $suffix[$i];
     }
-    public function pager($request,$model='',$where='',$order='',$groupby='',$prepage=25,$conn='',$req = true)
+    public function pager($request,$model='',$where='',$order='',$groupby='',$prepage=25,$conn='',$req = false)
     {
 		if('' == $conn)
 		{
@@ -140,7 +145,7 @@ class BaseController extends Controller
             $groupby = ' group by '.$groupby;
         }
 
-        $page['page']=$request->query->get('page',1); 
+        $page['page']=$request->query->get('page',1);
 		if($req)
 		{
 			$page['page']=$request->request->get('page',1); 
@@ -163,7 +168,7 @@ class BaseController extends Controller
             $page['pages'] = 1;
         }
         
-        if($page['page'] > $page['pages']){
+        if($page['page'] >= $page['pages']){
             $page['page'] = $page['pages'];
         }
 
@@ -191,7 +196,7 @@ class BaseController extends Controller
         $page['page'] = (int)$page['page'];
         $page['total'] = (int)$page['total'];
         
-        $data = array('pager'=>$page,'data'=>$items,'page_range'=>$page_range);
+        $data = array('pager'=>$page,'data'=>$items,'page_range'=>$page_range,'sql'=>'');
         return $data;
     }
 	
@@ -241,11 +246,10 @@ class BaseController extends Controller
 
     protected function columns($model)
     {
-        $model = ucfirst($model);
+        $model = ucfirst($model); 
         $_columns = array(
-			'User'=>'a.id,a.username,a.display_name,a.enabled,a.ext_type,a.created_at',
-			'Channel'=>'a.id,a.name,a.percent,a.is_active,a.pay_type,a.slug,a.currency,a.country',
-			'Aorder'=>'a.id,a.merchant_id,a.channel_id,a.amount,a.channel_order_no,a.merchant_order_no,a.plantform_order_no,a.channel_percent,a.merchant_percent,a.proxy_percent,a.channel_fee,a.merchant_fee,a.proxy_fee,a.currency,a.merchant_jump_url,a.merchant_notify_url,a.plantform_jump_url,a.plantform_notify_url,a.channel_api_code,a.channel_api_result,a.plantform_notify_hooked,a.plantform_jump_hooked,a.merchant_notify_hooked,a.merchant_jump_hooked,a.created_at',
+			'User'=>'a.id',
+			'Channel'=>'a.id,a.name',
         );
         return $_columns[$model];
     }
@@ -253,27 +257,6 @@ class BaseController extends Controller
         return $this->getUser();
     }
 	
-	public function send_wx_tpl_msg($openid,$title,$keyword1,$keyword2,$keyword3,$keyword4,$keyword5,$timer,$notice,$link,$templates,$access_token) 
-	{
-        $url = 'https://api.weixin.qq.com/cgi-bin/message/template/send?access_token='.$access_token;
-        $params = array(
-            'touser' => $openid,
-            'template_id' => $templates,
-            'url' => $link,
-            'data' => array(
-                'first' => array('value' => is_array($title)?$title['txt']:$title,'color' => is_array($title)?$title['color']:'',),
-                'keyword1' => array('value' => $keyword1,'color' => ''),
-                'keyword2' => array('value' => $keyword2,'color' => ''),
-                'keyword3' => array('value' => $keyword3,'color' => ''),
-                'keyword4' => array('value' => $keyword4,'color' => ''),
-                'keyword5' => array('value' => $keyword5,'color' => ''),
-                'remark' => array('value' => is_array($notice)?$notice['txt']:$notice,'color' => is_array($notice)?$notice['color']:'',)
-            )
-        ); 
-        $json =  json_encode($params,JSON_UNESCAPED_UNICODE);
-        $result = $this->http($url, $json);
-        return $result;
-    }
 	function http_post_json($url, $jsonStr)
 	{
 		$ch = curl_init();
@@ -306,12 +289,11 @@ class BaseController extends Controller
     //加密解密
     function authcode($string, $operation = 'ENCODE', $key = '', $expiry = 0) {
         if($operation == 'DECODE') {
-            $string = str_replace('=E=','',$string);
             $string = str_replace('_','+',$string);
             $string = str_replace('-','/',$string);
         }
         $ckey_length = 4;
-        $key = 'DQN_522_CZHK_2022';
+        $key = 'DQN_577_WX_2046';
         $keya = md5(substr($key, 0, 16));
         $keyb = md5(substr($key, 16, 16));
         $keyc = $ckey_length ? ($operation == 'DECODE' ? substr($string, 0, $ckey_length): substr(md5(microtime()), -$ckey_length)) : '';
@@ -356,7 +338,7 @@ class BaseController extends Controller
             $str = $keyc.str_replace('=', '', base64_encode($result));
             $str = str_replace('+','_',$str);
             $str = str_replace('/','-',$str);
-            return $str.'=E=';
+            return $str;
         }
     }
     public function getIp()
@@ -465,6 +447,138 @@ class BaseController extends Controller
         $url .= '://'.$_SERVER["SERVER_NAME"];
         return $url;
     }
+	
+	//国家列表
+	public function get_countries()
+	{
+		return [
+			'brazil'=>['name'=>'巴西','currency'=>'BRL'],
+			'thailand'=>['name'=>'泰国','currency'=>'THB'],
+			'vietnam'=>['name'=>'越南','currency'=>'VND'],
+		];
+	}
+	
+	//创建请求常量
+	public function get_pay_consts($type='',$bundle='')
+	{
+		if('PAYIN' == $type)
+		{
+			return $this->get_payin_consts($bundle);
+		}
+		else if('PAYOUT' == $type)
+		{
+			return $this->get_payout_consts($bundle);
+		}
+		else{}
+	}
+	
+	public function get_payin_consts($bundle='')
+	{
+		$CONSTS = ['REQUEST'=>[],'RESULT'=>[],'NOTIFY'=>[]];
+		$CONSTS['REQUEST'] = [
+			'TYPE'=>'请求类型',
+			'HEADER'=>'头信息',
+			'URL'=>'接口地址',
+			'APPID'=>'appid',
+			'ORDER_NO'=>'商户订单号',
+			'CURRENCY'=>'金额币种',
+			'AMOUNT'=>'订单金额',
+			'NOTIFY_URL'=>'异步通知地址',
+			'RETURN_URL'=>'同步通知地址',
+			'ATTACH_DATA'=>'附加信息',
+			'SIGN'=>'签名',
+		];
+		$CONSTS['RESULT'] = [
+			'CODE'=>'响应状态码',
+			'ORDER_STATUS'=>'订单状态',
+			'ORDER_SUCC_STATUS'=>'订单成功状态',
+			'CHANNEL_ORDER_NO'=>'通道订单号',
+			'SHANGHU_ORDER_NO'=>'商户订单号',
+			'CURRENCY'=>'金额币种',
+			'AMOUNT'=>'订单金额',
+			'CREATETIME'=>'创建时间',
+			'UPDATETIME'=>'更新时间',
+			'ERROR_MSG'=>'订单异常信息',
+			'URL'=>'订单跳转地址',
+			'QRCODE'=>'二维码内容',
+			'SIGN'=>'签名',
+			'MSG'=>'创建结果消息',
+			'ATTACH_DATA'=>'附加信息',
+		];
+		$CONSTS['NOTIFY'] = [
+			'ORDER_STATUS'=>'订单状态',
+			'ORDER_SUCC_STATUS'=>'订单成功状态',
+			'CHANNEL_ORDER_NO'=>'通道订单号',
+			'SHANGHU_ORDER_NO'=>'商户订单号',
+			'CURRENCY'=>'金额币种',
+			'AMOUNT'=>'订单金额',
+			'CREATETIME'=>'创建时间',
+			'UPDATETIME'=>'更新时间',
+			'ERROR_MSG'=>'订单异常信息',
+			'ATTACH_DATA'=>'附加信息',
+			'SIGN'=>'签名',
+		];
+
+		return $CONSTS[$bundle];
+	}
+	public function get_payout_consts($bundle='')
+	{
+		$CONSTS = ['REQUEST'=>[],'RESULT'=>[],'NOTIFY'=>[]];
+		$CONSTS['REQUEST'] = [
+			'TYPE'=>'请求类型',
+			'HEADER'=>'头信息',
+			'URL'=>'接口地址',
+			'APPID'=>'appid',
+			'ORDER_NO'=>'商户订单号',
+			'CURRENCY'=>'金额币种',
+			'AMOUNT'=>'订单金额',
+			'NOTIFY_URL'=>'异步通知地址',
+			'ACC_TYPE'=>'账号(卡)类型',
+			'ACCOUNT'=>'账号(卡号)',
+			'ACC_OWNER_NAME'=>'账号(持卡人)姓名',
+			'ATTACH_DATA'=>'附加信息',
+			'SIGN'=>'签名',
+		];
+		$CONSTS['RESULT'] = [
+			'CODE'=>'响应状态码',
+			'ORDER_STATUS'=>'订单状态',
+			'ORDER_SUCC_STATUS'=>'订单成功状态',
+			'CHANNEL_ORDER_NO'=>'通道订单号',
+			'SHANGHU_ORDER_NO'=>'商户订单号',
+			'CURRENCY'=>'金额币种',
+			'AMOUNT'=>'订单金额',
+			'CREATETIME'=>'创建时间',
+			'UPDATETIME'=>'更新时间',
+			'ERROR_MSG'=>'订单异常信息',
+			'MSG'=>'创建结果消息',
+			'ATTACH_DATA'=>'附加信息',
+			'SIGN'=>'签名',
+		];
+		$CONSTS['NOTIFY'] = [
+			'ORDER_STATUS'=>'订单状态',
+			'ORDER_SUCC_STATUS'=>'订单成功状态',
+			'CHANNEL_ORDER_NO'=>'通道订单号',
+			'SHANGHU_ORDER_NO'=>'商户订单号',
+			'CURRENCY'=>'金额币种',
+			'AMOUNT'=>'订单金额',
+			'CREATETIME'=>'创建时间',
+			'UPDATETIME'=>'更新时间',
+			'ERROR_MSG'=>'订单异常信息',
+			'ATTACH_DATA'=>'附加信息',
+			'RECEIPT_URL'=>'凭证信息',
+			'SIGN'=>'签名',
+		];
+
+		return $CONSTS[$bundle];
+	}
+	
+	public function get_sign_types()
+	{
+		return [
+			['key'=>'md5','text'=>'MD5'],
+			['key'=>'sha256','text'=>'SHA256'],
+		];
+	}
 }
 
 

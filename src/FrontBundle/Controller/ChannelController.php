@@ -1,13 +1,14 @@
 <?php
 
 namespace FrontBundle\Controller;
+
 use Symfony\Component\HttpFoundation\Request;
 
-class ChannelController extends \AppBundle\Controller\BaseController
+class ChannelController extends \AppBundle\Controller\BaseController 
 {
     public function indexAction(Request $request)
     {
-        $action = $request->query->get("action",'index');
+        $action = $request->request->get("action",'detail');
         $method = '_'.$action;
         if(!method_exists($this,$method))
         {
@@ -17,167 +18,329 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		return $this->{$method}($request);
     }
 	
-	public function _index($request)
+	public function _create($request)
     {
-		$where = 'a.id > 0';
-		
-		$this->data['filter_name'] = $request->query->get('filter_name','');
-		
-		$this->data['pager'] = $this->pager($request,'Channel',$where,'','',20);
-		
-		//为每个数据生成token，防止误删
-		foreach($this->data['pager']['data'] as &$data)
+		$name = $request->request->get('name','');
+		$country = $request->request->get('country','');
+		$is_active = $request->request->get('is_active','false') == 'true' ? 1 : 0;
+		if('' == $name)
 		{
-			$data['token'] = $this->_generate_token($data['id']);;
+			$this->e('名称不能为空');
+		}
+		if('' == $country)
+		{
+			$this->e('国家不能为空');
 		}
 		
-        return $this->render('FrontBundle:Channel:index.html.twig',$this->data);
-    }
-	
-	public function _prepare($request)
-	{
-		//渠道 只能超级管理员才可以操作
-		if($this->getUser()->getId() != 1)
+		$channel = $this->db('Channel')->findOneBy(['name'=>$name]);
+		if($channel)
 		{
-			$this->e('Access Deny! code:60042');
+			$this->e("名称存在:".$name);
 		}
+		$channel = new \AppBundle\Entity\Channel();
+		$channel->setName($name);
+		$channel->setCountry($country);
+		$channel->setPayinAppid('');
+		$channel->setPayinSecret('');
+		$channel->setPayoutAppid('');
+		$channel->setPayoutSecret('');
+		$channel->setPayinPct(0.00);
+		$channel->setPayinSigleFee(0.00);
+		$channel->setPayoutPct(0.00);
+		$channel->setPayoutSigleFee(0.00);
 		
-		$this->data['id'] = $request->query->get('id',0);
-		if(!is_numeric($this->data['id']) || $this->data['id'] < 0) $this->e("id is missing or error!");
+		$channel->setIsActive($is_active);
+		$channel->setCreatedAt(time());
+		$this->save($channel);
 		
-		$name      = $request->request->get('name','');
-		$percent   = $request->request->get('percent','');
-		$is_active = $request->request->get('is_active','');
-		$pay_type  = $request->request->get('pay_type','');
-		$slug      = $request->request->get('slug','');
-		$currency  = $request->request->get('currency','');
-		$country   = $request->request->get('country','');
-		$is_active = 'on' == $is_active ? true : false;
-		
-		if($request->isMethod('post'))
+		if($channel->getId() > 0)
 		{
-			//判断是不是为空
-			if('' == $name)
-			{
-				$this->e('请输入名称');
-			}
-			
-			if(0 == $this->data['id'])
-			{
-				//添加
-				$Channel = $this->db('Channel')->findOneBy(['name'=>$name]);
-				if($Channel)
-				{
-					$this->e('['.$name.']已经存在');
-				}
-				
-				//开始添加
-				if(true)
-				{
-					//创建Channel
-					$Channel = new \AppBundle\Entity\Channel();
-					$Channel->setName($name);
-					$Channel->setPercent($percent);
-					$Channel->setIsActive($is_active);
-					$Channel->setPayType($pay_type);
-					$Channel->setSlug($slug);
-					$Channel->setCurrency($currency);
-					$Channel->setCountry($country);
-					$this->save($Channel);
-					
-					if($Channel->getId() > 0)
-					{
-						$this->succ("创建成功");
-					}
-					else
-					{
-						$this->e("创建失败-2");
-					}
-				}
-				else
-				{
-					$this->e("创建失败-1");
-				}
-			}
-			else
-			{
-				//编辑
-				$Channel = $this->db('Channel')->findOneBy(['name'=>$name]);
-				if($Channel && $Channel->getId() != $this->data['id'])
-				{
-					$this->e('['.$name.']已经存在');
-				}
-				
-				$Channel = $this->db('Channel')->find($this->data['id']);
-				
-				$Channel->setName($name);
-				$Channel->setPercent($percent);
-				$Channel->setIsActive($is_active);
-				$Channel->setPayType($pay_type);
-				$Channel->setSlug($slug);
-				$Channel->setCurrency($currency);
-				$Channel->setCountry($country);
-				
-				$em = $this->getDoctrine()->getManager();
-				$em->flush();
-				
-				$this->succ("更新成功");
-			}
+			$this->succ('添加成功');
 		}
 		else
 		{
-			$this->data['Channel'] = new \stdClass();
-			if(0 < $this->data['id'])
-			{
-				$this->data['Channel'] = $this->db('Channel')->find($this->data['id']);
-			}
-			return $this->render('FrontBundle:Channel:prepare.html.twig',$this->data);
+			$this->e('添加失败,错误码:6045');
 		}
 	}
 	
-	//详情
-	function _detail($request)
+	private function _load($request)
 	{
-		$id = $request->query->get('id',0);
+		$json = ['code'=>0,'msg'=>'OK','channels'=>[]];
 		
-		$this->data['Channel'] = $this->db('Channel')->find($id);
+		$countries = $this->get_countries();
 		
-		return $this->render('FrontBundle:Channel:detail.html.twig',$this->data);
+		$channels = $this->db('Channel')->findAll();
+		foreach($channels as $channel)
+		{
+			$country = $countries[$channel->getCountry()]['name'];
+			$json['channels'][] = ['id'=>$channel->getId(),'name'=>$channel->getName(),'country'=>$country,'is_active'=>$channel->getIsActive(),'request_token'=>$this->authcode('ID'.$channel->getId())];
+		}
+		
+		//国家货币
+		$json['countries'] = [];
+		$countries = $this->get_countries();
+		foreach($countries as $key=>$county)
+		{
+			$json['countries'][] = ['key'=>$key,'text'=>$county['name']];
+		}
+		
+		//签名算法
+		$json['sign_types'] = $this->get_sign_types();
+		
+		$json['const'] = ['PAYIN'=>['REQUEST'=>[],'RESULT'=>[],'NOTIFY'=>[]],];
+
+		$payin_request_consts = $this->get_payin_consts('REQUEST');
+		$payin_result_consts = $this->get_payin_consts('RESULT');
+		$payin_notify_consts = $this->get_payin_consts('NOTIFY');
+		foreach($payin_request_consts as $key=>$text){$json['const']['PAYIN']['REQUEST'][] = ['key'=>$key,'text'=>$text.'('.$key.')'];}
+		foreach($payin_result_consts as $key=>$text){$json['const']['PAYIN']['RESULT'][] = ['key'=>$key,'text'=>$text.'('.$key.')'];}
+		foreach($payin_notify_consts as $key=>$text){$json['const']['PAYIN']['NOTIFY'][] = ['key'=>$key,'text'=>$text.'('.$key.')'];}
+		
+		echo json_encode($json);exit();
 	}
-	
-	//删除
-	function _delete($request)
+
+	private function _update($request)
 	{
-		$id = $request->query->get('id',0);
-		if(!is_numeric($id))
-		{
-			$this->e('id is err!');
-		}
+		$request_token = $request->request->get('request_token','');
+		$id = $this->GetId($request_token);
 		
-		$token = $request->request->get('token','');
-		if('' == $token)
-		{
-			$this->e('delete token is missing');
-		}
-		if($token !== $this->_generate_token($id))
-		{
-			$this->e('delete token is not match!');
-		}
+		$name = $request->request->get('name','');
+		$country = $request->request->get('country','');
+		$is_active = $request->request->get('is_active',0);
+		
+		//appid
+		$payin_appid = $request->request->get('payin_appid','');
+		$payin_secret = $request->request->get('payin_secret','');
+		$payout_appid = $request->request->get('payout_appid','');
+		$payout_secret = $request->request->get('payout_secret','');
+		
+		//费用
+		$payin_pct = $request->request->get('payin_pct',0);
+		$payin_sigle_fee = $request->request->get('payin_sigle_fee',0);
+		$payout_pct = $request->request->get('payout_pct',0);
+		$payout_sigle_fee = $request->request->get('payout_sigle_fee',0);
+		
+		//请求类型、头、url
+		$payin_request_type = $request->request->get('payin_request_type','');
+		$payin_request_header = $request->request->get('payin_request_header','');
+		$payin_request_url = $request->request->get('payin_request_url','');
+		
+		//签名方式
+		$payin_sign_method = $request->request->get('payin_sign_method','');
+		$payout_sign_method = $request->request->get('payout_sign_method','');
 		
 		$channel = $this->db('Channel')->find($id);
-		if($channel)
+		if(!$channel)
 		{
-			$channel->setIsActive(false);
+			$this->e('通道不存在，无法更新');
 		}
+		$channel->setName($name);
+		$channel->setIsActive($is_active);
+		$channel->setCountry($country);
 		
-        $this->update();
-        
-        $this->succ("已删除");
+		//appid
+		$channel->setPayinAppid($payin_appid);
+		$channel->setPayinSecret($payin_secret);
+		$channel->setPayoutAppid($payout_appid);
+		$channel->setPayoutSecret($payout_secret);
+		
+		//费用
+		$channel->setPayinPct($payin_pct);
+		$channel->setPayinSigleFee($payin_sigle_fee);
+		$channel->setPayoutPct($payout_pct);
+		$channel->setPayoutSigleFee($payout_sigle_fee);
+		
+		//签名方式
+		$channel->setPayinSignMethod($payin_sign_method);
+		$channel->setPayoutSignMethod($payout_sign_method);
+		$this->update();
+		
+		//更新请求头信息
+		$this->update_column($channel->getId(),'PAYIN','REQUEST','TYPE','',$payin_request_type,1,0);
+		$this->update_column($channel->getId(),'PAYIN','REQUEST','HEADER','',$payin_request_header,1,0);
+		$this->update_column($channel->getId(),'PAYIN','REQUEST','URL','',$payin_request_url,1,0);
+		
+		$this->succ("已更新");
 	}
 	
-	private function _generate_token($id)
+	private function GetId($request_token)
 	{
-		return md5($id.date('Ymd').'duqingnian');
+		if(strlen($request_token) < 10)
+		{
+			$this->e('request_token is missing');
+		}
+		$id = $this->authcode($request_token,'DECODE');
+		if('ID' != substr($id,0,2))
+		{
+			$this->e('bad request_token!');
+		}
+		$id = substr($id,2);
+		if(!is_numeric($id))
+		{
+			$this->e('request_token err!'.$id);
+		}
+		return $id;
+	}
+	
+	private function _detail($request)
+	{
+		$request_token = $request->request->get('request_token','');
+		$id = $this->GetId($request_token);
+
+		$_channel = $this->db('Channel')->find($id);
+		
+		if(!$_channel)
+		{
+			$this->e('通道不存在');
+		}
+
+		$countries = $this->get_countries();
+		
+		$detail = [
+			'master_id'=>$_channel->getId(),
+			'name'=>$_channel->getName(),
+			'country'=>$_channel->getCountry(),
+			'currency'=>$countries[$_channel->getCountry()]['currency'],
+			'is_active'=>$_channel->getIsActive(),
+			
+			//appid
+			'payin_appid'=>$_channel->getPayinAppid(),
+			'payin_secret'=>$_channel->getPayinSecret(),
+			'payout_appid'=>$_channel->getPayoutAppid(),
+			'payout_secret'=>$_channel->getPayoutSecret(),
+			
+			//费用
+			'payin_pct'=>$_channel->getPayinPct(),
+			'payin_sigle_fee'=>$_channel->getPayinSigleFee(),
+			'payout_pct'=>$_channel->getPayoutPct(),
+			'payout_sigle_fee'=>$_channel->getPayoutSigleFee(),
+			
+			//签名方式
+			'payin_sign_method'=>$_channel->getPayinSignMethod(),
+			'payout_sign_method'=>$_channel->getPayoutSignMethod(),
+			
+			'request_token'=>$this->authcode('ID'.$_channel->getId()),
+		];
+
+		$channel = ['id'=>$_channel->getId(),'name'=>$_channel->getName(),'country'=>$_channel->getCountry(),'is_active'=>$_channel->getIsActive()];
+
+		//字段
+		$stand_columns = [
+			'PAYIN'=>['REQUEST'=>[],'RESULT'=>[],'NOTIFY'=>[]],
+			'PAYOUT'=>['REQUEST'=>[],'RESULT'=>[],'NOTIFY'=>[]],
+		];
+
+		$columns = [
+			'PAYIN'=>['REQUEST'=>[],'RESULT'=>[],'NOTIFY'=>[]],
+			'PAYOUT'=>['REQUEST'=>[],'RESULT'=>[],'NOTIFY'=>[]],
+		];
+		$map = [];
+		foreach($columns as $atype=>$__column)
+		{
+			foreach($__column as $bundle=>$_)
+			{
+				$request_consts = $this->get_pay_consts($atype,$bundle);
+				foreach($request_consts as $key=>$text)
+				{
+					$stand_columns[$atype][$bundle][] = ['key'=>$key,'text'=>$text.'('.$key.')','type'=>$atype,'bundle'=>$bundle];
+					$map[$atype][$bundle][$key] = $text;
+				}
+			}
+		}
+
+		$pay_columns  = $this->db('ChannelColumn')->findBy(['channel_id'=>$_channel->getId()]);
+		if(count($pay_columns) > 0)
+		{
+			foreach($pay_columns as $column)
+			{
+				$columns[$column->getAtype()][$column->getBundle()][] = [
+					'id'=>$column->getId(),
+					'request_token'=>$this->authcode('ID'.$column->getId()),
+					'const_display_name'=>$map[$column->getAtype()][$column->getBundle()][$column->getConstName()],
+					'type'=>$column->getAtype(),
+					'bundle'=>$column->getBundle(),
+					'const_name'=>$column->getConstName(),
+					'channel_column_name'=>$column->getChannelColumnName(),
+					'channel_column_value'=>$column->getChannelColumnValue(),
+					'is_require'=>$column->getIsRequire(),
+				];
+			}
+		}
+		$detail['columns'] = $columns;
+		$detail['stand_columns'] = $stand_columns;
+
+		echo json_encode(['code'=>0,'msg'=>'OK','channel'=>$channel,'detail'=>$detail]);exit();
+	}
+	
+	private function _delete_column($request)
+	{
+		$request_token = $request->request->get("request_token","");
+		$column_id = $this->GetId($request_token);
+		
+		$column = $this->db('ChannelColumn')->find($column_id);
+		$this->em()->remove($column);
+		$this->update();
+		
+		$this->succ("已删除");
+	}
+	
+	private function _add_column_row($request)
+	{
+		$atype = $request->request->get('atype','');
+		$bundle = $request->request->get('bundle','');
+		$const = $request->request->get('const','');
+		$channel_column = $request->request->get('channel_column','');
+		$channel_column_value = $request->request->get('channel_column_value','');
+		$is_require = $request->request->get('is_require','');
+		$channel_id = $request->request->get('channel_id','');
+		
+		//前置处理
+		$atype = strtoupper($atype);
+		$bundle = strtoupper($bundle);
+		$const = strtoupper($const);
+		$is_require = 'true' == $is_require ? 1 : 0;
+		
+		//前置检查
+		if('' == $const){$this->e('标准字段不能为空');}
+		if('' == $channel_column){$this->e('接口字段不能为空');}
+		
+		//是不是已经存在
+		$app_channel_column = $this->db('ChannelColumn')->findOneBy(['channel_id'=>$channel_id,'atype'=>$atype,'bundle'=>$bundle,'const_name'=>$const]);
+		if($app_channel_column)
+		{
+			$this->e('已经存在:'.$const);
+		}
+		
+		//入库
+		$this->add_column($channel_id,$atype,$bundle,$const,$channel_column,$channel_column_value,$is_require);
+		
+		$this->succ('已添加');
+	}
+	
+	private function add_column($channel_id,$atype,$bundle,$const,$channel_column,$channel_column_value,$is_require,$is_show=1)
+	{
+		$column = new \AppBundle\Entity\ChannelColumn();
+		$column->setChannelId($channel_id);
+		$column->setAtype($atype);
+		$column->setBundle($bundle);
+		$column->setConstName($const);
+		$column->setChannelColumnName($channel_column);
+		$column->setChannelColumnValue($channel_column_value);
+		$column->setIsRequire($is_require);
+		$column->setIsShow($is_show);
+		$this->save($column);
+	}
+	
+	private function update_column($channel_id,$atype,$bundle,$const,$channel_column='',$channel_column_value,$is_require='',$is_show=1)
+	{
+		$column = $this->db('ChannelColumn')->findOneBy(['channel_id'=>$channel_id,'atype'=>$atype,'bundle'=>$bundle,'const_name'=>$const]);
+		if($column)
+		{
+			//$column->setChannelColumnName('');
+			$column->setChannelColumnValue($channel_column_value);
+			$column->setIsRequire($is_require);
+			$column->setIsShow($is_show);
+			$this->update();
+		}
 	}
 }
-
