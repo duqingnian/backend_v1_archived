@@ -9,12 +9,12 @@ include_once __DIR__.'/../var/bootstrap.php.cache';
 
 if(DEBUG)
 {
-	$kernel = new AppKernel('prod', true);
+	$kernel = new AppKernel('prod', false);
 	$kernel->loadClassCache();
 }
 else
 {
-	$kernel = new AppKernel('prod', false);
+	$kernel = new AppKernel('prod', true);
 	$kernel->loadClassCache();
 	$kernel = new AppCache($kernel);
 	Request::enableHttpMethodParameterOverride();
@@ -23,4 +23,3 @@ $request = Request::createFromGlobals();
 $response = $kernel->handle($request);
 $response->send();
 $kernel->terminate($request, $response);
-

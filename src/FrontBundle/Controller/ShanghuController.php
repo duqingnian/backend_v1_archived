@@ -189,7 +189,7 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 			$this->e('通道不存在，无法更新');
 		}
 		$shanghu->setName($name);
-		$shanghu->setIsTest($is_test);
+		//$shanghu->setIsTest($is_test);
 		$shanghu->setIsActive($is_active);
 		$shanghu->setCountry($country);
 		

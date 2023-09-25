@@ -55,6 +55,9 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		
 		if($channel->getId() > 0)
 		{
+			$this->add_column($channel->getId(),'PAYIN','REQUEST','TYPE','','',1);
+			$this->add_column($channel->getId(),'PAYIN','REQUEST','HEADER','','',1);
+			$this->add_column($channel->getId(),'PAYIN','REQUEST','URL','','',1);
 			$this->succ('添加成功');
 		}
 		else
@@ -83,7 +86,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		{
 			$json['countries'][] = ['key'=>$key,'text'=>$county['name']];
 		}
-		
+
 		//签名算法
 		$json['sign_types'] = $this->get_sign_types();
 		
@@ -248,6 +251,47 @@ class ChannelController extends \AppBundle\Controller\BaseController
 			}
 		}
 
+		//状态
+		$status = [
+			'PAYIN'=>['CREATE'=>[],'QUERY'=>[],'NOTIFY'=>[]],
+			'PAYOUT'=>['CREATE'=>[],'QUERY'=>[],'NOTIFY'=>[]],
+		];
+		$StatusMeta = new \AppBundle\Utils\StatusMeta();
+		$status_map = [];
+		$status_map_list = $StatusMeta->GetAll();
+		foreach($status as $atype=>$__column)
+		{
+			foreach($__column as $bundle=>$_)
+			{
+				foreach($status_map_list as $key=>$status)
+				{
+					$status_map[$atype][$bundle][] = ['key'=>$key,'text'=>$status.'('.$key.')','type'=>$atype,'bundle'=>$bundle];
+				}
+			}
+		}
+		
+		//状态
+		$status_list = [];
+		$pay_status  = $this->db('ChannelStatusMap')->findBy(['channel_id'=>$_channel->getId()]);
+		if(count($pay_status) > 0)
+		{
+			foreach($pay_status as $status)
+			{
+				$status_list[$status->getAtype()][$status->getBundle()][] = [
+					'id'=>$status->getId(),
+					'request_token'=>$this->authcode('ID'.$status->getId()),
+					'const_display_name'=>$status_map_list[$status->getConstName()],
+					'type'=>$status->getAtype(),
+					'bundle'=>$status->getBundle(),
+					'const_name'=>$status->getConstName(),
+					'channel_column_value'=>$status->getChannelVar(),
+				];
+			}
+		}
+		$detail['status_list'] = $status_list;
+
+		//字段
+		$columns = [];
 		$pay_columns  = $this->db('ChannelColumn')->findBy(['channel_id'=>$_channel->getId()]);
 		if(count($pay_columns) > 0)
 		{
@@ -268,10 +312,25 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		}
 		$detail['columns'] = $columns;
 		$detail['stand_columns'] = $stand_columns;
+		$detail['status_map'] = $status_map;
 
 		echo json_encode(['code'=>0,'msg'=>'OK','channel'=>$channel,'detail'=>$detail]);exit();
 	}
 	
+	//删除状态
+	private function _delete_status($request)
+	{
+		$request_token = $request->request->get("request_token","");
+		$column_id = $this->GetId($request_token);
+		
+		$column = $this->db('ChannelStatusMap')->find($column_id);
+		$this->em()->remove($column);
+		$this->update();
+		
+		$this->succ("已删除");
+	}
+	
+	//删除字段
 	private function _delete_column($request)
 	{
 		$request_token = $request->request->get("request_token","");
@@ -282,6 +341,42 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$this->update();
 		
 		$this->succ("已删除");
+	}
+	
+	private function _add_status_row($request)
+	{
+		$atype = $request->request->get('atype','');
+		$bundle = $request->request->get('bundle','');
+		$const = $request->request->get('const','');
+		$channel_column_value = $request->request->get('channel_column_value','');
+		$channel_id = $request->request->get('channel_id','');
+		
+		//前置处理
+		$atype = strtoupper($atype);
+		$bundle = strtoupper($bundle);
+		$const = strtoupper($const);
+
+		//前置检查
+		if('' == $const){$this->e('标准字段不能为空');}
+		if('' == $channel_column_value){$this->e('接口字段不能为空');}
+		
+		//是不是已经存在
+		$app_channel_column = $this->db('ChannelStatusMap')->findOneBy(['channel_id'=>$channel_id,'atype'=>$atype,'bundle'=>$bundle,'const_name'=>$const]);
+		if($app_channel_column)
+		{
+			//$this->e('已经存在:'.$const);
+		}
+		
+		//入库
+		$column = new \AppBundle\Entity\ChannelStatusMap();
+		$column->setChannelId($channel_id);
+		$column->setAtype($atype);
+		$column->setBundle($bundle);
+		$column->setConstName($const);
+		$column->setChannelVar($channel_column_value);
+		$this->save($column);
+		
+		$this->succ('已添加');
 	}
 	
 	private function _add_column_row($request)

@@ -18,7 +18,8 @@ front_shanghu:
 react_channel_index:
     path:     /channel_index
     defaults: { _controller: FrontBundle:Default:index }
-
-
+react_merchant_index:
+    path:     /merchant_index
+    defaults: { _controller: FrontBundle:Default:index }
 
 
