@@ -22,6 +22,11 @@ class Alog
     private $uid = 0;
 	
 	/**
+     * @ORM\Column(type="integer")
+     */
+    private $order_id = 0;
+	
+	/**
      * @ORM\Column(type="string", length=30)
      */
     private $bundle;
@@ -140,5 +145,29 @@ class Alog
     public function getCreatedAt()
     {
         return $this->created_at;
+    }
+
+    /**
+     * Set orderId
+     *
+     * @param integer $orderId
+     *
+     * @return Alog
+     */
+    public function setOrderId($orderId)
+    {
+        $this->order_id = $orderId;
+
+        return $this;
+    }
+
+    /**
+     * Get orderId
+     *
+     * @return integer
+     */
+    public function getOrderId()
+    {
+        return $this->order_id;
     }
 }

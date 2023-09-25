@@ -12,3 +12,13 @@ front_shanghu:
     path: /shanghu.api
     defaults: { _controller: FrontBundle:Shanghu:index }
 
+###################################
+## react
+###################################
+react_channel_index:
+    path:     /channel_index
+    defaults: { _controller: FrontBundle:Default:index }
+
+
+
+

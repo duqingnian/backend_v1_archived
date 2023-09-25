@@ -74,6 +74,21 @@ class PayinOrder
 	/**
      * @ORM\Column(type="integer")
      */
+    private $channel_plantform_notifed = 0; //通道 --> 平台 回调
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
+    private $plantform_shanghu_notifed = 0; //平台 --> 商户 回调
+	
+	/**
+     * @ORM\Column(type="string", length=300)
+     */
+    private $shanghu_notify_url = ''; //商户的回调地址
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
     private $created_at = 0; //创建时间
 
     /**
@@ -372,5 +387,77 @@ class PayinOrder
     public function getFee()
     {
         return $this->fee;
+    }
+
+    /**
+     * Set channelPlantformNotifed
+     *
+     * @param integer $channelPlantformNotifed
+     *
+     * @return PayinOrder
+     */
+    public function setChannelPlantformNotifed($channelPlantformNotifed)
+    {
+        $this->channel_plantform_notifed = $channelPlantformNotifed;
+
+        return $this;
+    }
+
+    /**
+     * Get channelPlantformNotifed
+     *
+     * @return integer
+     */
+    public function getChannelPlantformNotifed()
+    {
+        return $this->channel_plantform_notifed;
+    }
+
+    /**
+     * Set plantformShanghuNotifed
+     *
+     * @param integer $plantformShanghuNotifed
+     *
+     * @return PayinOrder
+     */
+    public function setPlantformShanghuNotifed($plantformShanghuNotifed)
+    {
+        $this->plantform_shanghu_notifed = $plantformShanghuNotifed;
+
+        return $this;
+    }
+
+    /**
+     * Get plantformShanghuNotifed
+     *
+     * @return integer
+     */
+    public function getPlantformShanghuNotifed()
+    {
+        return $this->plantform_shanghu_notifed;
+    }
+
+    /**
+     * Set shanghuNotifyUrl
+     *
+     * @param string $shanghuNotifyUrl
+     *
+     * @return PayinOrder
+     */
+    public function setShanghuNotifyUrl($shanghuNotifyUrl)
+    {
+        $this->shanghu_notify_url = $shanghuNotifyUrl;
+
+        return $this;
+    }
+
+    /**
+     * Get shanghuNotifyUrl
+     *
+     * @return string
+     */
+    public function getShanghuNotifyUrl()
+    {
+        return $this->shanghu_notify_url;
     }
 }
