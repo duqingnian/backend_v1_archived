@@ -5,9 +5,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="app_order_payin")
+ * @ORM\Table(name="app_order_payout")
  */
-class PayinOrder
+class PayoutOrder
 {
     /**
      * @ORM\Column(type="integer")
@@ -54,22 +54,22 @@ class PayinOrder
 	/**
      * @ORM\Column(type="decimal", scale=2)
      */
-    private $payin_pct = 0.00;
+    private $payout_pct = 0.00;
 	
 	/**
      * @ORM\Column(type="decimal", scale=2)
      */
-    private $payin_sigle_fee = 0.00;
+    private $payout_sigle_fee = 0.00;
 	
 	/**
      * @ORM\Column(type="decimal", scale=2)
      */
-    private $channel_payin_pct = 0.00;
+    private $channel_payout_pct = 0.00;
 	
 	/**
      * @ORM\Column(type="decimal", scale=2)
      */
-    private $channel_payin_sigle_fee = 0.00;
+    private $channel_payout_sigle_fee = 0.00;
 	
 	/**
      * @ORM\Column(type="decimal", scale=2)
@@ -95,26 +95,36 @@ class PayinOrder
      * @ORM\Column(type="string", length=300)
      */
     private $shanghu_notify_url = ''; //商户的回调地址
+
+    /**
+     * @ORM\Column(type="string", length=15)
+     */
+    private $acc_type = '';
 	
 	/**
-     * @ORM\Column(type="string", length=300)
+     * @ORM\Column(type="string", length=32)
      */
-    private $jump_url = ''; //跳转地址
+    private $account = '';
 	
 	/**
-     * @ORM\Column(type="string", length=500)
+     * @ORM\Column(type="string", length=36)
      */
-    private $qrcode = ''; //二维码
+    private $acc_owner_name = '';
 	
 	/**
-     * @ORM\Column(type="string", length=300)
+     * @ORM\Column(type="string", length=50)
      */
-    private $sh_jump_url = ''; //商户跳转地址
+    private $email = '';
 	
 	/**
-     * @ORM\Column(type="string", length=300)
+     * @ORM\Column(type="string", length=22)
      */
-    private $qrcode_src = ''; //二维码
+    private $phone = '';
+	
+	/**
+     * @ORM\Column(type="string", length=36)
+     */
+    private $cpf_no = '';
 	
 	/**
      * @ORM\Column(type="integer")
@@ -136,7 +146,7 @@ class PayinOrder
      *
      * @param integer $shanghuId
      *
-     * @return PayinOrder
+     * @return PayoutOrder
      */
     public function setShanghuId($shanghuId)
     {
@@ -160,7 +170,7 @@ class PayinOrder
      *
      * @param integer $channelId
      *
-     * @return PayinOrder
+     * @return PayoutOrder
      */
     public function setChannelId($channelId)
     {
@@ -184,7 +194,7 @@ class PayinOrder
      *
      * @param string $amount
      *
-     * @return PayinOrder
+     * @return PayoutOrder
      */
     public function setAmount($amount)
     {
@@ -208,7 +218,7 @@ class PayinOrder
      *
      * @param string $channelOrderNo
      *
-     * @return PayinOrder
+     * @return PayoutOrder
      */
     public function setChannelOrderNo($channelOrderNo)
     {
@@ -232,7 +242,7 @@ class PayinOrder
      *
      * @param string $shanghuOrderNo
      *
-     * @return PayinOrder
+     * @return PayoutOrder
      */
     public function setShanghuOrderNo($shanghuOrderNo)
     {
@@ -256,7 +266,7 @@ class PayinOrder
      *
      * @param string $plantformOrderNo
      *
-     * @return PayinOrder
+     * @return PayoutOrder
      */
     public function setPlantformOrderNo($plantformOrderNo)
     {
@@ -280,7 +290,7 @@ class PayinOrder
      *
      * @param string $orderStatus
      *
-     * @return PayinOrder
+     * @return PayoutOrder
      */
     public function setOrderStatus($orderStatus)
     {
@@ -300,99 +310,99 @@ class PayinOrder
     }
 
     /**
-     * Set orderType
+     * Set payoutPct
      *
-     * @param string $orderType
+     * @param string $payoutPct
      *
-     * @return PayinOrder
+     * @return PayoutOrder
      */
-    public function setOrderType($orderType)
+    public function setPayoutPct($payoutPct)
     {
-        $this->order_type = $orderType;
+        $this->payout_pct = $payoutPct;
 
         return $this;
     }
 
     /**
-     * Get orderType
+     * Get payoutPct
      *
      * @return string
      */
-    public function getOrderType()
+    public function getPayoutPct()
     {
-        return $this->order_type;
+        return $this->payout_pct;
     }
 
     /**
-     * Set createdAt
+     * Set payoutSigleFee
      *
-     * @param integer $createdAt
+     * @param string $payoutSigleFee
      *
-     * @return PayinOrder
+     * @return PayoutOrder
      */
-    public function setCreatedAt($createdAt)
+    public function setPayoutSigleFee($payoutSigleFee)
     {
-        $this->created_at = $createdAt;
+        $this->payout_sigle_fee = $payoutSigleFee;
 
         return $this;
     }
 
     /**
-     * Get createdAt
-     *
-     * @return integer
-     */
-    public function getCreatedAt()
-    {
-        return $this->created_at;
-    }
-
-    /**
-     * Set payinPct
-     *
-     * @param string $payinPct
-     *
-     * @return PayinOrder
-     */
-    public function setPayinPct($payinPct)
-    {
-        $this->payin_pct = $payinPct;
-
-        return $this;
-    }
-
-    /**
-     * Get payinPct
+     * Get payoutSigleFee
      *
      * @return string
      */
-    public function getPayinPct()
+    public function getPayoutSigleFee()
     {
-        return $this->payin_pct;
+        return $this->payout_sigle_fee;
     }
 
     /**
-     * Set payinSigleFee
+     * Set channelPayoutPct
      *
-     * @param string $payinSigleFee
+     * @param string $channelPayoutPct
      *
-     * @return PayinOrder
+     * @return PayoutOrder
      */
-    public function setPayinSigleFee($payinSigleFee)
+    public function setChannelPayoutPct($channelPayoutPct)
     {
-        $this->payin_sigle_fee = $payinSigleFee;
+        $this->channel_payout_pct = $channelPayoutPct;
 
         return $this;
     }
 
     /**
-     * Get payinSigleFee
+     * Get channelPayoutPct
      *
      * @return string
      */
-    public function getPayinSigleFee()
+    public function getChannelPayoutPct()
     {
-        return $this->payin_sigle_fee;
+        return $this->channel_payout_pct;
+    }
+
+    /**
+     * Set channelPayoutSigleFee
+     *
+     * @param string $channelPayoutSigleFee
+     *
+     * @return PayoutOrder
+     */
+    public function setChannelPayoutSigleFee($channelPayoutSigleFee)
+    {
+        $this->channel_payout_sigle_fee = $channelPayoutSigleFee;
+
+        return $this;
+    }
+
+    /**
+     * Get channelPayoutSigleFee
+     *
+     * @return string
+     */
+    public function getChannelPayoutSigleFee()
+    {
+        return $this->channel_payout_sigle_fee;
     }
 
     /**
@@ -400,7 +410,7 @@ class PayinOrder
      *
      * @param string $fee
      *
-     * @return PayinOrder
+     * @return PayoutOrder
      */
     public function setFee($fee)
     {
@@ -420,11 +430,35 @@ class PayinOrder
     }
 
     /**
+     * Set orderType
+     *
+     * @param string $orderType
+     *
+     * @return PayoutOrder
+     */
+    public function setOrderType($orderType)
+    {
+        $this->order_type = $orderType;
+
+        return $this;
+    }
+
+    /**
+     * Get orderType
+     *
+     * @return string
+     */
+    public function getOrderType()
+    {
+        return $this->order_type;
+    }
+
+    /**
      * Set channelPlantformNotifed
      *
      * @param integer $channelPlantformNotifed
      *
-     * @return PayinOrder
+     * @return PayoutOrder
      */
     public function setChannelPlantformNotifed($channelPlantformNotifed)
     {
@@ -448,7 +482,7 @@ class PayinOrder
      *
      * @param integer $plantformShanghuNotifed
      *
-     * @return PayinOrder
+     * @return PayoutOrder
      */
     public function setPlantformShanghuNotifed($plantformShanghuNotifed)
     {
@@ -472,7 +506,7 @@ class PayinOrder
      *
      * @param string $shanghuNotifyUrl
      *
-     * @return PayinOrder
+     * @return PayoutOrder
      */
     public function setShanghuNotifyUrl($shanghuNotifyUrl)
     {
@@ -492,146 +526,170 @@ class PayinOrder
     }
 
     /**
-     * Set jumpUrl
+     * Set createdAt
      *
-     * @param string $jumpUrl
+     * @param integer $createdAt
      *
-     * @return PayinOrder
+     * @return PayoutOrder
      */
-    public function setJumpUrl($jumpUrl)
+    public function setCreatedAt($createdAt)
     {
-        $this->jump_url = $jumpUrl;
+        $this->created_at = $createdAt;
 
         return $this;
     }
 
     /**
-     * Get jumpUrl
+     * Get createdAt
      *
-     * @return string
+     * @return integer
      */
-    public function getJumpUrl()
+    public function getCreatedAt()
     {
-        return $this->jump_url;
+        return $this->created_at;
     }
 
     /**
-     * Set qrcode
+     * Set accType
      *
-     * @param string $qrcode
+     * @param string $accType
      *
-     * @return PayinOrder
+     * @return PayoutOrder
      */
-    public function setQrcode($qrcode)
+    public function setAccType($accType)
     {
-        $this->qrcode = $qrcode;
+        $this->acc_type = $accType;
 
         return $this;
     }
 
     /**
-     * Get qrcode
+     * Get accType
      *
      * @return string
      */
-    public function getQrcode()
+    public function getAccType()
     {
-        return $this->qrcode;
+        return $this->acc_type;
     }
 
     /**
-     * Set shJumpUrl
+     * Set account
      *
-     * @param string $shJumpUrl
+     * @param string $account
      *
-     * @return PayinOrder
+     * @return PayoutOrder
      */
-    public function setShJumpUrl($shJumpUrl)
+    public function setAccount($account)
     {
-        $this->sh_jump_url = $shJumpUrl;
+        $this->account = $account;
 
         return $this;
     }
 
     /**
-     * Get shJumpUrl
+     * Get account
      *
      * @return string
      */
-    public function getShJumpUrl()
+    public function getAccount()
     {
-        return $this->sh_jump_url;
+        return $this->account;
     }
 
     /**
-     * Set qrcodeSrc
+     * Set accOwnerName
      *
-     * @param string $qrcodeSrc
+     * @param string $accOwnerName
      *
-     * @return PayinOrder
+     * @return PayoutOrder
      */
-    public function setQrcodeSrc($qrcodeSrc)
+    public function setAccOwnerName($accOwnerName)
     {
-        $this->qrcode_src = $qrcodeSrc;
+        $this->acc_owner_name = $accOwnerName;
 
         return $this;
     }
 
     /**
-     * Get qrcodeSrc
+     * Get accOwnerName
      *
      * @return string
      */
-    public function getQrcodeSrc()
+    public function getAccOwnerName()
     {
-        return $this->qrcode_src;
+        return $this->acc_owner_name;
     }
 
     /**
-     * Set channelPayinPct
+     * Set email
      *
-     * @param string $channelPayinPct
+     * @param string $email
      *
-     * @return PayinOrder
+     * @return PayoutOrder
      */
-    public function setChannelPayinPct($channelPayinPct)
+    public function setEmail($email)
     {
-        $this->channel_payin_pct = $channelPayinPct;
+        $this->email = $email;
 
         return $this;
     }
 
     /**
-     * Get channelPayinPct
+     * Get email
      *
      * @return string
      */
-    public function getChannelPayinPct()
+    public function getEmail()
     {
-        return $this->channel_payin_pct;
+        return $this->email;
     }
 
     /**
-     * Set channelPayinSigleFee
+     * Set phone
      *
-     * @param string $channelPayinSigleFee
+     * @param string $phone
      *
-     * @return PayinOrder
+     * @return PayoutOrder
      */
-    public function setChannelPayinSigleFee($channelPayinSigleFee)
+    public function setPhone($phone)
     {
-        $this->channel_payin_sigle_fee = $channelPayinSigleFee;
+        $this->phone = $phone;
 
         return $this;
     }
 
     /**
-     * Get channelPayinSigleFee
+     * Get phone
      *
      * @return string
      */
-    public function getChannelPayinSigleFee()
+    public function getPhone()
     {
-        return $this->channel_payin_sigle_fee;
+        return $this->phone;
+    }
+
+    /**
+     * Set cpfNo
+     *
+     * @param string $cpfNo
+     *
+     * @return PayoutOrder
+     */
+    public function setCpfNo($cpfNo)
+    {
+        $this->cpf_no = $cpfNo;
+
+        return $this;
+    }
+
+    /**
+     * Get cpfNo
+     *
+     * @return string
+     */
+    public function getCpfNo()
+    {
+        return $this->cpf_no;
     }
 }
