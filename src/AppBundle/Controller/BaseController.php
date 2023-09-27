@@ -455,11 +455,11 @@ class BaseController extends Controller
 			'brazil'=>['name'=>'巴西','currency'=>'BRL'],
 			'thailand'=>['name'=>'泰国','currency'=>'THB'],
 			'vietnam'=>['name'=>'越南','currency'=>'VND'],
-			'vietnam'=>['name'=>'印度','currency'=>'RS'],
-			'vietnam'=>['name'=>'墨西哥','currency'=>'MXN'],
-			'vietnam'=>['name'=>'印尼','currency'=>'IDR'],
-			'vietnam'=>['name'=>'尼日利亚','currency'=>'NGN'],
-			'vietnam'=>['name'=>'日本','currency'=>'YEN'],
+			'india'=>['name'=>'印度','currency'=>'RS'],
+			'mexico'=>['name'=>'墨西哥','currency'=>'MXN'],
+			'indonesia'=>['name'=>'印尼','currency'=>'IDR'],
+			'nigeria'=>['name'=>'尼日利亚','currency'=>'NGN'],
+			'japan'=>['name'=>'日本','currency'=>'YEN'],
 		];
 	}
 	
