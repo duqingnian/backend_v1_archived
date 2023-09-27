@@ -130,6 +130,11 @@ class PayoutOrder
      * @ORM\Column(type="integer")
      */
     private $created_at = 0; //创建时间
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
+    private $send_at = 0; //回调时间
 
     /**
      * Get id
@@ -691,5 +696,29 @@ class PayoutOrder
     public function getCpfNo()
     {
         return $this->cpf_no;
+    }
+
+    /**
+     * Set sendAt
+     *
+     * @param integer $sendAt
+     *
+     * @return PayoutOrder
+     */
+    public function setSendAt($sendAt)
+    {
+        $this->send_at = $sendAt;
+
+        return $this;
+    }
+
+    /**
+     * Get sendAt
+     *
+     * @return integer
+     */
+    public function getSendAt()
+    {
+        return $this->send_at;
     }
 }
