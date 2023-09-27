@@ -448,13 +448,18 @@ class BaseController extends Controller
         return $url;
     }
 	
-	//国家列表
+	//国家列表 印度，巴西，墨西哥，印尼，尼日利亚，越南，日本
 	public function get_countries()
 	{
 		return [
 			'brazil'=>['name'=>'巴西','currency'=>'BRL'],
 			'thailand'=>['name'=>'泰国','currency'=>'THB'],
 			'vietnam'=>['name'=>'越南','currency'=>'VND'],
+			'vietnam'=>['name'=>'印度','currency'=>'RS'],
+			'vietnam'=>['name'=>'墨西哥','currency'=>'MXN'],
+			'vietnam'=>['name'=>'印尼','currency'=>'IDR'],
+			'vietnam'=>['name'=>'尼日利亚','currency'=>'NGN'],
+			'vietnam'=>['name'=>'日本','currency'=>'YEN'],
 		];
 	}
 	
