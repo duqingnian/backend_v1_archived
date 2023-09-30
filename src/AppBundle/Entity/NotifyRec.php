@@ -5,9 +5,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="app_notify_data")
+ * @ORM\Table(name="app_notify_rec")
  */
-class NotifyData
+class NotifyRec
 {
     /**
      * @ORM\Column(type="integer")
@@ -15,31 +15,16 @@ class NotifyData
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-	
-	/**
-     * @ORM\Column(type="string", length=30)
-     */
-    private $bundle = ""; //代收结果:PAYIN_RESULT 代收回调:PAYIN_NOTIFY, 代付结果:PAYOUT_RESULT 代付回调:PAYOUT_NOTIFY
-    
+
     /**
      * @ORM\Column(type="integer")
      */
-    private $order_id = 0;
+    private $notify_data_id = 0;
 	
 	/**
      * @ORM\Column(type="string", length=300)
      */
     private $url = "";
-	
-	/**
-     * @ORM\Column(type="text")
-     */
-    private $notify_data = '';
-
-	/**
-     * @ORM\Column(type="integer")
-     */
-    private $notify_at = 0; //通知时间戳
 	
 	/**
      * @ORM\Column(type="integer")
@@ -59,13 +44,8 @@ class NotifyData
 	/**
      * @ORM\Column(type="string", length=10)
      */
-    private $time_pip = "30s"; //通知的间隔频率一般是：30s,2m,4m,10m,30m,1h,2h,6h,15h
+    private $time_pip = ""; 
 
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $send_at = 0; //回调时间
-	
     /**
      * Get id
      *
@@ -77,51 +57,27 @@ class NotifyData
     }
 
     /**
-     * Set bundle
+     * Set notifyDataId
      *
-     * @param string $bundle
+     * @param integer $notifyDataId
      *
-     * @return NotifyData
+     * @return NotifyRec
      */
-    public function setBundle($bundle)
+    public function setNotifyDataId($notifyDataId)
     {
-        $this->bundle = $bundle;
+        $this->notify_data_id = $notifyDataId;
 
         return $this;
     }
 
     /**
-     * Get bundle
-     *
-     * @return string
-     */
-    public function getBundle()
-    {
-        return $this->bundle;
-    }
-
-    /**
-     * Set orderId
-     *
-     * @param integer $orderId
-     *
-     * @return NotifyData
-     */
-    public function setOrderId($orderId)
-    {
-        $this->order_id = $orderId;
-
-        return $this;
-    }
-
-    /**
-     * Get orderId
+     * Get notifyDataId
      *
      * @return integer
      */
-    public function getOrderId()
+    public function getNotifyDataId()
     {
-        return $this->order_id;
+        return $this->notify_data_id;
     }
 
     /**
@@ -129,7 +85,7 @@ class NotifyData
      *
      * @param string $url
      *
-     * @return NotifyData
+     * @return NotifyRec
      */
     public function setUrl($url)
     {
@@ -149,59 +105,11 @@ class NotifyData
     }
 
     /**
-     * Set notifyData
-     *
-     * @param string $notifyData
-     *
-     * @return NotifyData
-     */
-    public function setNotifyData($notifyData)
-    {
-        $this->notify_data = $notifyData;
-
-        return $this;
-    }
-
-    /**
-     * Get notifyData
-     *
-     * @return string
-     */
-    public function getNotifyData()
-    {
-        return $this->notify_data;
-    }
-
-    /**
-     * Set notifyAt
-     *
-     * @param integer $notifyAt
-     *
-     * @return NotifyData
-     */
-    public function setNotifyAt($notifyAt)
-    {
-        $this->notify_at = $notifyAt;
-
-        return $this;
-    }
-
-    /**
-     * Get notifyAt
-     *
-     * @return integer
-     */
-    public function getNotifyAt()
-    {
-        return $this->notify_at;
-    }
-
-    /**
      * Set notifyHttpCode
      *
      * @param integer $notifyHttpCode
      *
-     * @return NotifyData
+     * @return NotifyRec
      */
     public function setNotifyHttpCode($notifyHttpCode)
     {
@@ -225,7 +133,7 @@ class NotifyData
      *
      * @param string $notifyResult
      *
-     * @return NotifyData
+     * @return NotifyRec
      */
     public function setNotifyResult($notifyResult)
     {
@@ -249,7 +157,7 @@ class NotifyData
      *
      * @param integer $createdAt
      *
-     * @return NotifyData
+     * @return NotifyRec
      */
     public function setCreatedAt($createdAt)
     {
@@ -273,7 +181,7 @@ class NotifyData
      *
      * @param string $timePip
      *
-     * @return NotifyData
+     * @return NotifyRec
      */
     public function setTimePip($timePip)
     {
@@ -290,29 +198,5 @@ class NotifyData
     public function getTimePip()
     {
         return $this->time_pip;
-    }
-
-    /**
-     * Set sendAt
-     *
-     * @param integer $sendAt
-     *
-     * @return NotifyData
-     */
-    public function setSendAt($sendAt)
-    {
-        $this->send_at = $sendAt;
-
-        return $this;
-    }
-
-    /**
-     * Get sendAt
-     *
-     * @return integer
-     */
-    public function getSendAt()
-    {
-        return $this->send_at;
     }
 }
