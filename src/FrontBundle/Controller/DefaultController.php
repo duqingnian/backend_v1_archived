@@ -10,6 +10,8 @@ class DefaultController extends \AppBundle\Controller\BaseController
     {
 		$data = [
 			'access_token'=>$this->authcode('ID'.$this->getUser()->getId()),
+			'title'=>$this->title,
+			'http_url'=>$this->http_url,
 		];
         return $this->render('FrontBundle:Default:index.html.twig',$data);
     }

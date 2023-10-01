@@ -7,11 +7,23 @@ use Symfony\Component\HttpFoundation\Response;
 
 class BaseController extends Controller
 {
-	protected $data=[];
+	protected $title = '';
+	protected $http_url = '';
+	protected $data = [];
 
 	public function __construct()
 	{
-		//header('Access-Control-Allow-Origin:*');
+		$path = realpath(__FILE__);
+		$path = substr($path,0,strpos($path,'src'));
+		$app_json_file = $path.'diff/app.json';
+		if(file_exists($app_json_file))
+		{
+			$app_json = file_get_contents($app_json_file);
+			$app = json_decode($app_json);
+			
+			$this->title = $app->title;
+			$this->http_url = $app->http_url;
+		}
 	}
 
     protected function root_path()
@@ -604,6 +616,7 @@ class BaseController extends Controller
 		return [
 			['key'=>'md5','text'=>'MD5'],
 			['key'=>'sha256','text'=>'SHA256'],
+			['key'=>'hmacsha1','text'=>'HmacSHA1'],
 		];
 	}
 }
