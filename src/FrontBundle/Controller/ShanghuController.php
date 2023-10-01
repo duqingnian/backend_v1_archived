@@ -220,25 +220,6 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		$this->succ("已更新");
 	}
 	
-	private function GetId($request_token)
-	{
-		if(strlen($request_token) < 10)
-		{
-			$this->e('request_token is missing');
-		}
-		$id = $this->authcode($request_token,'DECODE');
-		if('ID' != substr($id,0,2))
-		{
-			$this->e('bad request_token!');
-		}
-		$id = substr($id,2);
-		if(!is_numeric($id))
-		{
-			$this->e('request_token err!'.$id);
-		}
-		return $id;
-	}
-
 	private function _detail($request)
 	{
 		$request_token = $request->request->get('request_token','');

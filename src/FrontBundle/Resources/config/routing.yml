@@ -12,6 +12,22 @@ front_shanghu:
     path: /shanghu.api
     defaults: { _controller: FrontBundle:Shanghu:index }
 
+#订单
+front_order:
+    path:     /order.api
+    defaults: { _controller: FrontBundle:Order:index }
+
+#代收
+front_payin_api:
+    path:     /payin.api
+    defaults: { _controller: FrontBundle:Payin:index }
+
+#代付
+front_payout_api:
+    path:     /payout.api
+    defaults: { _controller: FrontBundle:Payout:index }
+
+
 ###################################
 ## react
 ###################################
@@ -21,5 +37,9 @@ react_channel_index:
 react_merchant_index:
     path:     /merchant_index
     defaults: { _controller: FrontBundle:Default:index }
-
-
+react_data_orderin:
+    path:     /data_orderin
+    defaults: { _controller: FrontBundle:Default:index }
+react_data_orderout:
+    path:     /data_orderout
+    defaults: { _controller: FrontBundle:Default:index }

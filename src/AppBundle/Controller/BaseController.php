@@ -250,6 +250,8 @@ class BaseController extends Controller
         $_columns = array(
 			'User'=>'a.id',
 			'Channel'=>'a.id,a.name',
+			'PayinOrder'=>'a.id,a.shanghu_id,a.channel_id,a.amount,a.channel_order_no,a.shanghu_order_no,a.plantform_order_no,a.order_status,a.payin_pct,a.payin_sigle_fee,a.fee,a.order_type,a.created_at',
+			'PayoutOrder'=>'a.id,a.shanghu_id,a.channel_id,a.amount,a.channel_order_no,a.shanghu_order_no,a.plantform_order_no,a.order_status,a.payout_pct,a.payout_sigle_fee,a.fee,a.order_type,a.created_at',
         );
         return $_columns[$model];
     }
@@ -579,7 +581,24 @@ class BaseController extends Controller
 
 		return $CONSTS[$bundle];
 	}
-	
+	public function GetId($request_token)
+	{
+		if(strlen($request_token) < 10)
+		{
+			$this->e('request_token is missing');
+		}
+		$id = $this->authcode($request_token,'DECODE');
+		if('ID' != substr($id,0,2))
+		{
+			$this->e('bad request_token!');
+		}
+		$id = substr($id,2);
+		if(!is_numeric($id))
+		{
+			$this->e('request_token err!'.$id);
+		}
+		return $id;
+	}
 	public function get_sign_types()
 	{
 		return [

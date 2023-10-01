@@ -18,10 +18,11 @@ else if(isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && ('https' == $_SERVER['HTTP_
 else
 {}
 
-$server_name = 'www.'.$_SERVER['SERVER_NAME'];
+$server_name = $_SERVER['SERVER_NAME'];
 if(!$is_ssl)
 {
-	header('location: https://'.$server_name);
+	$query_string = $_SERVER['REQUEST_URI'];
+	header('location: https://'.$server_name.$query_string);
 	die();
 }
 
