@@ -49,6 +49,11 @@ class ChannelColumn
 	/**
      * @ORM\Column(type="integer")
      */
+    private $is_join_encryp = 1; //是否参与加密
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
     private $is_require = 0; //是否必填
 	
 	/**
@@ -256,5 +261,29 @@ class ChannelColumn
     public function getIsShow()
     {
         return $this->is_show;
+    }
+
+    /**
+     * Set isJoinEncryp
+     *
+     * @param integer $isJoinEncryp
+     *
+     * @return ChannelColumn
+     */
+    public function setIsJoinEncryp($isJoinEncryp)
+    {
+        $this->is_join_encryp = $isJoinEncryp;
+
+        return $this;
+    }
+
+    /**
+     * Get isJoinEncryp
+     *
+     * @return integer
+     */
+    public function getIsJoinEncryp()
+    {
+        return $this->is_join_encryp;
     }
 }
