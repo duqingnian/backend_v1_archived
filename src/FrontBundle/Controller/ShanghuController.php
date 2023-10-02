@@ -165,6 +165,7 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		$id = $this->GetId($request_token);
 		
 		$name = $request->request->get('name','');
+		$account = $request->request->get('account','');
 		$country = $request->request->get('country','');
 		$is_test = $request->request->get('is_test',0);
 		$is_active = $request->request->get('is_active',0);
@@ -207,11 +208,13 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		$config->setPayinSignMethod($payin_sign_method);
 		$config->setPayoutSignMethod($payout_sign_method);
 		
-		//是不是输入密码了
+		$user = $this->db('user')->find($shanghu->getUid());
+		$user->setUsername($account);
+		
 		$password = $request->request->get('password','');
 		if('' != $password)
 		{
-			$user = $this->db('user')->find($shanghu->getUid());
+			
 			$encoder = $this->get('security.password_encoder');
 			$encoded = $encoder->encodePassword($user, $password);
 			$user->setPassword($encoded);
