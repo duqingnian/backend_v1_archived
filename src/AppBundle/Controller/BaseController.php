@@ -469,7 +469,7 @@ class BaseController extends Controller
 		$_countries = $this->db('Country')->findAll();
 		foreach($_countries as $_country)
 		{
-			$countries[$_country->setSlug()] = ['name'=>$_country->setName(),'currency'=>$_country->getCurrency()];
+			$countries[$_country->getSlug()] = ['name'=>$_country->getName(),'currency'=>$_country->getCurrency()];
 		}
 		return $countries;
 	}
