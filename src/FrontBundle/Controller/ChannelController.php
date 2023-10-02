@@ -17,7 +17,25 @@ class ChannelController extends \AppBundle\Controller\BaseController
         }
 		return $this->{$method}($request);
     }
-	
+	private function _sync_column($request)
+	{
+		$request_token = $request->request->get("request_token","");
+		$name = $request->request->get("name","");
+		$value = $request->request->get("value","");
+		$column_id = $this->GetId($request_token);
+		
+		$column = $this->db('ChannelColumn')->find($column_id);
+		if(!$column)
+		{
+			$this->e('字段不存在');
+		}
+		if('is_require' == $name){$column->setIsRequire($value);}
+		else if('is_join_encryp' == $name){$column->setIsJoinEncryp($value);}
+		else{}
+		
+		$this->update();
+		$this->succ("已更新");
+	}
 	public function _create($request)
     {
 		$name = $request->request->get('name','');
