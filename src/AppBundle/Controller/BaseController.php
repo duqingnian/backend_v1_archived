@@ -9,6 +9,8 @@ class BaseController extends Controller
 {
 	protected $title = '';
 	protected $http_url = '';
+	protected $device_ip = '';
+	protected $device_name = '';
 	protected $data = [];
 
 	public function __construct()
@@ -23,6 +25,8 @@ class BaseController extends Controller
 			
 			$this->title = $app->title;
 			$this->http_url = $app->http_url;
+			$this->device_ip = $app->DEVICE_IP;
+			$this->device_name = $app->DEVICE_NAME;
 		}
 	}
 
