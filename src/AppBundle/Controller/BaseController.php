@@ -616,11 +616,13 @@ class BaseController extends Controller
 	}
 	public function get_sign_types()
 	{
-		return [
-			['key'=>'md5','text'=>'MD5'],
-			['key'=>'sha256','text'=>'SHA256'],
-			['key'=>'hmacsha1','text'=>'HmacSHA1'],
-		];
+		$types = [];
+		$_types = $this->db('PaySignType')->findAll();
+		foreach($_types as $_type)
+		{
+			$types[] = ['key'=>$_type->getSlug(),'text'=>$_type->getName()];
+		}
+		return $types;
 	}
 }
 
