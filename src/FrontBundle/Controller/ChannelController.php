@@ -177,9 +177,9 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$this->update();
 		
 		//更新请求头信息
-		$this->update_column($channel->getId(),'PAYIN','REQUEST','TYPE','',$payin_request_type,1,0);
-		$this->update_column($channel->getId(),'PAYIN','REQUEST','HEADER','',$payin_request_header,1,0);
-		$this->update_column($channel->getId(),'PAYIN','REQUEST','URL','',$payin_request_url,1,0);
+		//$this->update_column($channel->getId(),'PAYIN','REQUEST','TYPE','',$payin_request_type,1,0);
+		//$this->update_column($channel->getId(),'PAYIN','REQUEST','HEADER','',$payin_request_header,1,0);
+		//$this->update_column($channel->getId(),'PAYIN','REQUEST','URL','',$payin_request_url,1,0);
 		
 		$this->succ("已更新");
 	}
