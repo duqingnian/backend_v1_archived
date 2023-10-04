@@ -27,6 +27,11 @@ front_payout_api:
     path:     /payout.api
     defaults: { _controller: FrontBundle:Payout:index }
 
+#统计
+front_statistics:
+    path:     /statistics.api
+    defaults: { _controller: FrontBundle:Statistics:index }
+
 
 ###################################
 ## react
