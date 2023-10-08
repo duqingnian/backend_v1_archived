@@ -122,6 +122,7 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		foreach($shanghus as $shanghu)
 		{
 			$country = $countries[$shanghu->getCountry()]['name'];
+			$currency = $countries[$shanghu->getCountry()]['currency'];
 			
 			$uid = $shanghu->getUid();
 			$user = $this->db('user')->find($uid);
@@ -130,6 +131,7 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 				'id'=>$shanghu->getId(),
 				'name'=>$shanghu->getName(),
 				'country'=>$country,
+				'currency'=>$currency,
 				'balance'=>$shanghu->getBalance(),
 				'df_pool'=>$shanghu->getDfPool(),
 				'freeze_pool'=>$shanghu->getFreezePool(),

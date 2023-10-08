@@ -32,7 +32,16 @@ front_statistics:
     path:     /statistics.api
     defaults: { _controller: FrontBundle:Statistics:index }
 
-
+#日志
+front_log:
+    path:     /log.api
+    defaults: { _controller: FrontBundle:Log:index }
+    
+#上分 下分
+front_dispatch:
+    path:     /dispatch.api
+    defaults: { _controller: FrontBundle:Dispatch:index }
+    
 ###################################
 ## react
 ###################################
@@ -47,4 +56,13 @@ react_data_orderin:
     defaults: { _controller: FrontBundle:Default:index }
 react_data_orderout:
     path:     /data_orderout
+    defaults: { _controller: FrontBundle:Default:index }
+react_log:
+    path:     /log
+    defaults: { _controller: FrontBundle:Default:index }
+react_dispatch_withdrawal:
+    path:     /dispatch_withdrawal
+    defaults: { _controller: FrontBundle:Default:index }
+react_dispatch_topup:
+    path:     /dispatch_topup
     defaults: { _controller: FrontBundle:Default:index }
