@@ -536,6 +536,7 @@ class BaseController extends Controller
 			'URL'=>'订单跳转地址',
 			'QRCODE'=>'二维码内容',
 			'SIGN'=>'签名',
+			'CHANNEL_FEE'=>'通道手续费',
 			'MSG'=>'创建结果消息',
 			'ATTACH_DATA'=>'附加信息',
 		];
