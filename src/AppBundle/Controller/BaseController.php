@@ -505,6 +505,7 @@ class BaseController extends Controller
 			'DEVICE_IP_V4'=>'设备ipv4',
 			'DEVICE_NAME'=>'设备名称',
 			'UID'=>'商家下单用户的唯一身份标识',
+			'PAYER_NAME'=>'付款人姓名',
 			'ORDER_NO'=>'商户订单号',
 			'COUNTRY'=>'国家',
 			'CURRENCY'=>'金额币种',
