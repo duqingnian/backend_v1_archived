@@ -303,7 +303,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 					'type'=>$column->getAtype(),
 					'bundle'=>$column->getBundle(),
 					'const_name'=>$column->getConstName(),
-					'channel_column_name'=>$column->getChannelColumnName(),
+					'channel_column_name'=>'['.$column->getId().']'.$column->getChannelColumnName(),
 					'channel_column_value'=>$column->getChannelColumnValue(),
 					'is_join_encryp'=>$column->getIsJoinEncryp(),
 					'is_require'=>$column->getIsRequire(),
