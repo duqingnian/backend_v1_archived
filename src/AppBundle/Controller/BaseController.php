@@ -535,12 +535,15 @@ class BaseController extends Controller
 			'ATTACH_DATA'=>'附加信息',
 		];
 		$CONSTS['NOTIFY'] = [
+			'APPID'=>'appid',
 			'ORDER_STATUS'=>'订单状态',
 			'ORDER_SUCC_STATUS'=>'订单成功状态',
 			'CHANNEL_ORDER_NO'=>'通道订单号',
 			'SHANGHU_ORDER_NO'=>'商户订单号',
 			'CURRENCY'=>'金额币种',
 			'AMOUNT'=>'订单金额',
+			'REAL_AMOUNT'=>'实际代收金额',
+			'CHANNEL_FEE'=>'通道手续费',
 			'CREATETIME'=>'创建时间',
 			'UPDATETIME'=>'更新时间',
 			'ERROR_MSG'=>'订单异常信息',
