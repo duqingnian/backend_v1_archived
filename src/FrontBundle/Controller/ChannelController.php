@@ -299,11 +299,11 @@ class ChannelController extends \AppBundle\Controller\BaseController
 				$columns[$column->getAtype()][$column->getBundle()][] = [
 					'id'=>$column->getId(),
 					'request_token'=>$this->authcode('ID'.$column->getId()),
-					'const_display_name'=>$map[$column->getAtype()][$column->getBundle()][$column->getConstName()],
+					'const_display_name'=>'['.$column->getId().']'.($map[$column->getAtype()][$column->getBundle()][$column->getConstName()]),
 					'type'=>$column->getAtype(),
 					'bundle'=>$column->getBundle(),
 					'const_name'=>$column->getConstName(),
-					'channel_column_name'=>'['.$column->getId().']'.$column->getChannelColumnName(),
+					'channel_column_name'=>$column->getChannelColumnName(),
 					'channel_column_value'=>$column->getChannelColumnValue(),
 					'is_join_encryp'=>$column->getIsJoinEncryp(),
 					'is_require'=>$column->getIsRequire(),
