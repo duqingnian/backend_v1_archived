@@ -515,6 +515,7 @@ class BaseController extends Controller
 			'NOTIFY_URL'=>'异步通知地址',
 			'RETURN_URL'=>'同步通知地址',
 			'ATTACH_DATA'=>'附加信息',
+			'SIGN_KEY_NAME'=>'签名_KEY_NAME',
 			'SIGN'=>'签名',
 		];
 		$CONSTS['RESULT'] = [
