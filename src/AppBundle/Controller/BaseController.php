@@ -515,7 +515,10 @@ class BaseController extends Controller
 			'NOTIFY_URL'=>'异步通知地址',
 			'RETURN_URL'=>'同步通知地址',
 			'ATTACH_DATA'=>'附加信息',
-			'SIGN_KEY_NAME'=>'签名_KEY_NAME',
+			'DATA_FORMAT'=>'数据格式类型(form/json)',
+			'CHARSET'=>'编码(utf8/ansi)',
+			'SIGN_KEY_NAME'=>'签名_KEY_NAME(key)',
+			'SIGN_TYPE'=>'签名方式(sha256/md5)',
 			'SIGN'=>'签名',
 		];
 		$CONSTS['RESULT'] = [
@@ -576,6 +579,10 @@ class BaseController extends Controller
 			'CPF_NO'=>'CPF号码',
 			'ACC_OWNER_NAME'=>'账号(持卡人)姓名',
 			'ATTACH_DATA'=>'附加信息',
+			'DATA_FORMAT'=>'数据格式类型(form/json)',
+			'CHARSET'=>'编码(utf8/ansi)',
+			'SIGN_KEY_NAME'=>'签名_KEY_NAME(key)',
+			'SIGN_TYPE'=>'签名方式(sha256/md5)',
 			'SIGN'=>'签名',
 		];
 		$CONSTS['RESULT'] = [
