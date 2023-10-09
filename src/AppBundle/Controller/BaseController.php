@@ -515,6 +515,7 @@ class BaseController extends Controller
 			'NOTIFY_URL'=>'异步通知地址',
 			'RETURN_URL'=>'同步通知地址',
 			'ATTACH_DATA'=>'附加信息',
+			'PAY_METHOD'=>'支付方式',
 			'DATA_FORMAT'=>'数据格式类型(form/json)',
 			'CHARSET'=>'编码(utf8/ansi)',
 			'SIGN_KEY_NAME'=>'签名_KEY_NAME(key)',
