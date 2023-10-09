@@ -579,7 +579,7 @@ class BaseController extends Controller
 			'ACCOUNT'=>'账号(卡号)',
 			'PHONE'=>'手机号',
 			'EMAIL'=>'email',
-			'CPF_NO'=>'CPF号码',
+			'NO'=>'码',
 			'ACC_OWNER_NAME'=>'账号(持卡人)姓名',
 			'ATTACH_DATA'=>'附加信息',
 			'DATA_FORMAT'=>'数据格式类型(form/json)',
