@@ -19,6 +19,7 @@ class StatusMeta
 		'REFUND'=>'退款',
 		'START'=>'交易发起',
 		'CANCEL'=>'交易取消',
+		'PENDING'=>'待审核',
 	];
 	
 	public function Get($name='')
