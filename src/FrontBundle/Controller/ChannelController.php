@@ -126,6 +126,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$id = $this->GetId($request_token);
 		
 		$name = $request->request->get('name','');
+		$note = $request->request->get('note','');
 		$country = $request->request->get('country','');
 		$is_active = $request->request->get('is_active',0);
 		
@@ -158,6 +159,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$channel->setName($name);
 		$channel->setIsActive($is_active);
 		$channel->setCountry($country);
+		$channel->setNote($note);
 		
 		//appid
 		$channel->setPayinAppid($payin_appid);
@@ -204,6 +206,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 			'country'=>$_channel->getCountry(),
 			'currency'=>$countries[$_channel->getCountry()]['currency'],
 			'is_active'=>$_channel->getIsActive(),
+			'note'=>$_channel->getNote(),
 			
 			//appid
 			'payin_appid'=>$_channel->getPayinAppid(),
