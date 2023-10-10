@@ -35,14 +35,21 @@ class OrderController extends \AppBundle\Controller\BaseController
 		$statusMap = $StatusMeta->GetAll();
 		$order_status = $statusMap[$order->getOrderStatus()];
 		
-		$fee = '??';
+		$sh_fee = '??';
+		$channel_fee = '??';
 		if('PAYIN' == $order_bundle)
 		{
-			$fee = $order->getFee().'=('.$order->getAmount().'×'.($order->getPayinPct()/100).'%='.($order->getAmount() * ($order->getPayinPct()/100)).')+'.$order->getPayinSigleFee();
+			$sh_fee = $order->getFee().'=('.$order->getAmount().'×'.($order->getPayinPct()).'%='.($order->getAmount() * ($order->getPayinPct()/100)).')+'.$order->getPayinSigleFee();
+			
+			$_channel_fee = $order->getAmount()*($order->getChannelPayinPct()/100) + $order->getChannelPayinSigleFee();
+			$channel_fee = $_channel_fee.'=('.$order->getAmount().'×'.($order->getChannelPayinPct()).'%='.($order->getAmount() * ($order->getChannelPayinPct()/100)).')+'.$order->getChannelPayinSigleFee();
 		}
 		else
 		{
-			$fee = $order->getFee().'='.$order->getAmount().'×'.($order->getPayoutPct()/100).'%+'.$order->getPayoutSigleFee();
+			$sh_fee = $order->getFee().'=('.$order->getAmount().'×'.($order->getPayoutPct()).'%='.($order->getAmount() * ($order->getPayoutPct()/100)).')+'.$order->getPayoutSigleFee();
+			
+			$_channel_fee = $order->getAmount()*($order->getChannelPayoutPct()/100) + $order->getChannelPayoutSigleFee();
+			$channel_fee = $_channel_fee.'=('.$order->getAmount().'×'.($order->getChannelPayoutPct()).'%='.($order->getAmount() * ($order->getChannelPayoutPct()/100)).')+'.$order->getChannelPayoutSigleFee();
 		}
 		
 		$detail = [
@@ -50,7 +57,8 @@ class OrderController extends \AppBundle\Controller\BaseController
 			'shanghu_order_no'=>$order->getShanghuOrderNo(),
 			'plantform_order_no'=>$order->getPlantformOrderNo(),
 			'order_status'=>$order_status,
-			'fee'=>$fee,
+			'sh_fee'=>$sh_fee,
+			'channel_fee'=>$channel_fee,
 			'qrcode_src'=>$order->getQrcodeSrc(),
 			'jump_url'=>$order->getJumpUrl(),
 			'created_time'=>date('Y-m-d H:i:s',$order->getCreatedAt()),
