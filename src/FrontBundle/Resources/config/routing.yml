@@ -41,7 +41,13 @@ front_log:
 front_dispatch:
     path:     /dispatch.api
     defaults: { _controller: FrontBundle:Dispatch:index }
-    
+
+#国家
+front_country:
+    path:     /country.api
+    defaults: { _controller: FrontBundle:Country:index }
+
+
 ###################################
 ## react
 ###################################
@@ -69,7 +75,9 @@ react_dispatch_topup:
 react_data_statistics:
     path:     /data_statistics
     defaults: { _controller: FrontBundle:Default:index }
-
+react_cccode:
+    path:     /cccode
+    defaults: { _controller: FrontBundle:Default:index }
 
 
 
