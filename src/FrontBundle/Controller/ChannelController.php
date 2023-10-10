@@ -459,7 +459,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		}
 		if('' == $value)
 		{
-			$this->e('value is empty');
+			//$this->e('value is empty');
 		}
 		$column->setChannelColumnName($name);
 		$column->setChannelColumnValue($value);
