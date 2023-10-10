@@ -4,6 +4,7 @@ namespace AppBundle\Utils;
 class StatusMeta
 {
 	private $status = [
+		'DEF'=>'订单准备创建',
 		'GENERATED'=>'订单被创建',
 		'CREATE_FAILED'=>'订单创建失败',
 		'TRADE_ING'=>'支付中',
