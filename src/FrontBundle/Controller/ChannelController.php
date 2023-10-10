@@ -418,6 +418,44 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$this->succ('已添加');
 	}
 	
+	private function _update_column($request)
+	{
+		$this->GetId($request->request->get("access_token",""));
+		
+		$id = $request->request->get('id',0);
+		if(!is_numeric($id))
+		{
+			$this->e('id is missing');
+		}
+		$column = $this->db('ChannelColumn')->find($id);
+		if(!$column)
+		{
+			$this->e('column is not exists');
+		}
+		
+		$name = $request->request->get('name','');
+		$value = $request->request->get('value','');
+		
+		if('' == $name)
+		{
+			$this->e('name is empty');
+		}
+		if('' == $value)
+		{
+			$this->e('value is empty');
+		}
+		$column->setChannelColumnName($name);
+		$column->setChannelColumnValue($value);
+		
+		$this->update();
+		
+		$channel = $this->db('channel')->find($column->getChannelId());
+		$request_token = $this->authcode('ID'.$channel->getId());
+		
+		echo json_encode(['code'=>0,'msg'=>'已更新','request_token'=>$request_token]);
+		exit();
+	}
+	
 	private function add_column($channel_id,$atype,$bundle,$const,$channel_column,$channel_column_value,$is_require,$is_show=1)
 	{
 		$column = new \AppBundle\Entity\ChannelColumn();
