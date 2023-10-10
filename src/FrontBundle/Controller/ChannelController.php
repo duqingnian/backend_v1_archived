@@ -125,10 +125,11 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$request_token = $request->request->get('request_token','');
 		$id = $this->GetId($request_token);
 		
-		$name = $request->request->get('name','');
-		$note = $request->request->get('note','');
 		$timezone = $request->request->get('timezone','');
+		$note = $request->request->get('note','');
+		$name = $request->request->get('name','');
 		$country = $request->request->get('country','');
+		$merchant_id = $request->request->get('merchant_id','');
 		$is_active = $request->request->get('is_active',0);
 		
 		//appid
@@ -162,6 +163,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$channel->setCountry($country);
 		$channel->setNote($note);
 		$channel->setTimezone($timezone);
+		$channel->setMerchantId($merchant_id);
 		
 		//appid
 		$channel->setPayinAppid($payin_appid);
@@ -210,6 +212,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 			'is_active'=>$_channel->getIsActive(),
 			'note'=>$_channel->getNote(),
 			'timezone'=>$_channel->getTimezone(),
+			'merchant_id'=>$_channel->getMerchantId(),
 			
 			//appid
 			'payin_appid'=>$_channel->getPayinAppid(),
@@ -326,6 +329,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 	//删除状态
 	private function _delete_status($request)
 	{
+		$this->GetId($request->request->get("access_token",""));
 		$request_token = $request->request->get("request_token","");
 		$column_id = $this->GetId($request_token);
 		
@@ -339,6 +343,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 	//删除字段
 	private function _delete_column($request)
 	{
+		$this->GetId($request->request->get("access_token",""));
 		$request_token = $request->request->get("request_token","");
 		$column_id = $this->GetId($request_token);
 		
@@ -351,6 +356,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 	
 	private function _add_status_row($request)
 	{
+		$this->GetId($request->request->get("access_token",""));  
 		$atype = $request->request->get('atype','');
 		$bundle = $request->request->get('bundle','');
 		$const = $request->request->get('const','');
@@ -387,6 +393,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 	
 	private function _add_column_row($request)
 	{
+		$this->GetId($request->request->get("access_token",""));
 		$atype = $request->request->get('atype','');
 		$bundle = $request->request->get('bundle','');
 		$const = $request->request->get('const','');
@@ -402,14 +409,24 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$is_require = 'true' == $is_require ? 1 : 0;
 		
 		//前置检查
-		if('' == $const){$this->e('标准字段不能为空');}
+		//if('' == $const){$this->e('标准字段不能为空');}
 		if('' == $channel_column){$this->e('接口字段不能为空');}
 		
-		//是不是已经存在
-		$app_channel_column = $this->db('ChannelColumn')->findOneBy(['channel_id'=>$channel_id,'atype'=>$atype,'bundle'=>$bundle,'const_name'=>$const]);
+		if('' != $const)
+		{
+			//是不是已经存在
+			$app_channel_column = $this->db('ChannelColumn')->findOneBy(['channel_id'=>$channel_id,'atype'=>$atype,'bundle'=>$bundle,'const_name'=>$const]);
+			if($app_channel_column)
+			{
+				$this->e('已经存在:'.$const);
+			}
+		}
+		
+		//接口字段不能重复
+		$app_channel_column = $this->db('ChannelColumn')->findOneBy(['channel_id'=>$channel_id,'atype'=>$atype,'bundle'=>$bundle,'channel_column_name'=>$channel_column]);
 		if($app_channel_column)
 		{
-			$this->e('已经存在:'.$const);
+			$this->e('接口字段['.$channel_column.']已经存在');
 		}
 		
 		//入库
