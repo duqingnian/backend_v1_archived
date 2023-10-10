@@ -56,9 +56,34 @@ class LogController extends \AppBundle\Controller\BaseController
 		$access_token = $request->request->get("access_token","");
 		$id = $this->GetId($access_token);
 		
+		//接收参数
+		$date1 = $request->request->get('date1','');if('' == $date1){$date1 = date('Y-m-d');}
+		$date2 = $request->request->get('date2','');if('' == $date2){$date2 = date('Y-m-d');}
+		
+		//处理参数
+		$start_time = strtotime($date1.' 0:0:0');//$start_time = 0;
+		$end_time = strtotime($date2.' 23:59:59');//$end_time = 1893427200;
+		
+		if($end_time < $start_time)
+		{
+			$this->e('结束时间不能小于开始时间');
+		}
+		
+		//接收参数
+		$date1 = $request->request->get('date1','');if('' == $date1){$date1 = date('Y-m-d');}
+		$date2 = $request->request->get('date2','');if('' == $date2){$date2 = date('Y-m-d');}
+		
+		//处理参数
+		$start_time = strtotime($date1.' 0:0:0');//$start_time = 0;
+		$end_time = strtotime($date2.' 23:59:59');//$end_time = 1893427200;
+		
+		if($end_time < $start_time)
+		{
+			$this->e('结束时间不能小于开始时间');
+		}
 		$types = $this->_types($request);
 		
-		$where = 'a.id > 0';
+		$where = 'a.id > 0 and a.created_at >= '.$start_time.' and a.created_at <= '.$end_time;
 		
 		if('' == $show_types)
 		{

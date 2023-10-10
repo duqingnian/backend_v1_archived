@@ -25,8 +25,13 @@ class StatisticsController extends \AppBundle\Controller\BaseController
 		$date2 = $request->request->get('date2','');if('' == $date2){$date2 = date('Y-m-d');}
 		
 		//处理参数
-		$start_time = strtotime($date1.' 0:0:0');$start_time = 0;
-		$end_time = strtotime($date2.' 23:59:59');$end_time = 1893427200;
+		$start_time = strtotime($date1.' 0:0:0');
+		$end_time = strtotime($date2.' 23:59:59');
+		
+		if($end_time < $start_time)
+		{
+			$this->e('结束时间不能小于开始时间');
+		}
 		
 		////////////////////////
 		// 处理订单

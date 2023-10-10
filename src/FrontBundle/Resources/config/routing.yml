@@ -66,3 +66,19 @@ react_dispatch_withdrawal:
 react_dispatch_topup:
     path:     /dispatch_topup
     defaults: { _controller: FrontBundle:Default:index }
+react_data_statistics:
+    path:     /data_statistics
+    defaults: { _controller: FrontBundle:Default:index }
+
+
+
+
+
+
+
+
+
+
+
+
+
