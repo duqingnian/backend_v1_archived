@@ -102,7 +102,7 @@ class Channel
     private $created_at = 0;
 	
 	/**
-     * @ORM\Column(type="string", length=200)
+     * @ORM\Column(type="string", length=1000)
      */
     private $note = "";
 
