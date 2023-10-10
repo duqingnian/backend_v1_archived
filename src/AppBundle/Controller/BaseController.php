@@ -521,6 +521,7 @@ class BaseController extends Controller
 			'CHARSET'=>'编码(utf8/ansi)',
 			'SIGN_KEY_NAME'=>'签名_KEY_NAME(key)',
 			'SIGN_TYPE'=>'签名方式(sha256/md5)',
+			'PAY_WAY_ID'=>'支付渠道ID',
 			'SIGN'=>'签名',
 		];
 		$CONSTS['RESULT'] = [
