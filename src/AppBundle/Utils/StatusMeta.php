@@ -18,6 +18,7 @@ class StatusMeta
 		'INVALID'=>'交易失败',
 		'REFUND'=>'退款',
 		'START'=>'交易发起',
+		'CANCEL'=>'交易取消',
 	];
 	
 	public function Get($name='')
