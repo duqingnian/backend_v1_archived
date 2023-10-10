@@ -32,7 +32,7 @@ class Channel
     private $payin_appid = "";
 	
 	/**
-     * @ORM\Column(type="string", length=64)
+     * @ORM\Column(type="string", length=100)
      */
     private $payin_secret = "";
 	
@@ -42,7 +42,7 @@ class Channel
     private $payout_appid = "";
 	
 	/**
-     * @ORM\Column(type="string", length=64)
+     * @ORM\Column(type="string", length=100)
      */
     private $payout_secret = "";
 	
