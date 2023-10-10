@@ -34,7 +34,7 @@ class Channel
 	/**
      * @ORM\Column(type="string", length=32)
      */
-    private $payin_merchant_id = "";
+    private $merchant_id = "";
 	
 	/**
      * @ORM\Column(type="string", length=32)
@@ -45,11 +45,6 @@ class Channel
      * @ORM\Column(type="string", length=100)
      */
     private $payin_secret = "";
-	
-	/**
-     * @ORM\Column(type="string", length=32)
-     */
-    private $payout_merchant_id = "";
 	
 	/**
      * @ORM\Column(type="string", length=32)
@@ -189,27 +184,27 @@ class Channel
     }
 
     /**
-     * Set payinMerchantId
+     * Set merchantId
      *
-     * @param string $payinMerchantId
+     * @param string $merchantId
      *
      * @return Channel
      */
-    public function setPayinMerchantId($payinMerchantId)
+    public function setMerchantId($merchantId)
     {
-        $this->payin_merchant_id = $payinMerchantId;
+        $this->merchant_id = $merchantId;
 
         return $this;
     }
 
     /**
-     * Get payinMerchantId
+     * Get merchantId
      *
      * @return string
      */
-    public function getPayinMerchantId()
+    public function getMerchantId()
     {
-        return $this->payin_merchant_id;
+        return $this->merchant_id;
     }
 
     /**
@@ -258,30 +253,6 @@ class Channel
     public function getPayinSecret()
     {
         return $this->payin_secret;
-    }
-
-    /**
-     * Set payoutMerchantId
-     *
-     * @param string $payoutMerchantId
-     *
-     * @return Channel
-     */
-    public function setPayoutMerchantId($payoutMerchantId)
-    {
-        $this->payout_merchant_id = $payoutMerchantId;
-
-        return $this;
-    }
-
-    /**
-     * Get payoutMerchantId
-     *
-     * @return string
-     */
-    public function getPayoutMerchantId()
-    {
-        return $this->payout_merchant_id;
     }
 
     /**
