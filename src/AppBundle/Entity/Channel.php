@@ -29,12 +29,22 @@ class Channel
 	/**
      * @ORM\Column(type="string", length=32)
      */
+    private $payin_account = "";
+	
+	/**
+     * @ORM\Column(type="string", length=32)
+     */
     private $payin_appid = "";
 	
 	/**
      * @ORM\Column(type="string", length=100)
      */
     private $payin_secret = "";
+	
+	/**
+     * @ORM\Column(type="string", length=32)
+     */
+    private $payout_account = "";
 	
 	/**
      * @ORM\Column(type="string", length=32)
@@ -85,6 +95,11 @@ class Channel
      * @ORM\Column(type="integer")
      */
     private $created_at = 0;
+	
+	/**
+     * @ORM\Column(type="string", length=200)
+     */
+    private $note = "";
 
     /**
      * Get id
@@ -430,5 +445,77 @@ class Channel
     public function getPayoutSignMethod()
     {
         return $this->payout_sign_method;
+    }
+
+    /**
+     * Set payinAccount
+     *
+     * @param string $payinAccount
+     *
+     * @return Channel
+     */
+    public function setPayinAccount($payinAccount)
+    {
+        $this->payin_account = $payinAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get payinAccount
+     *
+     * @return string
+     */
+    public function getPayinAccount()
+    {
+        return $this->payin_account;
+    }
+
+    /**
+     * Set payoutAccount
+     *
+     * @param string $payoutAccount
+     *
+     * @return Channel
+     */
+    public function setPayoutAccount($payoutAccount)
+    {
+        $this->payout_account = $payoutAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get payoutAccount
+     *
+     * @return string
+     */
+    public function getPayoutAccount()
+    {
+        return $this->payout_account;
+    }
+
+    /**
+     * Set note
+     *
+     * @param string $note
+     *
+     * @return Channel
+     */
+    public function setNote($note)
+    {
+        $this->note = $note;
+
+        return $this;
+    }
+
+    /**
+     * Get note
+     *
+     * @return string
+     */
+    public function getNote()
+    {
+        return $this->note;
     }
 }
