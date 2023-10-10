@@ -19,17 +19,27 @@ class Country
 	/**
      * @ORM\Column(type="string", length=50)
      */
-    private $name; //巴西
+    private $code="";
 	
 	/**
      * @ORM\Column(type="string", length=50)
      */
-    private $slug; //brazil
+    private $name=""; //巴西
 	
 	/**
      * @ORM\Column(type="string", length=50)
      */
-    private $currency; //BRL
+    private $slug=""; //brazil
+	
+	/**
+     * @ORM\Column(type="string", length=50)
+     */
+    private $currency=""; //BRL
+	
+	/**
+     * @ORM\Column(type="string", length=30)
+     */
+    private $currency_name="";
 
     /**
      * Get id
@@ -111,5 +121,53 @@ class Country
     public function getCurrency()
     {
         return $this->currency;
+    }
+
+    /**
+     * Set code
+     *
+     * @param string $code
+     *
+     * @return Country
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    /**
+     * Get code
+     *
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    /**
+     * Set currencyName
+     *
+     * @param string $currencyName
+     *
+     * @return Country
+     */
+    public function setCurrencyName($currencyName)
+    {
+        $this->currency_name = $currencyName;
+
+        return $this;
+    }
+
+    /**
+     * Get currencyName
+     *
+     * @return string
+     */
+    public function getCurrencyName()
+    {
+        return $this->currency_name;
     }
 }
