@@ -611,6 +611,7 @@ class BaseController extends Controller
 			'SIGN'=>'签名',
 		];
 		$CONSTS['NOTIFY'] = [
+			'APPID'=>'appid',
 			'ORDER_STATUS'=>'订单状态',
 			'ORDER_SUCC_STATUS'=>'订单成功状态',
 			'CHANNEL_ORDER_NO'=>'通道订单号',
