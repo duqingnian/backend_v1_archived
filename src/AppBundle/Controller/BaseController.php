@@ -588,6 +588,10 @@ class BaseController extends Controller
 			'SIGN_KEY_NAME'=>'签名_KEY_NAME(key)',
 			'SIGN_TYPE'=>'签名方式(sha256/md5)',
 			'FEE_SUB_TYPE'=>'手续费扣除方式',
+			'PAY_WAY_ID'=>'渠道ID',
+			'BANK_NAME_CODE'=>'银行名称编码',
+			'BANK_BRANCH_NAME_CODE'=>'银行支行名称编码',
+			'DISPATCH_TYPE'=>'下发方式',
 			'SIGN'=>'签名',
 		];
 		$CONSTS['RESULT'] = [
