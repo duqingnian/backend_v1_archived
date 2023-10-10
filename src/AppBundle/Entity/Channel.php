@@ -34,7 +34,7 @@ class Channel
 	/**
      * @ORM\Column(type="string", length=32)
      */
-    private $payin_account = "";
+    private $payin_merchant_id = "";
 	
 	/**
      * @ORM\Column(type="string", length=32)
@@ -49,7 +49,7 @@ class Channel
 	/**
      * @ORM\Column(type="string", length=32)
      */
-    private $payout_account = "";
+    private $payout_merchant_id = "";
 	
 	/**
      * @ORM\Column(type="string", length=32)
@@ -141,51 +141,27 @@ class Channel
     }
 
     /**
-     * Set isActive
+     * Set timezone
      *
-     * @param integer $isActive
+     * @param string $timezone
      *
      * @return Channel
      */
-    public function setIsActive($isActive)
+    public function setTimezone($timezone)
     {
-        $this->is_active = $isActive;
+        $this->timezone = $timezone;
 
         return $this;
     }
 
     /**
-     * Get isActive
+     * Get timezone
      *
-     * @return integer
+     * @return string
      */
-    public function getIsActive()
+    public function getTimezone()
     {
-        return $this->is_active;
-    }
-
-    /**
-     * Set createdAt
-     *
-     * @param integer $createdAt
-     *
-     * @return Channel
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->created_at = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * Get createdAt
-     *
-     * @return integer
-     */
-    public function getCreatedAt()
-    {
-        return $this->created_at;
+        return $this->timezone;
     }
 
     /**
@@ -210,6 +186,30 @@ class Channel
     public function getCountry()
     {
         return $this->country;
+    }
+
+    /**
+     * Set payinMerchantId
+     *
+     * @param string $payinMerchantId
+     *
+     * @return Channel
+     */
+    public function setPayinMerchantId($payinMerchantId)
+    {
+        $this->payin_merchant_id = $payinMerchantId;
+
+        return $this;
+    }
+
+    /**
+     * Get payinMerchantId
+     *
+     * @return string
+     */
+    public function getPayinMerchantId()
+    {
+        return $this->payin_merchant_id;
     }
 
     /**
@@ -258,6 +258,30 @@ class Channel
     public function getPayinSecret()
     {
         return $this->payin_secret;
+    }
+
+    /**
+     * Set payoutMerchantId
+     *
+     * @param string $payoutMerchantId
+     *
+     * @return Channel
+     */
+    public function setPayoutMerchantId($payoutMerchantId)
+    {
+        $this->payout_merchant_id = $payoutMerchantId;
+
+        return $this;
+    }
+
+    /**
+     * Get payoutMerchantId
+     *
+     * @return string
+     */
+    public function getPayoutMerchantId()
+    {
+        return $this->payout_merchant_id;
     }
 
     /**
@@ -311,7 +335,7 @@ class Channel
     /**
      * Set payinPct
      *
-     * @param integer $payinPct
+     * @param string $payinPct
      *
      * @return Channel
      */
@@ -325,7 +349,7 @@ class Channel
     /**
      * Get payinPct
      *
-     * @return integer
+     * @return string
      */
     public function getPayinPct()
     {
@@ -335,7 +359,7 @@ class Channel
     /**
      * Set payinSigleFee
      *
-     * @param integer $payinSigleFee
+     * @param string $payinSigleFee
      *
      * @return Channel
      */
@@ -349,7 +373,7 @@ class Channel
     /**
      * Get payinSigleFee
      *
-     * @return integer
+     * @return string
      */
     public function getPayinSigleFee()
     {
@@ -359,7 +383,7 @@ class Channel
     /**
      * Set payoutPct
      *
-     * @param integer $payoutPct
+     * @param string $payoutPct
      *
      * @return Channel
      */
@@ -373,7 +397,7 @@ class Channel
     /**
      * Get payoutPct
      *
-     * @return integer
+     * @return string
      */
     public function getPayoutPct()
     {
@@ -383,7 +407,7 @@ class Channel
     /**
      * Set payoutSigleFee
      *
-     * @param integer $payoutSigleFee
+     * @param string $payoutSigleFee
      *
      * @return Channel
      */
@@ -397,7 +421,7 @@ class Channel
     /**
      * Get payoutSigleFee
      *
-     * @return integer
+     * @return string
      */
     public function getPayoutSigleFee()
     {
@@ -453,51 +477,51 @@ class Channel
     }
 
     /**
-     * Set payinAccount
+     * Set isActive
      *
-     * @param string $payinAccount
+     * @param integer $isActive
      *
      * @return Channel
      */
-    public function setPayinAccount($payinAccount)
+    public function setIsActive($isActive)
     {
-        $this->payin_account = $payinAccount;
+        $this->is_active = $isActive;
 
         return $this;
     }
 
     /**
-     * Get payinAccount
+     * Get isActive
      *
-     * @return string
+     * @return integer
      */
-    public function getPayinAccount()
+    public function getIsActive()
     {
-        return $this->payin_account;
+        return $this->is_active;
     }
 
     /**
-     * Set payoutAccount
+     * Set createdAt
      *
-     * @param string $payoutAccount
+     * @param integer $createdAt
      *
      * @return Channel
      */
-    public function setPayoutAccount($payoutAccount)
+    public function setCreatedAt($createdAt)
     {
-        $this->payout_account = $payoutAccount;
+        $this->created_at = $createdAt;
 
         return $this;
     }
 
     /**
-     * Get payoutAccount
+     * Get createdAt
      *
-     * @return string
+     * @return integer
      */
-    public function getPayoutAccount()
+    public function getCreatedAt()
     {
-        return $this->payout_account;
+        return $this->created_at;
     }
 
     /**
@@ -522,29 +546,5 @@ class Channel
     public function getNote()
     {
         return $this->note;
-    }
-
-    /**
-     * Set timezone
-     *
-     * @param string $timezone
-     *
-     * @return Channel
-     */
-    public function setTimezone($timezone)
-    {
-        $this->timezone = $timezone;
-
-        return $this;
-    }
-
-    /**
-     * Get timezone
-     *
-     * @return string
-     */
-    public function getTimezone()
-    {
-        return $this->timezone;
     }
 }
