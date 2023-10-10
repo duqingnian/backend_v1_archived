@@ -22,9 +22,14 @@ class Channel
     private $name; //名称
 	
 	/**
+     * @ORM\Column(type="string", length=50)
+     */
+    private $timezone=""; //时区
+	
+	/**
      * @ORM\Column(type="string", length=15)
      */
-    private $country; //国家
+    private $country=""; //国家
 	
 	/**
      * @ORM\Column(type="string", length=32)
@@ -517,5 +522,29 @@ class Channel
     public function getNote()
     {
         return $this->note;
+    }
+
+    /**
+     * Set timezone
+     *
+     * @param string $timezone
+     *
+     * @return Channel
+     */
+    public function setTimezone($timezone)
+    {
+        $this->timezone = $timezone;
+
+        return $this;
+    }
+
+    /**
+     * Get timezone
+     *
+     * @return string
+     */
+    public function getTimezone()
+    {
+        return $this->timezone;
     }
 }

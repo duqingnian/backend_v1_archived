@@ -127,6 +127,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		
 		$name = $request->request->get('name','');
 		$note = $request->request->get('note','');
+		$timezone = $request->request->get('timezone','');
 		$country = $request->request->get('country','');
 		$is_active = $request->request->get('is_active',0);
 		
@@ -160,6 +161,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$channel->setIsActive($is_active);
 		$channel->setCountry($country);
 		$channel->setNote($note);
+		$channel->setTimezone($timezone);
 		
 		//appid
 		$channel->setPayinAppid($payin_appid);
@@ -207,6 +209,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 			'currency'=>$countries[$_channel->getCountry()]['currency'],
 			'is_active'=>$_channel->getIsActive(),
 			'note'=>$_channel->getNote(),
+			'timezone'=>$_channel->getTimezone(),
 			
 			//appid
 			'payin_appid'=>$_channel->getPayinAppid(),
