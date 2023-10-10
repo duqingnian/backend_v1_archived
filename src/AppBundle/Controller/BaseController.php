@@ -590,6 +590,7 @@ class BaseController extends Controller
 			'FEE_SUB_TYPE'=>'手续费扣除方式',
 			'PAY_WAY_ID'=>'渠道ID',
 			'BANK_NAME_CODE'=>'银行名称编码',
+			'BANK_ACC_TYPE'=>'银行账户类型',
 			'BANK_BRANCH_NAME_CODE'=>'银行支行名称编码',
 			'DISPATCH_TYPE'=>'下发方式',
 			'SIGN'=>'签名',
