@@ -87,6 +87,16 @@ class Channel
     private $payout_sign_method = "md5";
 	
 	/**
+     * @ORM\Column(type="string", length=15)
+     */
+    private $payin_sign_col_name = "";
+	
+	/**
+     * @ORM\Column(type="string", length=15)
+     */
+    private $payout_sign_col_name = "";
+	
+	/**
      * @ORM\Column(type="integer")
      */
     private $is_active = 0;
@@ -517,5 +527,53 @@ class Channel
     public function getNote()
     {
         return $this->note;
+    }
+
+    /**
+     * Set payinSignColName
+     *
+     * @param string $payinSignColName
+     *
+     * @return Channel
+     */
+    public function setPayinSignColName($payinSignColName)
+    {
+        $this->payin_sign_col_name = $payinSignColName;
+
+        return $this;
+    }
+
+    /**
+     * Get payinSignColName
+     *
+     * @return string
+     */
+    public function getPayinSignColName()
+    {
+        return $this->payin_sign_col_name;
+    }
+
+    /**
+     * Set payoutSignColName
+     *
+     * @param string $payoutSignColName
+     *
+     * @return Channel
+     */
+    public function setPayoutSignColName($payoutSignColName)
+    {
+        $this->payout_sign_col_name = $payoutSignColName;
+
+        return $this;
+    }
+
+    /**
+     * Get payoutSignColName
+     *
+     * @return string
+     */
+    public function getPayoutSignColName()
+    {
+        return $this->payout_sign_col_name;
     }
 }

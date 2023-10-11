@@ -153,6 +153,9 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$payin_sign_method = $request->request->get('payin_sign_method','');
 		$payout_sign_method = $request->request->get('payout_sign_method','');
 		
+		$payin_sign_col_name = $request->request->get('payin_sign_col_name','');
+		$payout_sign_col_name = $request->request->get('payout_sign_col_name','');
+		
 		$channel = $this->db('Channel')->find($id);
 		if(!$channel)
 		{
@@ -180,6 +183,11 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		//签名方式
 		$channel->setPayinSignMethod($payin_sign_method);
 		$channel->setPayoutSignMethod($payout_sign_method);
+		
+		//签名字段
+		$channel->setPayinSignColName($payin_sign_col_name);
+		$channel->setPayoutSignColName($payout_sign_col_name);
+		
 		$this->update();
 		
 		//更新请求头信息
@@ -229,6 +237,10 @@ class ChannelController extends \AppBundle\Controller\BaseController
 			//签名方式
 			'payin_sign_method'=>$_channel->getPayinSignMethod(),
 			'payout_sign_method'=>$_channel->getPayoutSignMethod(),
+			
+			//签名字段
+			'payin_sign_col_name'=>$_channel->getPayinSignColName(),
+			'payout_sign_col_name'=>$_channel->getPayoutSignColName(),
 			
 			'request_token'=>$this->authcode('ID'.$_channel->getId()),
 		];
