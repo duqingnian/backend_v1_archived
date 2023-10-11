@@ -54,27 +54,32 @@ class PayinOrder
 	/**
      * @ORM\Column(type="decimal", scale=2)
      */
-    private $payin_pct = 0.00;
+    private $sh_pct = 0.00;
 	
 	/**
      * @ORM\Column(type="decimal", scale=2)
      */
-    private $payin_sigle_fee = 0.00;
+    private $sh_sigle_fee = 0.00;
 	
 	/**
      * @ORM\Column(type="decimal", scale=2)
      */
-    private $channel_payin_pct = 0.00;
+    private $sh_fee = 0.00;  //支付的费用
 	
 	/**
      * @ORM\Column(type="decimal", scale=2)
      */
-    private $channel_payin_sigle_fee = 0.00;
+    private $channel_pct = 0.00;
 	
 	/**
      * @ORM\Column(type="decimal", scale=2)
      */
-    private $fee = 0.00;  //支付的费用
+    private $channel_sigle_fee = 0.00;
+	
+	/**
+     * @ORM\Column(type="decimal", scale=2)
+     */
+    private $channel_fee = 0.00;  //支付的费用
 	
 	/**
      * @ORM\Column(type="string", length=15)
@@ -300,6 +305,150 @@ class PayinOrder
     }
 
     /**
+     * Set shPct
+     *
+     * @param string $shPct
+     *
+     * @return PayinOrder
+     */
+    public function setShPct($shPct)
+    {
+        $this->sh_pct = $shPct;
+
+        return $this;
+    }
+
+    /**
+     * Get shPct
+     *
+     * @return string
+     */
+    public function getShPct()
+    {
+        return $this->sh_pct;
+    }
+
+    /**
+     * Set shSigleFee
+     *
+     * @param string $shSigleFee
+     *
+     * @return PayinOrder
+     */
+    public function setShSigleFee($shSigleFee)
+    {
+        $this->sh_sigle_fee = $shSigleFee;
+
+        return $this;
+    }
+
+    /**
+     * Get shSigleFee
+     *
+     * @return string
+     */
+    public function getShSigleFee()
+    {
+        return $this->sh_sigle_fee;
+    }
+
+    /**
+     * Set shFee
+     *
+     * @param string $shFee
+     *
+     * @return PayinOrder
+     */
+    public function setShFee($shFee)
+    {
+        $this->sh_fee = $shFee;
+
+        return $this;
+    }
+
+    /**
+     * Get shFee
+     *
+     * @return string
+     */
+    public function getShFee()
+    {
+        return $this->sh_fee;
+    }
+
+    /**
+     * Set channelPct
+     *
+     * @param string $channelPct
+     *
+     * @return PayinOrder
+     */
+    public function setChannelPct($channelPct)
+    {
+        $this->channel_pct = $channelPct;
+
+        return $this;
+    }
+
+    /**
+     * Get channelPct
+     *
+     * @return string
+     */
+    public function getChannelPct()
+    {
+        return $this->channel_pct;
+    }
+
+    /**
+     * Set channelSigleFee
+     *
+     * @param string $channelSigleFee
+     *
+     * @return PayinOrder
+     */
+    public function setChannelSigleFee($channelSigleFee)
+    {
+        $this->channel_sigle_fee = $channelSigleFee;
+
+        return $this;
+    }
+
+    /**
+     * Get channelSigleFee
+     *
+     * @return string
+     */
+    public function getChannelSigleFee()
+    {
+        return $this->channel_sigle_fee;
+    }
+
+    /**
+     * Set channelFee
+     *
+     * @param string $channelFee
+     *
+     * @return PayinOrder
+     */
+    public function setChannelFee($channelFee)
+    {
+        $this->channel_fee = $channelFee;
+
+        return $this;
+    }
+
+    /**
+     * Get channelFee
+     *
+     * @return string
+     */
+    public function getChannelFee()
+    {
+        return $this->channel_fee;
+    }
+
+    /**
      * Set orderType
      *
      * @param string $orderType
@@ -321,102 +470,6 @@ class PayinOrder
     public function getOrderType()
     {
         return $this->order_type;
-    }
-
-    /**
-     * Set createdAt
-     *
-     * @param integer $createdAt
-     *
-     * @return PayinOrder
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->created_at = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * Get createdAt
-     *
-     * @return integer
-     */
-    public function getCreatedAt()
-    {
-        return $this->created_at;
-    }
-
-    /**
-     * Set payinPct
-     *
-     * @param string $payinPct
-     *
-     * @return PayinOrder
-     */
-    public function setPayinPct($payinPct)
-    {
-        $this->payin_pct = $payinPct;
-
-        return $this;
-    }
-
-    /**
-     * Get payinPct
-     *
-     * @return string
-     */
-    public function getPayinPct()
-    {
-        return $this->payin_pct;
-    }
-
-    /**
-     * Set payinSigleFee
-     *
-     * @param string $payinSigleFee
-     *
-     * @return PayinOrder
-     */
-    public function setPayinSigleFee($payinSigleFee)
-    {
-        $this->payin_sigle_fee = $payinSigleFee;
-
-        return $this;
-    }
-
-    /**
-     * Get payinSigleFee
-     *
-     * @return string
-     */
-    public function getPayinSigleFee()
-    {
-        return $this->payin_sigle_fee;
-    }
-
-    /**
-     * Set fee
-     *
-     * @param string $fee
-     *
-     * @return PayinOrder
-     */
-    public function setFee($fee)
-    {
-        $this->fee = $fee;
-
-        return $this;
-    }
-
-    /**
-     * Get fee
-     *
-     * @return string
-     */
-    public function getFee()
-    {
-        return $this->fee;
     }
 
     /**
@@ -588,50 +641,26 @@ class PayinOrder
     }
 
     /**
-     * Set channelPayinPct
+     * Set createdAt
      *
-     * @param string $channelPayinPct
+     * @param integer $createdAt
      *
      * @return PayinOrder
      */
-    public function setChannelPayinPct($channelPayinPct)
+    public function setCreatedAt($createdAt)
     {
-        $this->channel_payin_pct = $channelPayinPct;
+        $this->created_at = $createdAt;
 
         return $this;
     }
 
     /**
-     * Get channelPayinPct
+     * Get createdAt
      *
-     * @return string
+     * @return integer
      */
-    public function getChannelPayinPct()
+    public function getCreatedAt()
     {
-        return $this->channel_payin_pct;
-    }
-
-    /**
-     * Set channelPayinSigleFee
-     *
-     * @param string $channelPayinSigleFee
-     *
-     * @return PayinOrder
-     */
-    public function setChannelPayinSigleFee($channelPayinSigleFee)
-    {
-        $this->channel_payin_sigle_fee = $channelPayinSigleFee;
-
-        return $this;
-    }
-
-    /**
-     * Get channelPayinSigleFee
-     *
-     * @return string
-     */
-    public function getChannelPayinSigleFee()
-    {
-        return $this->channel_payin_sigle_fee;
+        return $this->created_at;
     }
 }

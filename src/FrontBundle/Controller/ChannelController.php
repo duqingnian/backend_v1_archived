@@ -382,7 +382,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 
 		//前置检查
 		if('' == $const){$this->e('标准字段不能为空');}
-		if('' == $channel_column_value){$this->e('接口字段不能为空');}
+		//if('' == $channel_column_value){$this->e('接口字段不能为空');}
 		
 		//是不是已经存在
 		$app_channel_column = $this->db('ChannelStatusMap')->findOneBy(['channel_id'=>$channel_id,'atype'=>$atype,'bundle'=>$bundle,'const_name'=>$const]);
@@ -430,7 +430,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 			$app_channel_column = $this->db('ChannelColumn')->findOneBy(['channel_id'=>$channel_id,'atype'=>$atype,'bundle'=>$bundle,'const_name'=>$const]);
 			if($app_channel_column)
 			{
-				$this->e('已经存在:'.$const);
+				//$this->e('已经存在:'.$const);
 			}
 		}
 		
@@ -438,7 +438,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$app_channel_column = $this->db('ChannelColumn')->findOneBy(['channel_id'=>$channel_id,'atype'=>$atype,'bundle'=>$bundle,'channel_column_name'=>$channel_column]);
 		if($app_channel_column)
 		{
-			$this->e('接口字段['.$channel_column.']已经存在');
+			//$this->e('接口字段['.$channel_column.']已经存在');
 		}
 		
 		//入库

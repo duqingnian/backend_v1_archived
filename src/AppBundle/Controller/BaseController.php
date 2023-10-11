@@ -500,6 +500,7 @@ class BaseController extends Controller
 		$CONSTS['REQUEST'] = [
 			'TYPE'=>'请求类型',
 			'HEADER'=>'头信息',
+			'EXT_HEADER'=>'扩展头信息',
 			'URL'=>'接口地址',
 			'APPID'=>'appid',
 			'DEVICE_IP_V4'=>'设备ipv4',
