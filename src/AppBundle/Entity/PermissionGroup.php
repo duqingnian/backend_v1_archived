@@ -15,6 +15,11 @@ class PermissionGroup
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
+    private $bundle = 0; //0平台 1商户
     
 	/**
      * @ORM\Column(type="string", length=30)
@@ -53,5 +58,29 @@ class PermissionGroup
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Set bundle
+     *
+     * @param integer $bundle
+     *
+     * @return PermissionGroup
+     */
+    public function setBundle($bundle)
+    {
+        $this->bundle = $bundle;
+
+        return $this;
+    }
+
+    /**
+     * Get bundle
+     *
+     * @return integer
+     */
+    public function getBundle()
+    {
+        return $this->bundle;
     }
 }

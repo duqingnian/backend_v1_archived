@@ -42,6 +42,11 @@ class User extends BaseUser
 	/**
      * @ORM\Column(type="integer")
      */
+    private $google_auth_bind = 0;
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
     private $created_at = 0;
 
     public function __construct()
@@ -168,5 +173,29 @@ class User extends BaseUser
     public function getIsActive()
     {
         return $this->is_active;
+    }
+
+    /**
+     * Set googleAuthBind
+     *
+     * @param integer $googleAuthBind
+     *
+     * @return User
+     */
+    public function setGoogleAuthBind($googleAuthBind)
+    {
+        $this->google_auth_bind = $googleAuthBind;
+
+        return $this;
+    }
+
+    /**
+     * Get googleAuthBind
+     *
+     * @return integer
+     */
+    public function getGoogleAuthBind()
+    {
+        return $this->google_auth_bind;
     }
 }

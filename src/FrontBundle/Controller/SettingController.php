@@ -24,7 +24,7 @@ class SettingController extends \AppBundle\Controller\BaseController
 		$id = $this->GetId($request->request->get("access_token",""));
 
 		$permission_group_list = [];
-		$permission_groups = $this->db('PermissionGroup')->findAll();
+		$permission_groups = $this->db('PermissionGroup')->findBy(['bundle'=>0]);
 		foreach($permission_groups as $group)
 		{
 			$permission_group_list[] = [
@@ -42,6 +42,11 @@ class SettingController extends \AppBundle\Controller\BaseController
 	private function _create_permission_group($request)
 	{
 		$id = $this->GetId($request->request->get("access_token",""));
+		$user = $this->db('user')->find($id);
+		if(!$user)
+		{
+			$this->e('[create_permission_group] user not exist!');
+		}
 		
 		$name = $request->request->get('name','');
 		if('' == $name)
@@ -55,8 +60,15 @@ class SettingController extends \AppBundle\Controller\BaseController
 			$this->e('名称:'.$name.'已经存在!');
 		}
 		
+		//确定是商户的还是平台的
+		$bundle = -1;
+		if('SA' == $user->getAccType()){ $bundle = 0; }
+		else if('SH' == $user->getAccType()){ $bundle = 1; }
+		else{}
+		
 		$permission_group = new \AppBundle\Entity\PermissionGroup();
 		$permission_group->setName($name);
+		$permission_group->setBundle($bundle);
 		$this->save($permission_group);
 		
 		$this->succ('已添加');

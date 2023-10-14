@@ -94,8 +94,12 @@ react_home_currency:
 react_setting_user:
     path:     /setting_user
     defaults: { _controller: FrontBundle:Default:index }
-
-
+react_setting_permission:
+    path: /setting_permission
+    defaults: { _controller: FrontBundle:Default:index }
+react_setting_user_group:
+    path: /setting_user_group
+    defaults: { _controller: FrontBundle:Default:index }
 
 
 
