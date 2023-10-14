@@ -6,6 +6,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class OrderController extends \AppBundle\Controller\BaseController 
 {
+	private $order_status = [];
+	
     public function indexAction(Request $request)
     {
         $action = $request->request->get("action",'index');
@@ -15,6 +17,17 @@ class OrderController extends \AppBundle\Controller\BaseController
             echo json_encode(['code'=>-1,'msg'=>'method:'.$action.' not exist!']);
             exit();
         }
+		
+		//查询出订单状态列表
+		$StatusMeta = new \AppBundle\Utils\StatusMeta();
+		$_order_status = $StatusMeta->GetAll();
+		
+		$this->order_status[] = ['key'=>'ALL','text'=>'全部'];
+		foreach($_order_status as $k=>$v)
+		{
+			$this->order_status[] = ['key'=>$k,'text'=>$v.'('.$k.')'];
+		}
+		
 		return $this->{$method}($request);
     }
 	
@@ -190,12 +203,12 @@ class OrderController extends \AppBundle\Controller\BaseController
 				$status = $statusMap[$order['order_status']];
 			}
 			
-			/*//查询通道
+			//查询通道
 			$order['channel'] = '-';
 			$channel = $this->db('channel')->find($order['channel_id']);
 			if($channel)
 			{
-				$order['channel'] = '?'.$channel->getName();
+				$order['channel'] = $channel->getName();
 			}
 			else
 			{
@@ -207,12 +220,12 @@ class OrderController extends \AppBundle\Controller\BaseController
 			$shanghu = $this->db('shanghu')->find($order['shanghu_id']);
 			if($shanghu)
 			{
-				$order['shanghu'] = '?'.$shanghu->getName();
+				$order['shanghu'] = $shanghu->getName();
 			}
 			else
 			{
-				$order['shanghu'] = $order->getShanghuId();
-			}*/
+				$order['shanghu'] = '?'.$order->getShanghuId();
+			}
 			
 			$order['key'] = 'payin_order_'.$order['id'];
 			$order['created_time'] = date('Y-m-d H:i:s',$order['created_at']);
@@ -224,8 +237,23 @@ class OrderController extends \AppBundle\Controller\BaseController
 				'qrcode_src'=>'',
 			];
 		}
+		//所有的渠道
+		$channel_list = [['key'=>'ALL','text'=>'全部']];
+		$_channels = $this->db('channel')->findAll();
+		foreach($_channels as $_channel)
+		{
+			$channel_list[] = ['key'=>$_channel->getId(),'text'=>$_channel->getName()];
+		}
 		
-		echo json_encode(['pager'=>$pager]);
+		//所有的商户
+		$sh_list = [['key'=>'ALL','text'=>'全部']];
+		$_sh_list = $this->db('shanghu')->findAll();
+		foreach($_sh_list as $_sh)
+		{
+			$sh_list[] = ['key'=>$_sh->getId(),'text'=>$_sh->getName()];
+		}
+		
+		echo json_encode(['pager'=>$pager,'order_status'=>$this->order_status,'channel_list'=>$channel_list,'sh_list'=>$sh_list]);
 		exit();
 	}
 		//模拟成功和失败

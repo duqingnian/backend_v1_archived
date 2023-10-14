@@ -46,6 +46,16 @@ front_dispatch:
 front_country:
     path:     /country.api
     defaults: { _controller: FrontBundle:Country:index }
+    
+#设置
+front_setting:
+    path:     /setting.api
+    defaults: { _controller: FrontBundle:Setting:index }
+
+#用户
+front_user:
+    path:     /user.api
+    defaults: { _controller: FrontBundle:User:index }
 
 
 ###################################
@@ -64,7 +74,7 @@ react_data_orderout:
     path:     /data_orderout
     defaults: { _controller: FrontBundle:Default:index }
 react_log:
-    path:     /log
+    path:     /home_log
     defaults: { _controller: FrontBundle:Default:index }
 react_dispatch_withdrawal:
     path:     /dispatch_withdrawal
@@ -75,11 +85,15 @@ react_dispatch_topup:
 react_data_statistics:
     path:     /data_statistics
     defaults: { _controller: FrontBundle:Default:index }
-react_cccode:
-    path:     /cccode
+react_home_preview:
+    path:     /home_preview
     defaults: { _controller: FrontBundle:Default:index }
-
-
+react_home_currency:
+    path:     /home_currency
+    defaults: { _controller: FrontBundle:Default:index }
+react_setting_user:
+    path:     /setting_user
+    defaults: { _controller: FrontBundle:Default:index }
 
 
 

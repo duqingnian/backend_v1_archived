@@ -19,10 +19,25 @@ class User extends BaseUser
      */
     protected $id;
 	
-	/**
-     * @ORM\Column(type="string", length=10)
+		/**
+     * @ORM\Column(type="string", length=15)
      */
     private $acc_type="";
+	
+	/**
+     * @ORM\Column(type="string", length=30)
+     */
+    private $display_name="";
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
+    private $group_id = 0;
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
+    private $is_active = 0;
 	
 	/**
      * @ORM\Column(type="integer")
@@ -81,5 +96,77 @@ class User extends BaseUser
     public function getCreatedAt()
     {
         return $this->created_at;
+    }
+
+    /**
+     * Set displayName
+     *
+     * @param string $displayName
+     *
+     * @return User
+     */
+    public function setDisplayName($displayName)
+    {
+        $this->display_name = $displayName;
+
+        return $this;
+    }
+
+    /**
+     * Get displayName
+     *
+     * @return string
+     */
+    public function getDisplayName()
+    {
+        return $this->display_name;
+    }
+
+    /**
+     * Set groupId
+     *
+     * @param integer $groupId
+     *
+     * @return User
+     */
+    public function setGroupId($groupId)
+    {
+        $this->group_id = $groupId;
+
+        return $this;
+    }
+
+    /**
+     * Get groupId
+     *
+     * @return integer
+     */
+    public function getGroupId()
+    {
+        return $this->group_id;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param integer $isActive
+     *
+     * @return User
+     */
+    public function setIsActive($isActive)
+    {
+        $this->is_active = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * Get isActive
+     *
+     * @return integer
+     */
+    public function getIsActive()
+    {
+        return $this->is_active;
     }
 }
