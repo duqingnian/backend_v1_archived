@@ -557,7 +557,7 @@ class UserController extends \AppBundle\Controller\BaseController
 		
 		$qrcode_data = $google_authenticator->GetQRcodeData($title,$this->user_secret);
 		$qrcode_data = urlencode($qrcode_data);
-		$qrcode = 'http://backend.9poc.com/qrcode.generate?data='.$qrcode_data;
+		$qrcode = $this->http_url.'/qrcode.generate?data='.$qrcode_data;
 		
 		echo json_encode([
 			'code'=>0,
