@@ -528,6 +528,93 @@ class UserController extends \AppBundle\Controller\BaseController
 		
 		$this->succ('已更新');
 	}
+	
+	//生成谷歌验证器二维码
+	private function _google_bind($request)
+	{
+		$id = $this->GetId($request->request->get("access_token",""));
+		$user = $this->db('user')->find($id);
+		if(!$user)
+		{
+			$this->e('[google_bind] user not exist!');
+		}
+		
+		$google_authenticator = new \AppBundle\Utils\GoogleAuthenticator();
+		if('' == $user->getGoogleSecret())
+		{
+			$this->user_secret = $google_authenticator->createSecret(32);
+			$user->setGoogleSecret($this->user_secret);
+			$this->update();
+		}else{
+			$this->user_secret = $user->getGoogleSecret();
+		}
+		
+		$title = $this->device_name;
+		if('' != $user->getUsername())
+		{
+			$title .= '('.$user->getUsername().')';
+		}
+		
+		$qrcode_data = $google_authenticator->GetQRcodeData($title,$this->user_secret);
+		$qrcode_data = urlencode($qrcode_data);
+		$qrcode = 'http://backend.9poc.com/qrcode.generate?data='.$qrcode_data;
+		
+		echo json_encode([
+			'code'=>0,
+			'msg'=>'OK',
+			'qrcode'=>$qrcode,
+			'user_secret'=>$this->user_secret,
+			'binded'=>$user->getGoogleAuthBind(),
+		]);
+		exit();
+	}
+	
+	//绑定 解绑操作
+	private function _bind_google($request)
+	{
+		$id = $this->GetId($request->request->get("access_token",""));
+		$user = $this->db('user')->find($id);
+		if(!$user)
+		{
+			$this->e('[google_bind] user not exist!');
+		}
+		
+		$google_authenticator = new \AppBundle\Utils\GoogleAuthenticator();
+		$user_google_secret = $user->getGoogleSecret();
+		
+		$google_code = $request->request->get('google_code','');
+		$user_secret = $request->request->get('user_secret','');
+		
+		if(6 != strlen($google_code))
+		{
+			$this->e('请输入六位数谷歌验证码');
+		}
+		if($user_google_secret != $user_secret)
+		{
+			$this->e('密钥不匹配，请刷新页面后重试！');
+		}
+		
+		$checkResult = $google_authenticator->verifyCode($user_google_secret, $google_code, 2);
+		if ($checkResult) {
+			if(1 == $user->getGoogleAuthBind())
+			{
+				//准备解绑
+				$user->setGoogleAuthBind(0);
+				$this->update();
+				
+				$this->succ('已解绑');
+			}
+			else
+			{
+				$user->setGoogleAuthBind(1);
+				$this->update();
+				
+				$this->succ('已绑定');
+			}
+		} else {
+			$this->e('验证码不匹配!');
+		}
+	}
 }
 
 

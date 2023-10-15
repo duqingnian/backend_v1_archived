@@ -72,6 +72,8 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 			$config->setPayinSecret($payin_secret);
 			$config->setPayoutAppid($payout_appid);
 			$config->setPayoutSecret($payout_secret);
+			$config->setPayinSignMethod('hmacsha1');
+			$config->setPayoutSignMethod('hmacsha1');
 			$this->save($config);
 			
 			//账号

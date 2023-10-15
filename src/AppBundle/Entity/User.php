@@ -39,10 +39,15 @@ class User extends BaseUser
      */
     private $is_active = 0;
 	
-	/**
+		/**
      * @ORM\Column(type="integer")
      */
     private $google_auth_bind = 0;
+	
+	/**
+     * @ORM\Column(type="string", length=32)
+     */
+    private $google_secret="";
 	
 	/**
      * @ORM\Column(type="integer")
@@ -197,5 +202,29 @@ class User extends BaseUser
     public function getGoogleAuthBind()
     {
         return $this->google_auth_bind;
+    }
+
+    /**
+     * Set googleSecret
+     *
+     * @param string $googleSecret
+     *
+     * @return User
+     */
+    public function setGoogleSecret($googleSecret)
+    {
+        $this->google_secret = $googleSecret;
+
+        return $this;
+    }
+
+    /**
+     * Get googleSecret
+     *
+     * @return string
+     */
+    public function getGoogleSecret()
+    {
+        return $this->google_secret;
     }
 }

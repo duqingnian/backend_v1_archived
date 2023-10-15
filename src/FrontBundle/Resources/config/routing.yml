@@ -57,6 +57,10 @@ front_user:
     path:     /user.api
     defaults: { _controller: FrontBundle:User:index }
 
+#生成二维码
+front_qrcode_generate:
+    path:     /qrcode.generate
+    defaults: { _controller: FrontBundle:Qrcode:generate }
 
 ###################################
 ## react
