@@ -62,6 +62,11 @@ front_qrcode_generate:
     path:     /qrcode.generate
     defaults: { _controller: FrontBundle:Qrcode:generate }
 
+#机器人
+front_telegram:
+    path:     /telegram.api
+    defaults: { _controller: FrontBundle:Telegram:index }
+
 ###################################
 ## react
 ###################################

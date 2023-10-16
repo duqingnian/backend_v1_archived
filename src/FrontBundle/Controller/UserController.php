@@ -552,7 +552,7 @@ class UserController extends \AppBundle\Controller\BaseController
 		$title = $this->device_name;
 		if('' != $user->getUsername())
 		{
-			$title .= '('.$user->getUsername().')';
+			$title .= ' - BACKEND - '.$user->getUsername();
 		}
 		
 		$qrcode_data = $google_authenticator->GetQRcodeData($title,$this->user_secret);

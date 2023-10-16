@@ -559,6 +559,8 @@ class BaseController extends Controller
 			'UPDATETIME'=>'更新时间',
 			'ERROR_MSG'=>'订单异常信息',
 			'ATTACH_DATA'=>'附加信息',
+			'TIMESTAMP_S'=>'时间戳[秒]',
+			'TIMESTAMP_MS'=>'时间戳[毫秒]',
 			'SIGN'=>'签名',
 		];
 

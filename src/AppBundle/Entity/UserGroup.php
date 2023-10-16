@@ -20,6 +20,11 @@ class UserGroup
      * @ORM\Column(type="string", length=30)
      */
     private $name="";
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
+    private $bundle = 0; //0平台 >0商户
 
     /**
      * Get id
@@ -53,5 +58,29 @@ class UserGroup
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Set bundle
+     *
+     * @param integer $bundle
+     *
+     * @return UserGroup
+     */
+    public function setBundle($bundle)
+    {
+        $this->bundle = $bundle;
+
+        return $this;
+    }
+
+    /**
+     * Get bundle
+     *
+     * @return integer
+     */
+    public function getBundle()
+    {
+        return $this->bundle;
     }
 }

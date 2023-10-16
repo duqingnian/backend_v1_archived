@@ -39,7 +39,7 @@ class User extends BaseUser
      */
     private $is_active = 0;
 	
-		/**
+    /**
      * @ORM\Column(type="integer")
      */
     private $google_auth_bind = 0;
