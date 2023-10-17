@@ -32,6 +32,16 @@ class ChannelNotifyData
     private $recive_data = '';
 	
 	/**
+     * @ORM\Column(type="string", length=10)
+     */
+    private $channel_id = ''; //通道id
+	
+	/**
+     * @ORM\Column(type="string", length=10)
+     */
+    private $sh_id = ''; //商户id
+	
+	/**
      * @ORM\Column(type="string", length=50)
      */
     private $plantform_order_no = ''; //平台订单号
@@ -199,5 +209,53 @@ class ChannelNotifyData
     public function getShNotifyed()
     {
         return $this->sh_notifyed;
+    }
+
+    /**
+     * Set channelId
+     *
+     * @param string $channelId
+     *
+     * @return ChannelNotifyData
+     */
+    public function setChannelId($channelId)
+    {
+        $this->channel_id = $channelId;
+
+        return $this;
+    }
+
+    /**
+     * Get channelId
+     *
+     * @return string
+     */
+    public function getChannelId()
+    {
+        return $this->channel_id;
+    }
+
+    /**
+     * Set shId
+     *
+     * @param string $shId
+     *
+     * @return ChannelNotifyData
+     */
+    public function setShId($shId)
+    {
+        $this->sh_id = $shId;
+
+        return $this;
+    }
+
+    /**
+     * Get shId
+     *
+     * @return string
+     */
+    public function getShId()
+    {
+        return $this->sh_id;
     }
 }
