@@ -49,12 +49,22 @@ class ShNotifyData
 	/**
      * @ORM\Column(type="integer")
      */
-    private $created_at = 0;
+    private $created_at = 0;    //记录创建时间
+	
+	/**
+     * @ORM\Column(type="integer") //time_pip发送时间
+     */
+    private $pip_time = 0;
+	
+	/**
+     * @ORM\Column(type="integer") //C++客户端发送时间
+     */
+    private $send_time = 0;
 	
 	/**
      * @ORM\Column(type="string", length=10)
      */
-    private $time_pip = "30s"; //通知的间隔频率一般是：30s,2m,4m,10m,30m,1h,2h,6h,15h
+    private $time_pip = "5s"; //通知的间隔频率一般是：5s,10s,15s,30s,1m,5m,10m,20m,30m,1h,2h,4h,8h,10h,16h
 
     /**
      * Get id
@@ -256,5 +266,53 @@ class ShNotifyData
     public function getTimePip()
     {
         return $this->time_pip;
+    }
+
+    /**
+     * Set pipTime
+     *
+     * @param integer $pipTime
+     *
+     * @return ShNotifyData
+     */
+    public function setPipTime($pipTime)
+    {
+        $this->pip_time = $pipTime;
+
+        return $this;
+    }
+
+    /**
+     * Get pipTime
+     *
+     * @return integer
+     */
+    public function getPipTime()
+    {
+        return $this->pip_time;
+    }
+
+    /**
+     * Set sendTime
+     *
+     * @param integer $sendTime
+     *
+     * @return ShNotifyData
+     */
+    public function setSendTime($sendTime)
+    {
+        $this->send_time = $sendTime;
+
+        return $this;
+    }
+
+    /**
+     * Get sendTime
+     *
+     * @return integer
+     */
+    public function getSendTime()
+    {
+        return $this->send_time;
     }
 }

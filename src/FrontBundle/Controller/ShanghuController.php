@@ -27,6 +27,16 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		$is_active = $request->request->get('is_active',0);
 		$is_test = $request->request->get('is_test',0);
 		$is_test = 'true' == $is_test ? 1 : 0;
+		
+		if(true == $is_active)
+		{
+			$is_active = 1;
+		}
+		else
+		{
+			$is_active = 0;
+		}
+		
 		if('' == $name)
 		{
 			$this->e('名称不能为空');
