@@ -64,7 +64,12 @@ class ShNotifyData
 	/**
      * @ORM\Column(type="string", length=10)
      */
-    private $time_pip = "5s"; //通知的间隔频率一般是：5s,10s,15s,30s,1m,5m,10m,20m,30m,1h,2h,4h,8h,10h,16h
+    private $time_pip = "5s";
+	
+	/**
+     * @ORM\Column(type="string", length=10)
+     */
+    private $status = "";
 
     /**
      * Get id
@@ -314,5 +319,29 @@ class ShNotifyData
     public function getSendTime()
     {
         return $this->send_time;
+    }
+
+    /**
+     * Set status
+     *
+     * @param string $status
+     *
+     * @return ShNotifyData
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 }
