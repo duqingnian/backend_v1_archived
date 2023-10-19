@@ -20,6 +20,7 @@ class StatusMeta
 		'START'=>'交易发起',
 		'CANCEL'=>'交易取消',
 		'PENDING'=>'待审核',
+		'NOTSURE'=>'代收成功但金额不一致',
 	];
 	
 	public function Get($name='')

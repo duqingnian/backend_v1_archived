@@ -554,7 +554,6 @@ class BaseController extends Controller
 			'SHANGHU_ORDER_NO'=>'商户订单号',
 			'CURRENCY'=>'金额币种',
 			'AMOUNT'=>'订单金额',
-			'REAL_PAY_AMOUNT'=>'实际支付金额',
 			'REAL_AMOUNT'=>'实际代收金额',
 			'CHANNEL_FEE'=>'通道手续费',
 			'CREATETIME'=>'创建时间',
