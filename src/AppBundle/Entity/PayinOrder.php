@@ -32,6 +32,11 @@ class PayinOrder
     private $amount = 0.00;  //支付的费用
 	
 	/**
+     * @ORM\Column(type="decimal", scale=2)
+     */
+    private $realpay_amount = 0.00;  //实际支付的费用
+	
+	/**
      * @ORM\Column(type="string", length=50)
      */
     private $channel_order_no = ''; //通道订单号
@@ -662,5 +667,29 @@ class PayinOrder
     public function getCreatedAt()
     {
         return $this->created_at;
+    }
+
+    /**
+     * Set realpayAmount
+     *
+     * @param string $realpayAmount
+     *
+     * @return PayinOrder
+     */
+    public function setRealpayAmount($realpayAmount)
+    {
+        $this->realpay_amount = $realpayAmount;
+
+        return $this;
+    }
+
+    /**
+     * Get realpayAmount
+     *
+     * @return string
+     */
+    public function getRealpayAmount()
+    {
+        return $this->realpay_amount;
     }
 }
