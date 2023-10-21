@@ -115,6 +115,26 @@ class Channel
      * @ORM\Column(type="text")
      */
     private $note = "";
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
+    private $payin_min = 1;
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
+    private $payin_max = 9999999; //1000万
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
+    private $payout_min = 10;
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
+    private $payout_max = 9999; //9999
 
     /**
      * Get id
@@ -604,5 +624,101 @@ class Channel
     public function getSlug()
     {
         return $this->slug;
+    }
+
+    /**
+     * Set payinMin
+     *
+     * @param integer $payinMin
+     *
+     * @return Channel
+     */
+    public function setPayinMin($payinMin)
+    {
+        $this->payin_min = $payinMin;
+
+        return $this;
+    }
+
+    /**
+     * Get payinMin
+     *
+     * @return integer
+     */
+    public function getPayinMin()
+    {
+        return $this->payin_min;
+    }
+
+    /**
+     * Set payinMax
+     *
+     * @param integer $payinMax
+     *
+     * @return Channel
+     */
+    public function setPayinMax($payinMax)
+    {
+        $this->payin_max = $payinMax;
+
+        return $this;
+    }
+
+    /**
+     * Get payinMax
+     *
+     * @return integer
+     */
+    public function getPayinMax()
+    {
+        return $this->payin_max;
+    }
+
+    /**
+     * Set payoutMin
+     *
+     * @param integer $payoutMin
+     *
+     * @return Channel
+     */
+    public function setPayoutMin($payoutMin)
+    {
+        $this->payout_min = $payoutMin;
+
+        return $this;
+    }
+
+    /**
+     * Get payoutMin
+     *
+     * @return integer
+     */
+    public function getPayoutMin()
+    {
+        return $this->payout_min;
+    }
+
+    /**
+     * Set payoutMax
+     *
+     * @param integer $payoutMax
+     *
+     * @return Channel
+     */
+    public function setPayoutMax($payoutMax)
+    {
+        $this->payout_max = $payoutMax;
+
+        return $this;
+    }
+
+    /**
+     * Get payoutMax
+     *
+     * @return integer
+     */
+    public function getPayoutMax()
+    {
+        return $this->payout_max;
     }
 }

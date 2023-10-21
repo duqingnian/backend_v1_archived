@@ -60,6 +60,41 @@ class Shanghu
      * @ORM\Column(type="integer")
      */
     private $created_at = 0;
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
+    private $payin_min = 1;
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
+    private $payin_max = 9999999; //1000万
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
+    private $payout_min = 10;
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
+    private $payout_max = 9999; //9999
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
+    private $payin_review_switch = 0; //代收是否开启人工审核
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
+    private $payout_review_switch = 0; //代付是否开启人工审核
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
+    private $payout_require_review_number = 0; //代付 大于多少金额 开启人工审核,0不开启
 
     /**
      * Get id
@@ -285,5 +320,173 @@ class Shanghu
     public function getUid()
     {
         return $this->uid;
+    }
+
+    /**
+     * Set payinMin
+     *
+     * @param integer $payinMin
+     *
+     * @return Shanghu
+     */
+    public function setPayinMin($payinMin)
+    {
+        $this->payin_min = $payinMin;
+
+        return $this;
+    }
+
+    /**
+     * Get payinMin
+     *
+     * @return integer
+     */
+    public function getPayinMin()
+    {
+        return $this->payin_min;
+    }
+
+    /**
+     * Set payinMax
+     *
+     * @param integer $payinMax
+     *
+     * @return Shanghu
+     */
+    public function setPayinMax($payinMax)
+    {
+        $this->payin_max = $payinMax;
+
+        return $this;
+    }
+
+    /**
+     * Get payinMax
+     *
+     * @return integer
+     */
+    public function getPayinMax()
+    {
+        return $this->payin_max;
+    }
+
+    /**
+     * Set payoutMin
+     *
+     * @param integer $payoutMin
+     *
+     * @return Shanghu
+     */
+    public function setPayoutMin($payoutMin)
+    {
+        $this->payout_min = $payoutMin;
+
+        return $this;
+    }
+
+    /**
+     * Get payoutMin
+     *
+     * @return integer
+     */
+    public function getPayoutMin()
+    {
+        return $this->payout_min;
+    }
+
+    /**
+     * Set payoutMax
+     *
+     * @param integer $payoutMax
+     *
+     * @return Shanghu
+     */
+    public function setPayoutMax($payoutMax)
+    {
+        $this->payout_max = $payoutMax;
+
+        return $this;
+    }
+
+    /**
+     * Get payoutMax
+     *
+     * @return integer
+     */
+    public function getPayoutMax()
+    {
+        return $this->payout_max;
+    }
+
+    /**
+     * Set payinReviewSwitch
+     *
+     * @param integer $payinReviewSwitch
+     *
+     * @return Shanghu
+     */
+    public function setPayinReviewSwitch($payinReviewSwitch)
+    {
+        $this->payin_review_switch = $payinReviewSwitch;
+
+        return $this;
+    }
+
+    /**
+     * Get payinReviewSwitch
+     *
+     * @return integer
+     */
+    public function getPayinReviewSwitch()
+    {
+        return $this->payin_review_switch;
+    }
+
+    /**
+     * Set payoutReviewSwitch
+     *
+     * @param integer $payoutReviewSwitch
+     *
+     * @return Shanghu
+     */
+    public function setPayoutReviewSwitch($payoutReviewSwitch)
+    {
+        $this->payout_review_switch = $payoutReviewSwitch;
+
+        return $this;
+    }
+
+    /**
+     * Get payoutReviewSwitch
+     *
+     * @return integer
+     */
+    public function getPayoutReviewSwitch()
+    {
+        return $this->payout_review_switch;
+    }
+
+    /**
+     * Set payoutRequireReviewNumber
+     *
+     * @param integer $payoutRequireReviewNumber
+     *
+     * @return Shanghu
+     */
+    public function setPayoutRequireReviewNumber($payoutRequireReviewNumber)
+    {
+        $this->payout_require_review_number = $payoutRequireReviewNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get payoutRequireReviewNumber
+     *
+     * @return integer
+     */
+    public function getPayoutRequireReviewNumber()
+    {
+        return $this->payout_require_review_number;
     }
 }
