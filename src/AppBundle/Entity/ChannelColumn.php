@@ -57,6 +57,21 @@ class ChannelColumn
     private $is_require = 0; //是否必填
 	
 	/**
+     * @ORM\Column(type="string", length=20)
+     */
+    private $generate_type="USER_INPUT"; //USER_INPUT=用户输入 SYS_GEN=系统生成
+	
+	/**
+     * @ORM\Column(type="string", length=20)
+     */
+    private $display_type="RADIO"; //RADIO单选  CHECKBOX1=只能选一个checkbox CHECKBOXM=多选 COMBOBOX1 只能选一个的下拉 COMBOBOXM 可以选择多个的下拉
+	
+	/**
+     * @ORM\Column(type="string", length=30)
+     */
+    private $default_value = ""; //如果是OPTIONS 就从php类里拉取
+	
+	/**
      * @ORM\Column(type="integer")
      */
     private $is_show = 0; //是否显示
@@ -285,5 +300,77 @@ class ChannelColumn
     public function getIsJoinEncryp()
     {
         return $this->is_join_encryp;
+    }
+
+    /**
+     * Set generateType
+     *
+     * @param string $generateType
+     *
+     * @return ChannelColumn
+     */
+    public function setGenerateType($generateType)
+    {
+        $this->generate_type = $generateType;
+
+        return $this;
+    }
+
+    /**
+     * Get generateType
+     *
+     * @return string
+     */
+    public function getGenerateType()
+    {
+        return $this->generate_type;
+    }
+
+    /**
+     * Set displayType
+     *
+     * @param string $displayType
+     *
+     * @return ChannelColumn
+     */
+    public function setDisplayType($displayType)
+    {
+        $this->display_type = $displayType;
+
+        return $this;
+    }
+
+    /**
+     * Get displayType
+     *
+     * @return string
+     */
+    public function getDisplayType()
+    {
+        return $this->display_type;
+    }
+
+    /**
+     * Set defaultValue
+     *
+     * @param string $defaultValue
+     *
+     * @return ChannelColumn
+     */
+    public function setDefaultValue($defaultValue)
+    {
+        $this->default_value = $defaultValue;
+
+        return $this;
+    }
+
+    /**
+     * Get defaultValue
+     *
+     * @return string
+     */
+    public function getDefaultValue()
+    {
+        return $this->default_value;
     }
 }

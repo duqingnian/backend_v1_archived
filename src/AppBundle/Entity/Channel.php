@@ -22,6 +22,11 @@ class Channel
     private $name; //名称
 	
 	/**
+     * @ORM\Column(type="string", length=30)
+     */
+    private $slug=""; //通道别名
+	
+	/**
      * @ORM\Column(type="string", length=50)
      */
     private $timezone=""; //时区
@@ -575,5 +580,29 @@ class Channel
     public function getPayoutSignColName()
     {
         return $this->payout_sign_col_name;
+    }
+
+    /**
+     * Set slug
+     *
+     * @param string $slug
+     *
+     * @return Channel
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * Get slug
+     *
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
     }
 }
