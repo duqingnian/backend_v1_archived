@@ -59,22 +59,23 @@ class ChannelColumn
 	/**
      * @ORM\Column(type="string", length=20)
      */
-    private $generate_type="USER_INPUT"; //USER_INPUT=用户输入 SYS_GEN=系统生成
+    private $data_source="USER_INPUT"; //USER_INPUT=用户输入 SYS_GEN=系统生成  OPTIONS=从php类里拉取 选择
 	
 	/**
      * @ORM\Column(type="string", length=20)
      */
-    private $display_type="RADIO"; //RADIO单选  CHECKBOX1=只能选一个checkbox CHECKBOXM=多选 COMBOBOX1 只能选一个的下拉 COMBOBOXM 可以选择多个的下拉
+    private $display_type="RADIO"; //RADIO单选  CHECKBOX1=只能选一个checkbox CHECKBOXM=多选 COMBOBOX1 只能选一个的下拉 COMBOBOXM 可以选择多个的下拉  INPUT 输入框
 	
 	/**
      * @ORM\Column(type="string", length=30)
      */
-    private $default_value = ""; //如果是OPTIONS 就从php类里拉取
+    private $default_value = ""; //默认值
 	
 	/**
      * @ORM\Column(type="integer")
      */
     private $is_show = 0; //是否显示
+
 
     /**
      * Get id
@@ -231,54 +232,6 @@ class ChannelColumn
     }
 
     /**
-     * Set isRequire
-     *
-     * @param integer $isRequire
-     *
-     * @return ChannelColumn
-     */
-    public function setIsRequire($isRequire)
-    {
-        $this->is_require = $isRequire;
-
-        return $this;
-    }
-
-    /**
-     * Get isRequire
-     *
-     * @return integer
-     */
-    public function getIsRequire()
-    {
-        return $this->is_require;
-    }
-
-    /**
-     * Set isShow
-     *
-     * @param integer $isShow
-     *
-     * @return ChannelColumn
-     */
-    public function setIsShow($isShow)
-    {
-        $this->is_show = $isShow;
-
-        return $this;
-    }
-
-    /**
-     * Get isShow
-     *
-     * @return integer
-     */
-    public function getIsShow()
-    {
-        return $this->is_show;
-    }
-
-    /**
      * Set isJoinEncryp
      *
      * @param integer $isJoinEncryp
@@ -303,27 +256,51 @@ class ChannelColumn
     }
 
     /**
-     * Set generateType
+     * Set isRequire
      *
-     * @param string $generateType
+     * @param integer $isRequire
      *
      * @return ChannelColumn
      */
-    public function setGenerateType($generateType)
+    public function setIsRequire($isRequire)
     {
-        $this->generate_type = $generateType;
+        $this->is_require = $isRequire;
 
         return $this;
     }
 
     /**
-     * Get generateType
+     * Get isRequire
+     *
+     * @return integer
+     */
+    public function getIsRequire()
+    {
+        return $this->is_require;
+    }
+
+    /**
+     * Set dataSource
+     *
+     * @param string $dataSource
+     *
+     * @return ChannelColumn
+     */
+    public function setDataSource($dataSource)
+    {
+        $this->data_source = $dataSource;
+
+        return $this;
+    }
+
+    /**
+     * Get dataSource
      *
      * @return string
      */
-    public function getGenerateType()
+    public function getDataSource()
     {
-        return $this->generate_type;
+        return $this->data_source;
     }
 
     /**
@@ -372,5 +349,29 @@ class ChannelColumn
     public function getDefaultValue()
     {
         return $this->default_value;
+    }
+
+    /**
+     * Set isShow
+     *
+     * @param integer $isShow
+     *
+     * @return ChannelColumn
+     */
+    public function setIsShow($isShow)
+    {
+        $this->is_show = $isShow;
+
+        return $this;
+    }
+
+    /**
+     * Get isShow
+     *
+     * @return integer
+     */
+    public function getIsShow()
+    {
+        return $this->is_show;
     }
 }

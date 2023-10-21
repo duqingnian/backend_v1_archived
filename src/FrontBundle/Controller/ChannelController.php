@@ -38,14 +38,21 @@ class ChannelController extends \AppBundle\Controller\BaseController
 	}
 	public function _create($request)
     {
+		$uid = $this->GetId($request->request->get('access_token',''));
+		
 		$name = $request->request->get('name','');
+		$slug = $request->request->get('slug','');
 		$country = $request->request->get('country','');
 		$is_active = $request->request->get('is_active','false') == 'true' ? 1 : 0;
 		if('' == $name)
 		{
 			$this->e('名称不能为空');
 		}
-		if('' == $country)
+		else if('' == $slug)
+		{
+			$this->e('slug别名不能为空，影响代付');
+		}
+		else if('' == $country)
 		{
 			$this->e('国家不能为空');
 		}
@@ -55,8 +62,14 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		{
 			$this->e("名称存在:".$name);
 		}
+		$channel = $this->db('Channel')->findOneBy(['slug'=>$slug]);
+		if($channel)
+		{
+			$this->e("slug存在:".$slug);
+		}
 		$channel = new \AppBundle\Entity\Channel();
 		$channel->setName($name);
+		$channel->setSlug($slug);
 		$channel->setCountry($country);
 		$channel->setPayinAppid('');
 		$channel->setPayinSecret('');
@@ -94,7 +107,32 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		foreach($channels as $channel)
 		{
 			$country = $countries[$channel->getCountry()]['name'];
-			$json['channels'][] = ['id'=>$channel->getId(),'name'=>$channel->getName(),'country'=>$country,'is_active'=>$channel->getIsActive(),'request_token'=>$this->authcode('ID'.$channel->getId())];
+			$payin_pct = $channel->getPayinPct();
+			$payin_sigle_fee = $channel->getPayinSigleFee();
+			
+			$payout_pct = $channel->getPayoutPct();
+			$payout_sigle_fee = $channel->getPayoutSigleFee();
+			
+			$payin_sign_method = $channel->getPayinSignMethod();
+			$payout_sign_method = $channel->getPayoutSignMethod();
+			
+			$json['channels'][] = [
+				'id'=>$channel->getId(),
+				'name'=>$channel->getName(),
+				'country'=>$country,
+				
+				'payin_pct'=>$payin_pct,
+				'payin_sigle_fee'=>$payin_sigle_fee,
+				'payout_pct'=>$payout_pct,
+				'payout_sigle_fee'=>$payout_sigle_fee,
+				
+				'payin_sign_method'=>$payin_sign_method,
+				'payout_sign_method'=>$payout_sign_method,
+				
+				'created_time'=>date('Y-m-d H:i:s',$channel->getCreatedAt()),
+				'is_active'=>$channel->getIsActive(),
+				'request_token'=>$this->authcode('ID'.$channel->getId())
+			];
 		}
 		
 		//国家货币
@@ -122,12 +160,13 @@ class ChannelController extends \AppBundle\Controller\BaseController
 
 	private function _update($request)
 	{
-		$request_token = $request->request->get('request_token','');
-		$id = $this->GetId($request_token);
+		$uid = $this->GetId($request->request->get('access_token',''));
+		$id = $this->GetId($request->request->get('request_token',''));
 		
 		$timezone = $request->request->get('timezone','');
 		$note = $request->request->get('note','');
 		$name = $request->request->get('name','');
+		$slug = $request->request->get('slug','');
 		$country = $request->request->get('country','');
 		$merchant_id = $request->request->get('merchant_id','');
 		$is_active = $request->request->get('is_active',0);
@@ -161,7 +200,18 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		{
 			$this->e('通道不存在，无法更新');
 		}
+		$channel_check = $this->db('Channel')->findOneBy(['name'=>$name]);
+		if($channel_check && $channel_check->getId() != $id)
+		{
+			$this->e("名称存在:".$name);
+		}
+		$channel_check = $this->db('Channel')->findOneBy(['slug'=>$slug]);
+		if($channel_check && $channel_check->getId() != $id)
+		{
+			$this->e("slug存在:".$slug);
+		}
 		$channel->setName($name);
+		$channel->setSlug($slug);
 		$channel->setIsActive($is_active);
 		$channel->setCountry($country);
 		$channel->setNote($note);
@@ -215,6 +265,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$detail = [
 			'master_id'=>$_channel->getId(),
 			'name'=>$_channel->getName(),
+			'slug'=>$_channel->getSlug(),
 			'country'=>$_channel->getCountry(),
 			'currency'=>$countries[$_channel->getCountry()]['currency'],
 			'is_active'=>$_channel->getIsActive(),
