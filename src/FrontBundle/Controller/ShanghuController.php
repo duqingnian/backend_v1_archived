@@ -187,6 +187,11 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		$is_test = $request->request->get('is_test',0);
 		$is_active = $request->request->get('is_active',0);
 		
+		$payin_min = $request->request->get('payin_min',0);
+		$payin_max = $request->request->get('payin_max',0);
+		$payout_min = $request->request->get('payout_min',0);
+		$payout_max = $request->request->get('payout_max',0);
+		
 		$payin_pct = $request->request->get('payin_pct',0);
 		$payin_sigle_fee = $request->request->get('payin_sigle_fee',0);
 		$payout_pct = $request->request->get('payout_pct',0);
@@ -204,14 +209,66 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		$shanghu = $this->db('Shanghu')->find($id);
 		if(!$shanghu)
 		{
-			$this->e('通道不存在，无法更新');
+			$this->e('商户不存在，无法更新');
 		}
+		$config = $this->db('ShanghuConfig')->findOneBy(['master_id'=>$id]);
+		
+		if(is_numeric($config->getPayinChannelId()) && $config->getPayinChannelId() > 0)
+		{
+			$payin_channel = $this->db('channel')->find($config->getPayinChannelId());
+			if($payin_channel)
+			{
+				$channel_payin_min = $payin_channel->getPayinMin();
+				$channel_payin_max = $payin_channel->getPayinMax();
+				
+				//商户的金额设置不能大于小于通道的设置
+				if(0 != $channel_payin_min && $payin_min < $channel_payin_min)
+				{
+					$this->e("通道最小代收金额:".$payin_min." 不能小于 通道最小代收金额:".$channel_payin_min);
+				}
+				if(0 != $channel_payin_max && $payin_max > $channel_payin_max)
+				{
+					$this->e("通道最大代收金额:".$payin_max." 不能大于 通道最大代收金额:".$channel_payin_max);
+				}
+			}
+			else
+			{
+				$this->e("通道不存在,id:".$config->getPayinChannelId());
+			}
+		}
+		
+		if(is_numeric($config->getPayoutChannelId()) && $config->getPayoutChannelId() > 0)
+		{
+			$payout_channel = $this->db('channel')->find($config->getPayoutChannelId());
+			if($payout_channel)
+			{
+				$channel_payout_min = $payout_channel->getPayoutMin();
+				$channel_payout_max = $payout_channel->getPayoutMax();
+				
+				//商户的金额设置不能大于小于通道的设置
+				if(0 != $channel_payout_min && $payout_min < $channel_payout_min)
+				{
+					$this->e("通道最小代付金额:".$payout_min." 不能小于 通道最小代付金额:".$channel_payout_min);
+				}
+				if(0 != $channel_payout_max && $payout_max > $channel_payout_max)
+				{
+					$this->e("通道最大代付金额:".$payout_max." 不能大于 通道最大代付金额:".$channel_payout_max);
+				}
+			}
+			else
+			{
+				$this->e("通道不存在,id:".$config->getPayoutChannelId());
+			}
+		}
+		
 		$shanghu->setName($name);
 		$shanghu->setIsTest($is_test);
 		$shanghu->setIsActive($is_active);
 		$shanghu->setCountry($country);
-		
-		$config = $this->db('ShanghuConfig')->findOneBy(['master_id'=>$id]);
+		$shanghu->setPayinMin($payin_min);
+		$shanghu->setPayinMax($payin_max);
+		$shanghu->setPayoutMin($payout_min);
+		$shanghu->setPayoutMax($payout_max);
 
 		$config->setPayinPct($payin_pct);
 		$config->setPayinSigleFee($payin_sigle_fee);
@@ -271,14 +328,22 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 			'currency'=>$countries[$_shanghu->getCountry()]['currency'],
 			'is_active'=>$_shanghu->getIsActive(),
 			'request_token'=>$this->authcode('ID'.$_shanghu->getId()),
+			
+			'payin_min'=>$_shanghu->getPayinMin(),
+			'payin_max'=>$_shanghu->getPayinMax(),
+			'payout_min'=>$_shanghu->getPayoutMin(),
+			'payout_max'=>$_shanghu->getPayoutMax(),
+			
 			'payin_appid'=>$config->getPayinAppid(),
 			'payout_appid'=>$config->getPayoutAppid(),
 			'payin_secret'=>$config->getPayinSecret(),
 			'payout_secret'=>$config->getPayoutSecret(),
+			
 			'payin_pct'=>"".$config->getPayinPct(),
 			'payout_pct'=>"".$config->getPayoutPct(),
 			'payin_sigle_fee'=>"".$config->getPayinSigleFee(),
 			'payout_sigle_fee'=>"".$config->getPayoutSigleFee(),
+			
 			'payin_channel_id'=>"channel".$config->getPayinChannelId(),
 			'payout_channel_id'=>"channel".$config->getPayoutChannelId(),
 			'payin_sign_method'=>$config->getPayinSignMethod(),
