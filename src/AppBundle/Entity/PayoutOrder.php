@@ -15,8 +15,8 @@ class PayoutOrder
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-    
-    /**
+   
+   /**
      * @ORM\Column(type="integer")
      */
     private $shanghu_id = 0; //商户ID
@@ -54,27 +54,32 @@ class PayoutOrder
 	/**
      * @ORM\Column(type="decimal", scale=2)
      */
-    private $payout_pct = 0.00;
+    private $sh_pct = 0.00;
 	
 	/**
      * @ORM\Column(type="decimal", scale=2)
      */
-    private $payout_sigle_fee = 0.00;
+    private $sh_sigle_fee = 0.00;
 	
 	/**
      * @ORM\Column(type="decimal", scale=2)
      */
-    private $channel_payout_pct = 0.00;
+    private $sh_fee = 0.00;  //支付的费用
 	
 	/**
      * @ORM\Column(type="decimal", scale=2)
      */
-    private $channel_payout_sigle_fee = 0.00;
+    private $channel_pct = 0.00;
 	
 	/**
      * @ORM\Column(type="decimal", scale=2)
      */
-    private $fee = 0.00;  //支付的费用
+    private $channel_sigle_fee = 0.00;
+	
+	/**
+     * @ORM\Column(type="decimal", scale=2)
+     */
+    private $channel_fee = 0.00;  //支付的费用
 	
 	/**
      * @ORM\Column(type="string", length=15)
@@ -95,46 +100,11 @@ class PayoutOrder
      * @ORM\Column(type="string", length=300)
      */
     private $shanghu_notify_url = ''; //商户的回调地址
-
-    /**
-     * @ORM\Column(type="string", length=15)
-     */
-    private $acc_type = '';
-	
-	/**
-     * @ORM\Column(type="string", length=32)
-     */
-    private $account = '';
-	
-	/**
-     * @ORM\Column(type="string", length=36)
-     */
-    private $acc_owner_name = '';
-	
-	/**
-     * @ORM\Column(type="string", length=50)
-     */
-    private $email = '';
-	
-	/**
-     * @ORM\Column(type="string", length=22)
-     */
-    private $phone = '';
-	
-	/**
-     * @ORM\Column(type="string", length=36)
-     */
-    private $cpf_no = '';
 	
 	/**
      * @ORM\Column(type="integer")
      */
     private $created_at = 0; //创建时间
-	
-	/**
-     * @ORM\Column(type="integer")
-     */
-    private $send_at = 0; //回调时间
 
     /**
      * Get id
@@ -315,123 +285,147 @@ class PayoutOrder
     }
 
     /**
-     * Set payoutPct
+     * Set shPct
      *
-     * @param string $payoutPct
+     * @param string $shPct
      *
      * @return PayoutOrder
      */
-    public function setPayoutPct($payoutPct)
+    public function setShPct($shPct)
     {
-        $this->payout_pct = $payoutPct;
+        $this->sh_pct = $shPct;
 
         return $this;
     }
 
     /**
-     * Get payoutPct
+     * Get shPct
      *
      * @return string
      */
-    public function getPayoutPct()
+    public function getShPct()
     {
-        return $this->payout_pct;
+        return $this->sh_pct;
     }
 
     /**
-     * Set payoutSigleFee
+     * Set shSigleFee
      *
-     * @param string $payoutSigleFee
+     * @param string $shSigleFee
      *
      * @return PayoutOrder
      */
-    public function setPayoutSigleFee($payoutSigleFee)
+    public function setShSigleFee($shSigleFee)
     {
-        $this->payout_sigle_fee = $payoutSigleFee;
+        $this->sh_sigle_fee = $shSigleFee;
 
         return $this;
     }
 
     /**
-     * Get payoutSigleFee
+     * Get shSigleFee
      *
      * @return string
      */
-    public function getPayoutSigleFee()
+    public function getShSigleFee()
     {
-        return $this->payout_sigle_fee;
+        return $this->sh_sigle_fee;
     }
 
     /**
-     * Set channelPayoutPct
+     * Set shFee
      *
-     * @param string $channelPayoutPct
+     * @param string $shFee
      *
      * @return PayoutOrder
      */
-    public function setChannelPayoutPct($channelPayoutPct)
+    public function setShFee($shFee)
     {
-        $this->channel_payout_pct = $channelPayoutPct;
+        $this->sh_fee = $shFee;
 
         return $this;
     }
 
     /**
-     * Get channelPayoutPct
+     * Get shFee
      *
      * @return string
      */
-    public function getChannelPayoutPct()
+    public function getShFee()
     {
-        return $this->channel_payout_pct;
+        return $this->sh_fee;
     }
 
     /**
-     * Set channelPayoutSigleFee
+     * Set channelPct
      *
-     * @param string $channelPayoutSigleFee
+     * @param string $channelPct
      *
      * @return PayoutOrder
      */
-    public function setChannelPayoutSigleFee($channelPayoutSigleFee)
+    public function setChannelPct($channelPct)
     {
-        $this->channel_payout_sigle_fee = $channelPayoutSigleFee;
+        $this->channel_pct = $channelPct;
 
         return $this;
     }
 
     /**
-     * Get channelPayoutSigleFee
+     * Get channelPct
      *
      * @return string
      */
-    public function getChannelPayoutSigleFee()
+    public function getChannelPct()
     {
-        return $this->channel_payout_sigle_fee;
+        return $this->channel_pct;
     }
 
     /**
-     * Set fee
+     * Set channelSigleFee
      *
-     * @param string $fee
+     * @param string $channelSigleFee
      *
      * @return PayoutOrder
      */
-    public function setFee($fee)
+    public function setChannelSigleFee($channelSigleFee)
     {
-        $this->fee = $fee;
+        $this->channel_sigle_fee = $channelSigleFee;
 
         return $this;
     }
 
     /**
-     * Get fee
+     * Get channelSigleFee
      *
      * @return string
      */
-    public function getFee()
+    public function getChannelSigleFee()
     {
-        return $this->fee;
+        return $this->channel_sigle_fee;
+    }
+
+    /**
+     * Set channelFee
+     *
+     * @param string $channelFee
+     *
+     * @return PayoutOrder
+     */
+    public function setChannelFee($channelFee)
+    {
+        $this->channel_fee = $channelFee;
+
+        return $this;
+    }
+
+    /**
+     * Get channelFee
+     *
+     * @return string
+     */
+    public function getChannelFee()
+    {
+        return $this->channel_fee;
     }
 
     /**
@@ -552,173 +546,5 @@ class PayoutOrder
     public function getCreatedAt()
     {
         return $this->created_at;
-    }
-
-    /**
-     * Set accType
-     *
-     * @param string $accType
-     *
-     * @return PayoutOrder
-     */
-    public function setAccType($accType)
-    {
-        $this->acc_type = $accType;
-
-        return $this;
-    }
-
-    /**
-     * Get accType
-     *
-     * @return string
-     */
-    public function getAccType()
-    {
-        return $this->acc_type;
-    }
-
-    /**
-     * Set account
-     *
-     * @param string $account
-     *
-     * @return PayoutOrder
-     */
-    public function setAccount($account)
-    {
-        $this->account = $account;
-
-        return $this;
-    }
-
-    /**
-     * Get account
-     *
-     * @return string
-     */
-    public function getAccount()
-    {
-        return $this->account;
-    }
-
-    /**
-     * Set accOwnerName
-     *
-     * @param string $accOwnerName
-     *
-     * @return PayoutOrder
-     */
-    public function setAccOwnerName($accOwnerName)
-    {
-        $this->acc_owner_name = $accOwnerName;
-
-        return $this;
-    }
-
-    /**
-     * Get accOwnerName
-     *
-     * @return string
-     */
-    public function getAccOwnerName()
-    {
-        return $this->acc_owner_name;
-    }
-
-    /**
-     * Set email
-     *
-     * @param string $email
-     *
-     * @return PayoutOrder
-     */
-    public function setEmail($email)
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    /**
-     * Get email
-     *
-     * @return string
-     */
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    /**
-     * Set phone
-     *
-     * @param string $phone
-     *
-     * @return PayoutOrder
-     */
-    public function setPhone($phone)
-    {
-        $this->phone = $phone;
-
-        return $this;
-    }
-
-    /**
-     * Get phone
-     *
-     * @return string
-     */
-    public function getPhone()
-    {
-        return $this->phone;
-    }
-
-    /**
-     * Set cpfNo
-     *
-     * @param string $cpfNo
-     *
-     * @return PayoutOrder
-     */
-    public function setCpfNo($cpfNo)
-    {
-        $this->cpf_no = $cpfNo;
-
-        return $this;
-    }
-
-    /**
-     * Get cpfNo
-     *
-     * @return string
-     */
-    public function getCpfNo()
-    {
-        return $this->cpf_no;
-    }
-
-    /**
-     * Set sendAt
-     *
-     * @param integer $sendAt
-     *
-     * @return PayoutOrder
-     */
-    public function setSendAt($sendAt)
-    {
-        $this->send_at = $sendAt;
-
-        return $this;
-    }
-
-    /**
-     * Get sendAt
-     *
-     * @return integer
-     */
-    public function getSendAt()
-    {
-        return $this->send_at;
     }
 }
