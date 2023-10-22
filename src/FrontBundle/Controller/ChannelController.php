@@ -17,6 +17,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
         }
 		return $this->{$method}($request);
     }
+	
 	private function _sync_column($request)
 	{
 		$request_token = $request->request->get("request_token","");
@@ -36,6 +37,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$this->update();
 		$this->succ("已更新");
 	}
+	
 	public function _create($request)
     {
 		$uid = $this->GetId($request->request->get('access_token',''));
@@ -177,6 +179,12 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$payout_appid = $request->request->get('payout_appid','');
 		$payout_secret = $request->request->get('payout_secret','');
 		
+		//金额上下限
+		$payin_min = $request->request->get('payin_min','');
+		$payin_max = $request->request->get('payin_max','');
+		$payout_min = $request->request->get('payout_min','');
+		$payout_max = $request->request->get('payout_max','');
+		
 		//费用
 		$payin_pct = $request->request->get('payin_pct',0);
 		$payin_sigle_fee = $request->request->get('payin_sigle_fee',0);
@@ -224,6 +232,12 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$channel->setPayoutAppid($payout_appid);
 		$channel->setPayoutSecret($payout_secret);
 		
+		//金额上下限
+		$channel->setPayinMin($payin_min);
+		$channel->setPayinMax($payin_max);
+		$channel->setPayoutMin($payout_min);
+		$channel->setPayoutMax($payout_max);
+		
 		//费用
 		$channel->setPayinPct($payin_pct);
 		$channel->setPayinSigleFee($payin_sigle_fee);
@@ -239,12 +253,6 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$channel->setPayoutSignColName($payout_sign_col_name);
 		
 		$this->update();
-		
-		//更新请求头信息
-		//$this->update_column($channel->getId(),'PAYIN','REQUEST','TYPE','',$payin_request_type,1,0);
-		//$this->update_column($channel->getId(),'PAYIN','REQUEST','HEADER','',$payin_request_header,1,0);
-		//$this->update_column($channel->getId(),'PAYIN','REQUEST','URL','',$payin_request_url,1,0);
-		
 		$this->succ("已更新");
 	}
 	
@@ -278,6 +286,12 @@ class ChannelController extends \AppBundle\Controller\BaseController
 			'payin_secret'=>$_channel->getPayinSecret(),
 			'payout_appid'=>$_channel->getPayoutAppid(),
 			'payout_secret'=>$_channel->getPayoutSecret(),
+			
+			//金额上下限
+			'payin_min'=>$_channel->getPayinMin(),
+			'payin_max'=>$_channel->getPayinMax(),
+			'payout_min'=>$_channel->getPayoutMin(),
+			'payout_max'=>$_channel->getPayoutMax(),
 			
 			//费用
 			'payin_pct'=>$_channel->getPayinPct(),
@@ -379,6 +393,9 @@ class ChannelController extends \AppBundle\Controller\BaseController
 					'channel_column_value'=>$column->getChannelColumnValue(),
 					'is_join_encryp'=>$column->getIsJoinEncryp(),
 					'is_require'=>$column->getIsRequire(),
+					'data_source'=>$column->getDataSource(),
+					'display_type'=>$column->getDisplayType(),
+					'default_value'=>$column->getDefaultValue(),
 				];
 			}
 		}
@@ -387,6 +404,31 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$detail['status_map'] = $status_map;
 
 		echo json_encode(['code'=>0,'msg'=>'OK','channel'=>$channel,'detail'=>$detail]);exit();
+	}
+	
+	private function _fetch_column_detail($request)
+	{
+		$this->GetId($request->request->get("access_token",""));
+		$column_id = $request->request->get('id');
+		
+		$column = $this->db('ChannelColumn')->find($column_id);
+		if(!$column)
+		{
+			$this->e('column not exists');
+		}
+		else
+		{
+			echo json_encode([
+				'atype'=>$column->getAtype(),
+				'bundle'=>$column->getBundle(),
+				'channel_column_name'=>$column->getChannelColumnName(),
+				'channel_column_value'=>$column->getChannelColumnValue(),
+				'data_source'=>$column->getDataSource(),
+				'display_type'=>$column->getDisplayType(),
+				'default_value'=>$column->getDefaultValue(),
+			]);
+			exit();
+		}
 	}
 	
 	//删除状态
@@ -462,6 +504,9 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$const = $request->request->get('const','');
 		$channel_column = $request->request->get('channel_column','');
 		$channel_column_value = $request->request->get('channel_column_value','');
+		$data_source = $request->request->get('data_source','');
+		$display_type = $request->request->get('display_type','');
+		$default_value = $request->request->get('default_value','');
 		$is_require = $request->request->get('is_require','');
 		$channel_id = $request->request->get('channel_id','');
 		
@@ -493,7 +538,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		}
 		
 		//入库
-		$this->add_column($channel_id,$atype,$bundle,$const,$channel_column,$channel_column_value,$is_require);
+		$this->add_column($channel_id,$atype,$bundle,$const,$channel_column,$channel_column_value,$is_require,1,$data_source,$display_type,$default_value);
 		
 		$this->succ('已添加');
 	}
@@ -515,6 +560,9 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		
 		$name = $request->request->get('name','');
 		$value = $request->request->get('value','');
+		$data_source = $request->request->get('data_source','');
+		$display_type = $request->request->get('display_type','');
+		$default_value = $request->request->get('default_value','');
 		
 		if('' == $name)
 		{
@@ -526,6 +574,9 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		}
 		$column->setChannelColumnName($name);
 		$column->setChannelColumnValue($value);
+		$column->setDataSource($data_source);
+		$column->setDisplayType($display_type);
+		$column->setDefaultValue($default_value);
 		
 		$this->update();
 		
@@ -536,7 +587,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		exit();
 	}
 	
-	private function add_column($channel_id,$atype,$bundle,$const,$channel_column,$channel_column_value,$is_require,$is_show=1)
+	private function add_column($channel_id,$atype,$bundle,$const,$channel_column,$channel_column_value,$is_require,$is_show=1,$data_source="",$display_type="",$default_value="")
 	{
 		$column = new \AppBundle\Entity\ChannelColumn();
 		$column->setChannelId($channel_id);
@@ -547,6 +598,9 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$column->setChannelColumnValue($channel_column_value);
 		$column->setIsRequire($is_require);
 		$column->setIsShow($is_show);
+		$column->setDataSource($data_source);
+		$column->setDisplayType($display_type);
+		$column->setDefaultValue($default_value);
 		$this->save($column);
 	}
 	

@@ -70,12 +70,16 @@ class ChannelColumn
      * @ORM\Column(type="string", length=30)
      */
     private $default_value = ""; //默认值
+    
+	/**
+     * @ORM\Column(type="string", length=30)
+     */
+    private $label = ""; //label
 	
 	/**
      * @ORM\Column(type="integer")
      */
     private $is_show = 0; //是否显示
-
 
     /**
      * Get id
@@ -373,5 +377,29 @@ class ChannelColumn
     public function getIsShow()
     {
         return $this->is_show;
+    }
+
+    /**
+     * Set label
+     *
+     * @param string $label
+     *
+     * @return ChannelColumn
+     */
+    public function setLabel($label)
+    {
+        $this->label = $label;
+
+        return $this;
+    }
+
+    /**
+     * Get label
+     *
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->label;
     }
 }
