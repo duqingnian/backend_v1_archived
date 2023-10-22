@@ -397,6 +397,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 					'display_type'=>$column->getDisplayType(),
 					'default_value'=>$column->getDefaultValue(),
 					'label'=>$column->getLabel(),
+					'idx'=>$column->getIdx(),
 				];
 			}
 		}
@@ -428,6 +429,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 				'display_type'=>$column->getDisplayType(),
 				'default_value'=>$column->getDefaultValue(),
 				'label'=>$column->getLabel(),
+				'idx'=>$column->getIdx(),
 			]);
 			exit();
 		}
@@ -510,6 +512,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$display_type = $request->request->get('display_type','');
 		$default_value = $request->request->get('default_value','');
 		$label = $request->request->get('label','');
+		$idx = $request->request->get('idx',0);			 
 		$is_require = $request->request->get('is_require','');
 		$channel_id = $request->request->get('channel_id','');
 		
@@ -541,7 +544,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		}
 		
 		//入库
-		$this->add_column($channel_id,$atype,$bundle,$const,$channel_column,$channel_column_value,$is_require,1,$data_source,$display_type,$default_value,$label);
+		$this->add_column($channel_id,$atype,$bundle,$const,$channel_column,$channel_column_value,$is_require,1,$data_source,$display_type,$default_value,$label,$idx);
 		
 		$this->succ('已添加');
 	}
@@ -567,6 +570,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$display_type = $request->request->get('display_type','');
 		$default_value = $request->request->get('default_value','');
 		$label = $request->request->get('label','');
+		$idx = $request->request->get('idx','');
 		
 		if('' == $name)
 		{
@@ -582,6 +586,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$column->setDisplayType($display_type);
 		$column->setDefaultValue($default_value);
 		$column->setLabel($label);
+		$column->setIdx($idx);
 		
 		$this->update();
 		
@@ -592,7 +597,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		exit();
 	}
 	
-	private function add_column($channel_id,$atype,$bundle,$const,$channel_column,$channel_column_value,$is_require,$is_show=1,$data_source="",$display_type="",$default_value="",$label)
+	private function add_column($channel_id,$atype,$bundle,$const,$channel_column,$channel_column_value,$is_require,$is_show=1,$data_source="",$display_type="",$default_value="",$label="",$idx=0)
 	{
 		$column = new \AppBundle\Entity\ChannelColumn();
 		$column->setChannelId($channel_id);
@@ -607,6 +612,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$column->setDisplayType($display_type);
 		$column->setDefaultValue($default_value);
 		$column->setLabel($label);
+		$column->setIdx($idx);
 		$this->save($column);
 	}
 	
