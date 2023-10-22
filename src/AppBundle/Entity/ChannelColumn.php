@@ -70,6 +70,11 @@ class ChannelColumn
      * @ORM\Column(type="string", length=30)
      */
     private $default_value = ""; //默认值
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
+    private $idx = 0; //排序
     
 	/**
      * @ORM\Column(type="string", length=30)
@@ -401,5 +406,29 @@ class ChannelColumn
     public function getLabel()
     {
         return $this->label;
+    }
+
+    /**
+     * Set idx
+     *
+     * @param integer $idx
+     *
+     * @return ChannelColumn
+     */
+    public function setIdx($idx)
+    {
+        $this->idx = $idx;
+
+        return $this;
+    }
+
+    /**
+     * Get idx
+     *
+     * @return integer
+     */
+    public function getIdx()
+    {
+        return $this->idx;
     }
 }
