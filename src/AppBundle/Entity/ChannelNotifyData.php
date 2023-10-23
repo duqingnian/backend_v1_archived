@@ -56,7 +56,6 @@ class ChannelNotifyData
      */
     private $sh_notifyed = ""; //空=>未通知  ING=>正在通知  SUCC=>已经完成通知  COMPLETE已经完成通知
 
-
     /**
      * Get id
      *

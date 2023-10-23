@@ -370,13 +370,16 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 	private function _remove_ip($request)
 	{
 		$uid   = $this->GetId($request->request->get('access_token',''));
-		$request_token = $request->request->get('request_token','');
-		$ip = $this->authcode($request_token,'DECODE');
+		$ip_request_token = $request->request->get('ip_request_token','');
+		$sh_request_token = $request->request->get('sh_request_token','');
+		$ip = $this->authcode($ip_request_token,'DECODE');
 		if('IP' == substr($ip,0,2))
 		{
 			$ip = substr($ip,2);
 		}
-		$sh = $this->db('shanghu')->findOneBy(['uid'=>$uid]);
+		
+		$sh_id = $this->GetId($sh_request_token);
+		$sh = $this->db('shanghu')->findOneBy(['uid'=>$sh_id]);
 		$sh_conf = $this->db('ShanghuConfig')->findOneBy(['master_id'=>$sh->getId()]);
 		
 		$_ip_whitelist = explode(',',$sh_conf->getIpWhitelist());
