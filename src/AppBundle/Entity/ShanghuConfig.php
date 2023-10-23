@@ -82,6 +82,11 @@ class ShanghuConfig
     private $payout_sign_method = "";
 
     /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $ip_whitelist = "";
+	
+    /**
      * Get id
      *
      * @return integer
@@ -401,5 +406,29 @@ class ShanghuConfig
     public function getPayoutSignMethod()
     {
         return $this->payout_sign_method;
+    }
+
+    /**
+     * Set ipWhitelist
+     *
+     * @param string $ipWhitelist
+     *
+     * @return ShanghuConfig
+     */
+    public function setIpWhitelist($ipWhitelist)
+    {
+        $this->ip_whitelist = $ipWhitelist;
+
+        return $this;
+    }
+
+    /**
+     * Get ipWhitelist
+     *
+     * @return string
+     */
+    public function getIpWhitelist()
+    {
+        return $this->ip_whitelist;
     }
 }

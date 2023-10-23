@@ -354,5 +354,77 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		
 		echo json_encode($data);exit();
 	}
-
+	private function _add_ip_whitelist($request)
+	{
+		$uid   = $this->GetId($request->request->get('access_token',''));
+		$sh_id = $this->GetId($request->request->get('request_token',''));
+		$ip    = $request->request->get('ip','');
+		
+		if(!is_numeric($sh_id) || $sh_id <= 0)
+		{
+			$this->e("商户id错误");
+		}
+		
+		$valid = ip2long($ip) !== false;
+		if(!$valid)
+		{
+			$this->e('invalidate ip address!');
+		}
+		else
+		{
+			if(in_array($ip,['127.0.0.1','0.0.0.0','255.255.255.255','192.168.0.1']))
+			{
+				$this->e("ip地址:".$ip."不允许被添加");
+			}
+		}
+		$__ip = explode('.',$ip);
+		if(!is_array($__ip) || 4 != count($__ip))
+		{
+			$this->e('ip format error');
+		}
+		foreach($__ip as $_ip)
+		{
+			if(!is_numeric($_ip))
+			{
+				$this->e('ip address not a number!');
+			}
+		}
+		if($__ip[0] == $__ip[1] && $__ip[0] == $__ip[2] && $__ip[0] == $__ip[3])
+		{
+			$this->e('不允许全部一样');
+		}
+		
+		$sh = $this->db('shanghu')->find($sh_id);
+		if(!$sh)
+		{
+			$this->e('商户不存在');
+		}
+		
+		$sh_conf = $this->db('ShanghuConfig')->findOneBy(['master_id'=>$sh->getId()]);
+		$ip_whitelist = $sh_conf->getIpWhitelist();
+		
+		
+		if("" == $ip_whitelist)
+		{
+			$ip_whitelist = $ip;
+		}
+		else
+		{
+			$ip_arr = explode(',',$ip_whitelist);
+			if(count($ip_arr) >= 3)
+			{
+				$this->e('白名单ip最多3个');
+			}
+			if(in_array($ip,$ip_arr))
+			{
+				$this->e('Ip：'.$ip.'地址已经存在');
+			}
+			$ip_whitelist .= ','.$ip;
+		}
+		
+		$sh_conf->setIpWhitelist($ip_whitelist);
+		$this->update();
+		
+		$this->succ('已添加');
+	}
 }
