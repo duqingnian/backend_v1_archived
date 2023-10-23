@@ -310,6 +310,16 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		$uid = $_shanghu->getUid();
 		$user = $this->db('user')->find($uid);
 		
+		$_ip_whitelist = explode(',',$config->getIpWhitelist());
+		$ip_whitelist = [];
+		foreach($_ip_whitelist as $ip)
+		{
+			if('' != $ip)
+			{
+				$ip_whitelist[] = ['request_token'=>$this->authcode('IP'.$ip),'ip'=>$ip,];
+			}
+		}
+		
 		$shanghu = [
 			'id'=>$_shanghu->getId(),
 			'account'=>$user->getUsername(),
@@ -348,12 +358,43 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 			'payout_channel_id'=>"channel".$config->getPayoutChannelId(),
 			'payin_sign_method'=>$config->getPayinSignMethod(),
 			'payout_sign_method'=>$config->getPayoutSignMethod(),
+			
+			'ip_whitelist'=>$ip_whitelist,
 		];
 		
 		$data = ['code'=>0,'msg'=>'OK','shanghu'=>$shanghu,'detail'=>$detail];
 		
 		echo json_encode($data);exit();
 	}
+	
+	private function _remove_ip($request)
+	{
+		$uid   = $this->GetId($request->request->get('access_token',''));
+		$request_token = $request->request->get('request_token','');
+		$ip = $this->authcode($request_token,'DECODE');
+		if('IP' == substr($ip,0,2))
+		{
+			$ip = substr($ip,2);
+		}
+		$sh = $this->db('shanghu')->findOneBy(['uid'=>$uid]);
+		$sh_conf = $this->db('ShanghuConfig')->findOneBy(['master_id'=>$sh->getId()]);
+		
+		$_ip_whitelist = explode(',',$sh_conf->getIpWhitelist());
+		$new_ip_list = [];
+		foreach($_ip_whitelist as $_ip)
+		{
+			if($ip != $_ip)
+			{
+				$new_ip_list[] = $_ip;
+			}
+		}
+
+		$sh_conf->setIpWhitelist(implode(',',$new_ip_list));
+		$this->update();
+		
+		$this->succ("已删除");
+	}
+	
 	private function _add_ip_whitelist($request)
 	{
 		$uid   = $this->GetId($request->request->get('access_token',''));
@@ -403,7 +444,6 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		$sh_conf = $this->db('ShanghuConfig')->findOneBy(['master_id'=>$sh->getId()]);
 		$ip_whitelist = $sh_conf->getIpWhitelist();
 		
-		
 		if("" == $ip_whitelist)
 		{
 			$ip_whitelist = $ip;
@@ -425,6 +465,7 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		$sh_conf->setIpWhitelist($ip_whitelist);
 		$this->update();
 		
-		$this->succ('已添加');
+		echo json_encode(['code'=>0,'msg'=>'已添加','ip'=>$ip,'request_token'=>$this->authcode('IP'.$ip)]);
+		exit();
 	}
 }
