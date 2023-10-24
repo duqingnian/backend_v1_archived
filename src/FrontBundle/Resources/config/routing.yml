@@ -2,6 +2,10 @@ front_homepage:
     path:     /
     defaults: { _controller: FrontBundle:Default:index }
 
+front_debug:
+    path:     /debug
+    defaults: { _controller: FrontBundle:Default:debug }
+
 #通道
 front_channel:
     path: /channel.api

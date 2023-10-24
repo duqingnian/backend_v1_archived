@@ -24,6 +24,7 @@ security:
             anonymous:    true
 
     access_control:
+        - { path: ^/debug, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/ado_auth$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }

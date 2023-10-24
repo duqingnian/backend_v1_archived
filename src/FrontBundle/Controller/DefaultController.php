@@ -3,10 +3,11 @@
 namespace FrontBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends \AppBundle\Controller\BaseController 
 {
-    public function indexAction()
+    public function indexAction(Request $request)
     {
 		$data = [
 			'uid'=>$this->getUser()->getId(),
@@ -27,5 +28,12 @@ class DefaultController extends \AppBundle\Controller\BaseController
 		$data['user_permissions'] = implode("','",$user_permissions);
 		
         return $this->render('FrontBundle:Default:index.html.twig',$data);
+    }
+	
+	public function debugAction(Request $request)
+	{
+		$debug = $this->getParameter('kernel.debug');
+        echo $debug ? 'Enabled' : 'Disabled';
+		exit();
     }
 }
