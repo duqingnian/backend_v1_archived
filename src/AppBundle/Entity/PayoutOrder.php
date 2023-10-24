@@ -34,22 +34,22 @@ class PayoutOrder
 	/**
      * @ORM\Column(type="string", length=50)
      */
-    private $channel_order_no = ''; //通道订单号
+    private $channel_order_no=""; //通道订单号
 	
 	/**
      * @ORM\Column(type="string", length=50)
      */
-    private $shanghu_order_no = ''; //商户订单号
+    private $shanghu_order_no=""; //商户订单号
 	
 	/**
      * @ORM\Column(type="string", length=50)
      */
-    private $plantform_order_no = ''; //平台订单号
+    private $plantform_order_no=""; //平台订单号
 	
 	/**
      * @ORM\Column(type="string", length=15)
      */
-    private $order_status = '';
+    private $order_status="";
 	
 	/**
      * @ORM\Column(type="decimal", scale=2)
@@ -84,7 +84,7 @@ class PayoutOrder
 	/**
      * @ORM\Column(type="string", length=15)
      */
-    private $order_type = ''; //HAND手动 NORMAL正常 MULTI_HAND手动批量
+    private $order_type=""; //HAND手动 NORMAL正常 MULTI_HAND手动批量
 	
 	/**
      * @ORM\Column(type="integer")
@@ -99,7 +99,7 @@ class PayoutOrder
 	/**
      * @ORM\Column(type="string", length=300)
      */
-    private $shanghu_notify_url = ''; //商户的回调地址
+    private $shanghu_notify_url=""; //商户的回调地址
 	
 	/**
      * @ORM\Column(type="integer")

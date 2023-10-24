@@ -1,6 +1,6 @@
 <?php
 header("Content-type: text/html; charset=utf-8");
-define(DEBUG,false);
+define(DEBUG,true);
 
 $is_ssl = false;
 if(isset($_SERVER['HTTPS']) && ('1' == $_SERVER['HTTPS'] || 'on' == strtolower($_SERVER['HTTPS'])))
@@ -32,14 +32,14 @@ include_once __DIR__.'/../var/bootstrap.php.cache';
 
 if(DEBUG)
 {
-	$kernel = new AppKernel('dev', true);
+	$kernel = new AppKernel('prod', false);
 	$kernel->loadClassCache();
 	$kernel = new AppCache($kernel);
 	Request::enableHttpMethodParameterOverride();
 }
 else
 {
-	$kernel = new AppKernel('prod', false);
+	$kernel = new AppKernel('prod', true);
 	$kernel->loadClassCache();
 }
 $request = Request::createFromGlobals();
