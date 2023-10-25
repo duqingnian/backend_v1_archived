@@ -213,9 +213,9 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		}
 		$config = $this->db('ShanghuConfig')->findOneBy(['master_id'=>$id]);
 		
-		if(is_numeric($config->getPayinChannelId()) && $config->getPayinChannelId() > 0)
+		if(is_numeric($payin_channel_id) && $payin_channel_id > 0)
 		{
-			$payin_channel = $this->db('channel')->find($config->getPayinChannelId());
+			$payin_channel = $this->db('channel')->find($payin_channel_id);
 			if($payin_channel)
 			{
 				$channel_payin_min = $payin_channel->getPayinMin();
@@ -233,13 +233,13 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 			}
 			else
 			{
-				$this->e("通道不存在,id:".$config->getPayinChannelId());
+				$this->e("通道不存在,id:".$payin_channel_id);
 			}
 		}
 		
-		if(is_numeric($config->getPayoutChannelId()) && $config->getPayoutChannelId() > 0)
+		if(is_numeric($payout_channel_id) && $payout_channel_id > 0)
 		{
-			$payout_channel = $this->db('channel')->find($config->getPayoutChannelId());
+			$payout_channel = $this->db('channel')->find($payout_channel_id);
 			if($payout_channel)
 			{
 				$channel_payout_min = $payout_channel->getPayoutMin();
@@ -257,7 +257,7 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 			}
 			else
 			{
-				$this->e("通道不存在,id:".$config->getPayoutChannelId());
+				$this->e("通道不存在,id:".$payout_channel_id);
 			}
 		}
 		
