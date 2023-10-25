@@ -22,17 +22,7 @@ class TelegramBot
     private $name="";
 	
 	/**
-     * @ORM\Column(type="integer")
-     */
-    private $sh_id = 0;
-	
-	/**
-     * @ORM\Column(type="string", length=16)
-     */
-    private $telegram_group_id="";
-	
-	/**
-     * @ORM\Column(type="string", length=64)
+     * @ORM\Column(type="string", length=200)
      */
     private $token="";
 	
@@ -40,6 +30,7 @@ class TelegramBot
      * @ORM\Column(type="integer")
      */
     private $created_at = 0;
+
 
     /**
      * Get id
@@ -76,54 +67,6 @@ class TelegramBot
     }
 
     /**
-     * Set shId
-     *
-     * @param integer $shId
-     *
-     * @return TelegramBot
-     */
-    public function setShId($shId)
-    {
-        $this->sh_id = $shId;
-
-        return $this;
-    }
-
-    /**
-     * Get shId
-     *
-     * @return integer
-     */
-    public function getShId()
-    {
-        return $this->sh_id;
-    }
-
-    /**
-     * Set token
-     *
-     * @param string $token
-     *
-     * @return TelegramBot
-     */
-    public function setToken($token)
-    {
-        $this->token = $token;
-
-        return $this;
-    }
-
-    /**
-     * Get token
-     *
-     * @return string
-     */
-    public function getToken()
-    {
-        return $this->token;
-    }
-
-    /**
      * Set createdAt
      *
      * @param integer $createdAt
@@ -148,26 +91,26 @@ class TelegramBot
     }
 
     /**
-     * Set telegramGroupId
+     * Set token
      *
-     * @param string $telegramGroupId
+     * @param string $token
      *
      * @return TelegramBot
      */
-    public function setTelegramGroupId($telegramGroupId)
+    public function setToken($token)
     {
-        $this->telegram_group_id = $telegramGroupId;
+        $this->token = $token;
 
         return $this;
     }
 
     /**
-     * Get telegramGroupId
+     * Get token
      *
      * @return string
      */
-    public function getTelegramGroupId()
+    public function getToken()
     {
-        return $this->telegram_group_id;
+        return $this->token;
     }
 }
