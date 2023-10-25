@@ -113,8 +113,9 @@ react_setting_permission:
 react_setting_user_group:
     path: /setting_user_group
     defaults: { _controller: FrontBundle:Default:index }
-
-
+react_bot_setting:
+    path: /bot_setting
+    defaults: { _controller: FrontBundle:Default:index }
 
 
 
