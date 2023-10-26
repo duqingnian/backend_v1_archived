@@ -29,7 +29,7 @@ class Channel
 	/**
      * @ORM\Column(type="string", length=30)
      */
-    private $telegram ="";
+    private $telegram_group_id ="";
 	
 	/**
      * @ORM\Column(type="string", length=50)
@@ -173,6 +173,54 @@ class Channel
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Set slug
+     *
+     * @param string $slug
+     *
+     * @return Channel
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * Get slug
+     *
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * Set telegramGroupId
+     *
+     * @param string $telegramGroupId
+     *
+     * @return Channel
+     */
+    public function setTelegramGroupId($telegramGroupId)
+    {
+        $this->telegram_group_id = $telegramGroupId;
+
+        return $this;
+    }
+
+    /**
+     * Get telegramGroupId
+     *
+     * @return string
+     */
+    public function getTelegramGroupId()
+    {
+        return $this->telegram_group_id;
     }
 
     /**
@@ -488,6 +536,54 @@ class Channel
     }
 
     /**
+     * Set payinSignColName
+     *
+     * @param string $payinSignColName
+     *
+     * @return Channel
+     */
+    public function setPayinSignColName($payinSignColName)
+    {
+        $this->payin_sign_col_name = $payinSignColName;
+
+        return $this;
+    }
+
+    /**
+     * Get payinSignColName
+     *
+     * @return string
+     */
+    public function getPayinSignColName()
+    {
+        return $this->payin_sign_col_name;
+    }
+
+    /**
+     * Set payoutSignColName
+     *
+     * @param string $payoutSignColName
+     *
+     * @return Channel
+     */
+    public function setPayoutSignColName($payoutSignColName)
+    {
+        $this->payout_sign_col_name = $payoutSignColName;
+
+        return $this;
+    }
+
+    /**
+     * Get payoutSignColName
+     *
+     * @return string
+     */
+    public function getPayoutSignColName()
+    {
+        return $this->payout_sign_col_name;
+    }
+
+    /**
      * Set isActive
      *
      * @param integer $isActive
@@ -557,78 +653,6 @@ class Channel
     public function getNote()
     {
         return $this->note;
-    }
-
-    /**
-     * Set payinSignColName
-     *
-     * @param string $payinSignColName
-     *
-     * @return Channel
-     */
-    public function setPayinSignColName($payinSignColName)
-    {
-        $this->payin_sign_col_name = $payinSignColName;
-
-        return $this;
-    }
-
-    /**
-     * Get payinSignColName
-     *
-     * @return string
-     */
-    public function getPayinSignColName()
-    {
-        return $this->payin_sign_col_name;
-    }
-
-    /**
-     * Set payoutSignColName
-     *
-     * @param string $payoutSignColName
-     *
-     * @return Channel
-     */
-    public function setPayoutSignColName($payoutSignColName)
-    {
-        $this->payout_sign_col_name = $payoutSignColName;
-
-        return $this;
-    }
-
-    /**
-     * Get payoutSignColName
-     *
-     * @return string
-     */
-    public function getPayoutSignColName()
-    {
-        return $this->payout_sign_col_name;
-    }
-
-    /**
-     * Set slug
-     *
-     * @param string $slug
-     *
-     * @return Channel
-     */
-    public function setSlug($slug)
-    {
-        $this->slug = $slug;
-
-        return $this;
-    }
-
-    /**
-     * Get slug
-     *
-     * @return string
-     */
-    public function getSlug()
-    {
-        return $this->slug;
     }
 
     /**
@@ -725,29 +749,5 @@ class Channel
     public function getPayoutMax()
     {
         return $this->payout_max;
-    }
-
-    /**
-     * Set telegram
-     *
-     * @param string $telegram
-     *
-     * @return Channel
-     */
-    public function setTelegram($telegram)
-    {
-        $this->telegram = $telegram;
-
-        return $this;
-    }
-
-    /**
-     * Get telegram
-     *
-     * @return string
-     */
-    public function getTelegram()
-    {
-        return $this->telegram;
     }
 }
