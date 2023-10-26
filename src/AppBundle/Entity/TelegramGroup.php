@@ -29,7 +29,7 @@ class TelegramGroup
 	/**
      * @ORM\Column(type="string", length=50)
      */
-    private $group_tag="";
+    private $tag="";
 	
 	/**
      * @ORM\Column(type="string", length=50)
@@ -55,8 +55,6 @@ class TelegramGroup
      * @ORM\Column(type="integer")
      */
     private $created_at = 0; //绑定时间
-
-    
 
     /**
      * Get id
@@ -117,27 +115,27 @@ class TelegramGroup
     }
 
     /**
-     * Set groupTag
+     * Set tag
      *
-     * @param string $groupTag
+     * @param string $tag
      *
      * @return TelegramGroup
      */
-    public function setGroupTag($groupTag)
+    public function setTag($tag)
     {
-        $this->group_tag = $groupTag;
+        $this->tag = $tag;
 
         return $this;
     }
 
     /**
-     * Get groupTag
+     * Get tag
      *
      * @return string
      */
-    public function getGroupTag()
+    public function getTag()
     {
-        return $this->group_tag;
+        return $this->tag;
     }
 
     /**
