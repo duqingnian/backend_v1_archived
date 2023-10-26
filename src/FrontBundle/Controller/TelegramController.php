@@ -80,6 +80,7 @@ class TelegramController extends \AppBundle\Controller\BaseController
 			$telegram_bot_list[] = [
 				'id'=>$telegram_bot->getId(),
 				'name'=>$telegram_bot->getName(),
+				'slug'=>$telegram_bot->getSlug(),
 				'request_token'=>$this->authcode('ID'.$telegram_bot->getId()),
 				'created_time'=>date('Y-m-d H:i:s',$telegram_bot->getCreatedAt()),
 			];
@@ -93,6 +94,7 @@ class TelegramController extends \AppBundle\Controller\BaseController
 		$request_token = $request->request->get('request_token','');
 		$commands = $request->request->get('_commands','');
 		$name = $request->request->get('name','');
+		$slug = $request->request->get('slug','');
 		$token = $request->request->get('bot_token','');
 		$commands = json_decode($commands,true);
 		
@@ -103,6 +105,7 @@ class TelegramController extends \AppBundle\Controller\BaseController
 			$this->e('机器人不存在');
 		}
 		$bot->setName($name);
+		$bot->setSlug($slug);
 		$bot->setToken($token);
 		$this->update();
 		
@@ -168,6 +171,7 @@ class TelegramController extends \AppBundle\Controller\BaseController
 		$_bot = [
 			'id'=>$bot->getId(),
 			'name'=>$bot->getName(),
+			'slug'=>$bot->getSlug(),
 			'bot_token'=>$bot->getToken(),
 			'request_token'=>$this->authcode('ID'.$bot->getId()),
 			'const_names'=>$const_names,
