@@ -44,6 +44,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		
 		$name = $request->request->get('name','');
 		$slug = $request->request->get('slug','');
+		$telegram_group_id = $request->request->get('telegram_group_id','');
 		$country = $request->request->get('country','');
 		$is_active = $request->request->get('is_active','false') == 'true' ? 1 : 0;
 		if('' == $name)
@@ -73,6 +74,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$channel->setName($name);
 		$channel->setSlug($slug);
 		$channel->setCountry($country);
+		$channel->setTelegramGroupId($telegram_group_id);
 		$channel->setPayinAppid('');
 		$channel->setPayinSecret('');
 		$channel->setPayoutAppid('');
@@ -122,6 +124,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 				'id'=>$channel->getId(),
 				'name'=>$channel->getName(),
 				'country'=>$country,
+				'telegram_group_id'=>$channel->getTelegramGroupId(),
 				
 				'payin_pct'=>$payin_pct,
 				'payin_sigle_fee'=>$payin_sigle_fee,
@@ -169,6 +172,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$note = $request->request->get('note','');
 		$name = $request->request->get('name','');
 		$slug = $request->request->get('slug','');
+		$telegram_group_id = $request->request->get('telegram_group_id','');
 		$country = $request->request->get('country','');
 		$merchant_id = $request->request->get('merchant_id','');
 		$is_active = $request->request->get('is_active',0);
@@ -220,6 +224,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		}
 		$channel->setName($name);
 		$channel->setSlug($slug);
+		$channel->setTelegramGroupId($telegram_group_id);
 		$channel->setIsActive($is_active);
 		$channel->setCountry($country);
 		$channel->setNote($note);
@@ -274,6 +279,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 			'master_id'=>$_channel->getId(),
 			'name'=>$_channel->getName(),
 			'slug'=>$_channel->getSlug(),
+			'telegram_group_id'=>$_channel->getTelegramGroupId(),
 			'country'=>$_channel->getCountry(),
 			'currency'=>$countries[$_channel->getCountry()]['currency'],
 			'is_active'=>$_channel->getIsActive(),
