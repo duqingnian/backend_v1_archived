@@ -22,6 +22,11 @@ class TelegramBot
     private $name="";
 	
 	/**
+     * @ORM\Column(type="string", length=30)
+     */
+    private $slug="";
+	
+	/**
      * @ORM\Column(type="string", length=200)
      */
     private $token="";
@@ -112,5 +117,29 @@ class TelegramBot
     public function getToken()
     {
         return $this->token;
+    }
+
+    /**
+     * Set slug
+     *
+     * @param string $slug
+     *
+     * @return TelegramBot
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * Get slug
+     *
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
     }
 }

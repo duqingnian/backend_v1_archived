@@ -23,11 +23,16 @@ class TelegramController extends \AppBundle\Controller\BaseController
 		$uid = $this->GetId($request->request->get('access_token',''));
 		
 		$name = $request->request->get('bot_name','');
+		$slug = $request->request->get('bot_slug','');
 		$bot_token = $request->request->get('bot_token','');
 		
 		if('' == $name)
 		{
-			$this->e('名称不能为空');
+			$this->e('中文名称不能为空');
+		}
+		else if('' == $slug)
+		{
+			$this->e('英文名称不能为空');
 		}
 		else if('' == $bot_token)
 		{
@@ -48,6 +53,7 @@ class TelegramController extends \AppBundle\Controller\BaseController
 		
 		$telegram_bot = new \AppBundle\Entity\TelegramBot();
 		$telegram_bot->setName($name);
+		$telegram_bot->setSlug($slug);
 		$telegram_bot->setToken($bot_token);
 		$telegram_bot->setCreatedAt(time());
 		$this->save($telegram_bot);
@@ -174,11 +180,11 @@ class TelegramController extends \AppBundle\Controller\BaseController
 	private function _get_const()
 	{
 		return [
-			['key'=>'HELP','text'=>'获取帮助(/help)','custom_name'=>'','const_content'=>''],
-			['key'=>'BIND','text'=>'绑定商户appId(/bind)','custom_name'=>'','const_content'=>''],
-			['key'=>'BALANCE','text'=>'获取商户余额(/balance)','custom_name'=>'','const_content'=>''],
-			['key'=>'VOUCHER','text'=>'获取凭证(/voucher)','custom_name'=>'','const_content'=>''],
-			['key'=>'ORDER','text'=>'获取订单详情(/order)','custom_name'=>'','const_content'=>''],
+			['key'=>'HELP','text'=>'获取帮助','custom_name'=>'','const_content'=>''],
+			['key'=>'BIND','text'=>'绑定商户appId','custom_name'=>'','const_content'=>''],
+			['key'=>'BALANCE','text'=>'获取商户余额','custom_name'=>'','const_content'=>''],
+			['key'=>'VOUCHER','text'=>'获取凭证','custom_name'=>'','const_content'=>''],
+			['key'=>'ORDER','text'=>'获取订单详情','custom_name'=>'','const_content'=>''],
 		];
 	}
 }
