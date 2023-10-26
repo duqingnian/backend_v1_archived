@@ -22,14 +22,9 @@ class TelegramGroup
     private $bot_id = 0;
 	
 	/**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=100)
      */
-    private $group_id = "";
-    
-    /**
-     * @ORM\Column(type="string", length=200)
-     */
-    private $group_name="";
+    private $appid = "";
 	
 	/**
      * @ORM\Column(type="string", length=50)
@@ -39,17 +34,29 @@ class TelegramGroup
 	/**
      * @ORM\Column(type="string", length=50)
      */
-    private $bind_sender_id = "";
+    private $bind_from_id = "";
     
     /**
      * @ORM\Column(type="string", length=100)
      */
-    private $bind_sender_name="";
+    private $bind_from_name="";
+	
+	/**
+     * @ORM\Column(type="string", length=50)
+     */
+    private $chat_id = "";
+    
+    /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $chat_title="";
 	
 	/**
      * @ORM\Column(type="integer")
      */
     private $created_at = 0; //绑定时间
+
+    
 
     /**
      * Get id
@@ -86,51 +93,27 @@ class TelegramGroup
     }
 
     /**
-     * Set groupId
+     * Set appid
      *
-     * @param string $groupId
+     * @param string $appid
      *
      * @return TelegramGroup
      */
-    public function setGroupId($groupId)
+    public function setAppid($appid)
     {
-        $this->group_id = $groupId;
+        $this->appid = $appid;
 
         return $this;
     }
 
     /**
-     * Get groupId
+     * Get appid
      *
      * @return string
      */
-    public function getGroupId()
+    public function getAppid()
     {
-        return $this->group_id;
-    }
-
-    /**
-     * Set groupName
-     *
-     * @param string $groupName
-     *
-     * @return TelegramGroup
-     */
-    public function setGroupName($groupName)
-    {
-        $this->group_name = $groupName;
-
-        return $this;
-    }
-
-    /**
-     * Get groupName
-     *
-     * @return string
-     */
-    public function getGroupName()
-    {
-        return $this->group_name;
+        return $this->appid;
     }
 
     /**
@@ -158,51 +141,99 @@ class TelegramGroup
     }
 
     /**
-     * Set bindSenderId
+     * Set bindFromId
      *
-     * @param string $bindSenderId
+     * @param string $bindFromId
      *
      * @return TelegramGroup
      */
-    public function setBindSenderId($bindSenderId)
+    public function setBindFromId($bindFromId)
     {
-        $this->bind_sender_id = $bindSenderId;
+        $this->bind_from_id = $bindFromId;
 
         return $this;
     }
 
     /**
-     * Get bindSenderId
+     * Get bindFromId
      *
      * @return string
      */
-    public function getBindSenderId()
+    public function getBindFromId()
     {
-        return $this->bind_sender_id;
+        return $this->bind_from_id;
     }
 
     /**
-     * Set bindSenderName
+     * Set bindFromName
      *
-     * @param string $bindSenderName
+     * @param string $bindFromName
      *
      * @return TelegramGroup
      */
-    public function setBindSenderName($bindSenderName)
+    public function setBindFromName($bindFromName)
     {
-        $this->bind_sender_name = $bindSenderName;
+        $this->bind_from_name = $bindFromName;
 
         return $this;
     }
 
     /**
-     * Get bindSenderName
+     * Get bindFromName
      *
      * @return string
      */
-    public function getBindSenderName()
+    public function getBindFromName()
     {
-        return $this->bind_sender_name;
+        return $this->bind_from_name;
+    }
+
+    /**
+     * Set chatId
+     *
+     * @param string $chatId
+     *
+     * @return TelegramGroup
+     */
+    public function setChatId($chatId)
+    {
+        $this->chat_id = $chatId;
+
+        return $this;
+    }
+
+    /**
+     * Get chatId
+     *
+     * @return string
+     */
+    public function getChatId()
+    {
+        return $this->chat_id;
+    }
+
+    /**
+     * Set chatTitle
+     *
+     * @param string $chatTitle
+     *
+     * @return TelegramGroup
+     */
+    public function setChatTitle($chatTitle)
+    {
+        $this->chat_title = $chatTitle;
+
+        return $this;
+    }
+
+    /**
+     * Get chatTitle
+     *
+     * @return string
+     */
+    public function getChatTitle()
+    {
+        return $this->chat_title;
     }
 
     /**
