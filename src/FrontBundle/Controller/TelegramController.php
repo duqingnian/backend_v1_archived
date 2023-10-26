@@ -22,10 +22,8 @@ class TelegramController extends \AppBundle\Controller\BaseController
     {
 		$uid = $this->GetId($request->request->get('access_token',''));
 		
-		$name = $request->request->get('name','');
+		$name = $request->request->get('bot_name','');
 		$bot_token = $request->request->get('bot_token','');
-		$telegram_group_id = $request->request->get('telegram_group_id','');
-		$sh_id = $request->request->get('sh_id','');
 		
 		if('' == $name)
 		{
@@ -35,23 +33,11 @@ class TelegramController extends \AppBundle\Controller\BaseController
 		{
 			$this->e('token不能为空');
 		}
-		else if('' == $telegram_group_id)
-		{
-			$this->e('群组ID不能为空');
-		}
-		else if('' == $sh_id)
-		{
-			$this->e('请选择商户');
-		}
 		else{}
 		
-		if('bot' != substr($bot_token,0,3))
+		if('bot' == substr($bot_token,0,3))
 		{
-			$this->e("token格式错误");
-		}
-		if('-' != substr($telegram_group_id,0,1))
-		{
-			$this->e("群组ID格式错误");
+			$bot_token = substr($bot_token,3);
 		}
 		
 		$telegram_bot = $this->db('TelegramBot')->findOneBy(['token'=>$bot_token]);
@@ -60,12 +46,8 @@ class TelegramController extends \AppBundle\Controller\BaseController
 			$this->e("token已经存在:".$bot_token);
 		}
 		
-		$sh_id = $this->GetId($sh_id);
-		
 		$telegram_bot = new \AppBundle\Entity\TelegramBot();
 		$telegram_bot->setName($name);
-		$telegram_bot->setTelegramGroupId($telegram_group_id);
-		$telegram_bot->setShId($sh_id);
 		$telegram_bot->setToken($bot_token);
 		$telegram_bot->setCreatedAt(time());
 		$this->save($telegram_bot);
@@ -80,21 +62,6 @@ class TelegramController extends \AppBundle\Controller\BaseController
 		}
 	}
 	
-	private function _sh_list($request)
-	{
-		$uid = $this->GetId($request->request->get('access_token',''));
-		
-		$sh_list = [];
-		$shs = $this->db('shanghu')->findAll();
-		foreach($shs as $sh)
-		{
-			$sh_list[] = ['key'=>$this->authcode('ID'.$sh->getId()),'text'=>$sh->getName()];
-		}
-		
-		echo json_encode(['code'=>0,'msg'=>'OK','sh_list'=>$sh_list]);
-		exit();
-	}
-	
 	private function _load_bot($request)
 	{
 		$uid = $this->GetId($request->request->get('access_token',''));
@@ -104,20 +71,10 @@ class TelegramController extends \AppBundle\Controller\BaseController
 		$telegram_bots = $this->db('TelegramBot')->findAll();
 		foreach($telegram_bots as $telegram_bot)
 		{
-			$sh_id = $telegram_bot->getShId();
-			$sh = $this->db('shanghu')->find($sh_id);
-			$sh_name = '';
-			if($sh)
-			{
-				$sh_name = $sh->getName();
-			}
 			$telegram_bot_list[] = [
+				'id'=>$telegram_bot->getId(),
 				'name'=>$telegram_bot->getName(),
-				'token'=>$telegram_bot->getToken(),
-				'sh_name'=>$sh_name,
-				'is_checked'=>0,
-				'telegram_group_id'=>$telegram_bot->getTelegramGroupId(),
-				'request_token'=>$this->authcode($telegram_bot->getId()),
+				'request_token'=>$this->authcode('ID'.$telegram_bot->getId()),
 				'created_time'=>date('Y-m-d H:i:s',$telegram_bot->getCreatedAt()),
 			];
 		}
@@ -126,9 +83,51 @@ class TelegramController extends \AppBundle\Controller\BaseController
 
 	private function _update($request) 
 	{
-		$uid = $this->GetId($request->request->get('access_token',''));
-		
+		$this->GetId($request->request->get('access_token',''));
+		$request_token = $request->request->get('request_token','');
+		$commands = $request->request->get('_commands','');
 		$name = $request->request->get('name','');
+		$token = $request->request->get('bot_token','');
+		$commands = json_decode($commands,true);
+		
+		$bot_id = $this->GetId($request_token);
+		$bot = $this->db('TelegramBot')->find($bot_id);
+		if(!$bot)
+		{
+			$this->e('机器人不存在');
+		}
+		$bot->setName($name);
+		$bot->setToken($token);
+		$this->update();
+		
+		foreach($commands as $command)
+		{
+			if('' == $command['custom_name'])
+			{
+				continue;
+			}
+			
+			$bot_command = $this->db('TelegramBotCmd')->findOneBy(['bot_id'=>$bot_id,'const_name'=>$command['key']]);
+			
+			if($bot_command)
+			{
+				$bot_command->setCustomName($command['custom_name']);
+			}
+			else
+			{
+				$custom_name   = null == $command['custom_name'] ? '' :$command['custom_name'];
+				$const_content = null == $command['const_content'] ? '' :$command['const_content'];
+				
+				$bot_command = new \AppBundle\Entity\TelegramBotCmd();
+				$bot_command->setBotId($bot_id);
+				$bot_command->setConstName($command['key']);
+				$bot_command->setCustomName($custom_name);
+				$bot_command->setConstContent($const_content);
+				
+				$this->save($bot_command);
+			}
+		}
+		$this->update();
 		
 		$this->succ("已更新");
 	}
@@ -136,6 +135,50 @@ class TelegramController extends \AppBundle\Controller\BaseController
 	private function _detail($request)
 	{
 		$uid = $this->GetId($request->request->get('access_token',''));
+		$bot_id = $this->GetId($request->request->get('request_token',''));
+		
+		$bot = $this->db('TelegramBot')->find($bot_id);
+		if(!$bot)
+		{
+			$this->e('机器人不存在');
+		}
+		
+		$commands = $this->_get_const();
+		
+		$map = [];
+		$cmds = $this->db('TelegramBotCmd')->findBy(['bot_id'=>$bot_id]);
+		foreach($cmds as &$cmd)
+		{
+			$map[$cmd->getConstName()]['custom_name'] = $cmd->getCustomName();
+			$map[$cmd->getConstName()]['const_content'] = $cmd->getConstContent();
+		}
+		
+		foreach($commands as &$command)
+		{
+			$command['custom_name'] = $map[$command['key']]['custom_name'];
+			$command['const_content'] = $map[$command['key']]['const_content'];
+		}
+		
+		$_bot = [
+			'id'=>$bot->getId(),
+			'name'=>$bot->getName(),
+			'bot_token'=>$bot->getToken(),
+			'request_token'=>$this->authcode('ID'.$bot->getId()),
+			'const_names'=>$const_names,
+			'commands'=>$commands,
+		];
+		echo json_encode(['code'=>0,'msg'=>'OK','bot'=>$_bot]);
+		exit();
 	}
-
+	
+	private function _get_const()
+	{
+		return [
+			['key'=>'HELP','text'=>'获取帮助(/help)','custom_name'=>'','const_content'=>''],
+			['key'=>'BIND','text'=>'绑定商户appId(/bind)','custom_name'=>'','const_content'=>''],
+			['key'=>'BALANCE','text'=>'获取商户余额(/balance)','custom_name'=>'','const_content'=>''],
+			['key'=>'VOUCHER','text'=>'获取凭证(/voucher)','custom_name'=>'','const_content'=>''],
+			['key'=>'ORDER','text'=>'获取订单详情(/order)','custom_name'=>'','const_content'=>''],
+		];
+	}
 }
