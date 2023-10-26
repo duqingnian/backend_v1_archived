@@ -188,7 +188,7 @@ class TelegramController extends \AppBundle\Controller\BaseController
 			['key'=>'HELP','text'=>'获取帮助','custom_name'=>'','const_content'=>''],
 			['key'=>'BIND','text'=>'绑定商户appId','custom_name'=>'','const_content'=>''],
 			['key'=>'BALANCE','text'=>'获取商户余额','custom_name'=>'','const_content'=>''],
-			['key'=>'QURTY','text'=>'代收查询','custom_name'=>'','const_content'=>''],
+			['key'=>'QUERY','text'=>'代收查询','custom_name'=>'','const_content'=>''],
 			['key'=>'VOUCHER','text'=>'获取凭证','custom_name'=>'','const_content'=>''],
 			['key'=>'ORDER','text'=>'获取订单详情','custom_name'=>'','const_content'=>''],
 		];

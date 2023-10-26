@@ -27,6 +27,11 @@ class Channel
     private $slug=""; //通道别名
 	
 	/**
+     * @ORM\Column(type="string", length=30)
+     */
+    private $telegram ="";
+	
+	/**
      * @ORM\Column(type="string", length=50)
      */
     private $timezone=""; //时区
@@ -720,5 +725,29 @@ class Channel
     public function getPayoutMax()
     {
         return $this->payout_max;
+    }
+
+    /**
+     * Set telegram
+     *
+     * @param string $telegram
+     *
+     * @return Channel
+     */
+    public function setTelegram($telegram)
+    {
+        $this->telegram = $telegram;
+
+        return $this;
+    }
+
+    /**
+     * Get telegram
+     *
+     * @return string
+     */
+    public function getTelegram()
+    {
+        return $this->telegram;
     }
 }
