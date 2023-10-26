@@ -121,6 +121,7 @@ class TelegramController extends \AppBundle\Controller\BaseController
 			if($bot_command)
 			{
 				$bot_command->setCustomName($command['custom_name']);
+				$bot_command->setConstContent($command['const_content']);
 			}
 			else
 			{
