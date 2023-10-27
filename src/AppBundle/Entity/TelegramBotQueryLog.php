@@ -22,6 +22,11 @@ class TelegramBotQueryLog
     private $bot_id = 0;
 	
 	/**
+     * @ORM\Column(type="string", length=50)
+     */
+    private $bot_token = '';
+	
+	/**
      * @ORM\Column(type="integer")
      */
     private $shanghu_id = 0; //商户ID
@@ -605,5 +610,29 @@ class TelegramBotQueryLog
     public function getShOrderNo()
     {
         return $this->sh_order_no;
+    }
+
+    /**
+     * Set botToken
+     *
+     * @param string $botToken
+     *
+     * @return TelegramBotQueryLog
+     */
+    public function setBotToken($botToken)
+    {
+        $this->bot_token = $botToken;
+
+        return $this;
+    }
+
+    /**
+     * Get botToken
+     *
+     * @return string
+     */
+    public function getBotToken()
+    {
+        return $this->bot_token;
     }
 }
