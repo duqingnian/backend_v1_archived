@@ -5,9 +5,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="app_telegram_bot_query_log")
+ * @ORM\Table(name="app_telegram_bot_voucher_log")
  */
-class TelegramBotQueryLog
+class TelegramBotVoucherLog
 {
     /**
      * @ORM\Column(type="integer")
@@ -74,6 +74,16 @@ class TelegramBotQueryLog
 	/**
      * @ORM\Column(type="string", length=20)
      */
+    private $target_message_id = '';
+	
+	/**
+     * @ORM\Column(type="string", length=20)
+     */
+    private $target_message_date = '';
+	
+	/**
+     * @ORM\Column(type="string", length=20)
+     */
     private $ask_from_id = '';
 	
 	/**
@@ -124,7 +134,8 @@ class TelegramBotQueryLog
 	/**
      * @ORM\Column(type="text")
      */
-    private $ask_photo = '';
+    private $reply_photo = '';
+
 
     /**
      * Get id
@@ -141,7 +152,7 @@ class TelegramBotQueryLog
      *
      * @param integer $botId
      *
-     * @return TelegramBotQueryLog
+     * @return TelegramBotVoucherLog
      */
     public function setBotId($botId)
     {
@@ -161,11 +172,35 @@ class TelegramBotQueryLog
     }
 
     /**
+     * Set botToken
+     *
+     * @param string $botToken
+     *
+     * @return TelegramBotVoucherLog
+     */
+    public function setBotToken($botToken)
+    {
+        $this->bot_token = $botToken;
+
+        return $this;
+    }
+
+    /**
+     * Get botToken
+     *
+     * @return string
+     */
+    public function getBotToken()
+    {
+        return $this->bot_token;
+    }
+
+    /**
      * Set shanghuId
      *
      * @param integer $shanghuId
      *
-     * @return TelegramBotQueryLog
+     * @return TelegramBotVoucherLog
      */
     public function setShanghuId($shanghuId)
     {
@@ -189,7 +224,7 @@ class TelegramBotQueryLog
      *
      * @param integer $channelId
      *
-     * @return TelegramBotQueryLog
+     * @return TelegramBotVoucherLog
      */
     public function setChannelId($channelId)
     {
@@ -213,7 +248,7 @@ class TelegramBotQueryLog
      *
      * @param integer $orderId
      *
-     * @return TelegramBotQueryLog
+     * @return TelegramBotVoucherLog
      */
     public function setOrderId($orderId)
     {
@@ -237,7 +272,7 @@ class TelegramBotQueryLog
      *
      * @param string $plantformOrderNo
      *
-     * @return TelegramBotQueryLog
+     * @return TelegramBotVoucherLog
      */
     public function setPlantformOrderNo($plantformOrderNo)
     {
@@ -257,11 +292,35 @@ class TelegramBotQueryLog
     }
 
     /**
+     * Set shOrderNo
+     *
+     * @param string $shOrderNo
+     *
+     * @return TelegramBotVoucherLog
+     */
+    public function setShOrderNo($shOrderNo)
+    {
+        $this->sh_order_no = $shOrderNo;
+
+        return $this;
+    }
+
+    /**
+     * Get shOrderNo
+     *
+     * @return string
+     */
+    public function getShOrderNo()
+    {
+        return $this->sh_order_no;
+    }
+
+    /**
      * Set orderStatus
      *
      * @param string $orderStatus
      *
-     * @return TelegramBotQueryLog
+     * @return TelegramBotVoucherLog
      */
     public function setOrderStatus($orderStatus)
     {
@@ -285,7 +344,7 @@ class TelegramBotQueryLog
      *
      * @param string $askChatId
      *
-     * @return TelegramBotQueryLog
+     * @return TelegramBotVoucherLog
      */
     public function setAskChatId($askChatId)
     {
@@ -309,7 +368,7 @@ class TelegramBotQueryLog
      *
      * @param string $askChatName
      *
-     * @return TelegramBotQueryLog
+     * @return TelegramBotVoucherLog
      */
     public function setAskChatName($askChatName)
     {
@@ -333,7 +392,7 @@ class TelegramBotQueryLog
      *
      * @param string $askMessageId
      *
-     * @return TelegramBotQueryLog
+     * @return TelegramBotVoucherLog
      */
     public function setAskMessageId($askMessageId)
     {
@@ -357,7 +416,7 @@ class TelegramBotQueryLog
      *
      * @param string $askFromId
      *
-     * @return TelegramBotQueryLog
+     * @return TelegramBotVoucherLog
      */
     public function setAskFromId($askFromId)
     {
@@ -381,7 +440,7 @@ class TelegramBotQueryLog
      *
      * @param string $askFromName
      *
-     * @return TelegramBotQueryLog
+     * @return TelegramBotVoucherLog
      */
     public function setAskFromName($askFromName)
     {
@@ -405,7 +464,7 @@ class TelegramBotQueryLog
      *
      * @param integer $askTime
      *
-     * @return TelegramBotQueryLog
+     * @return TelegramBotVoucherLog
      */
     public function setAskTime($askTime)
     {
@@ -429,7 +488,7 @@ class TelegramBotQueryLog
      *
      * @param string $replyChatId
      *
-     * @return TelegramBotQueryLog
+     * @return TelegramBotVoucherLog
      */
     public function setReplyChatId($replyChatId)
     {
@@ -453,7 +512,7 @@ class TelegramBotQueryLog
      *
      * @param string $replyChatName
      *
-     * @return TelegramBotQueryLog
+     * @return TelegramBotVoucherLog
      */
     public function setReplyChatName($replyChatName)
     {
@@ -477,7 +536,7 @@ class TelegramBotQueryLog
      *
      * @param string $replyMessageId
      *
-     * @return TelegramBotQueryLog
+     * @return TelegramBotVoucherLog
      */
     public function setReplyMessageId($replyMessageId)
     {
@@ -501,7 +560,7 @@ class TelegramBotQueryLog
      *
      * @param string $replyFromId
      *
-     * @return TelegramBotQueryLog
+     * @return TelegramBotVoucherLog
      */
     public function setReplyFromId($replyFromId)
     {
@@ -525,7 +584,7 @@ class TelegramBotQueryLog
      *
      * @param string $replyFromName
      *
-     * @return TelegramBotQueryLog
+     * @return TelegramBotVoucherLog
      */
     public function setReplyFromName($replyFromName)
     {
@@ -549,7 +608,7 @@ class TelegramBotQueryLog
      *
      * @param integer $replyTime
      *
-     * @return TelegramBotQueryLog
+     * @return TelegramBotVoucherLog
      */
     public function setReplyTime($replyTime)
     {
@@ -573,7 +632,7 @@ class TelegramBotQueryLog
      *
      * @param string $replyResult
      *
-     * @return TelegramBotQueryLog
+     * @return TelegramBotVoucherLog
      */
     public function setReplyResult($replyResult)
     {
@@ -593,74 +652,74 @@ class TelegramBotQueryLog
     }
 
     /**
-     * Set shOrderNo
+     * Set replyPhoto
      *
-     * @param string $shOrderNo
+     * @param string $replyPhoto
      *
-     * @return TelegramBotQueryLog
+     * @return TelegramBotVoucherLog
      */
-    public function setShOrderNo($shOrderNo)
+    public function setReplyPhoto($replyPhoto)
     {
-        $this->sh_order_no = $shOrderNo;
+        $this->reply_photo = $replyPhoto;
 
         return $this;
     }
 
     /**
-     * Get shOrderNo
+     * Get replyPhoto
      *
      * @return string
      */
-    public function getShOrderNo()
+    public function getReplyPhoto()
     {
-        return $this->sh_order_no;
+        return $this->reply_photo;
     }
 
     /**
-     * Set botToken
+     * Set targetMessageId
      *
-     * @param string $botToken
+     * @param string $targetMessageId
      *
-     * @return TelegramBotQueryLog
+     * @return TelegramBotVoucherLog
      */
-    public function setBotToken($botToken)
+    public function setTargetMessageId($targetMessageId)
     {
-        $this->bot_token = $botToken;
+        $this->target_message_id = $targetMessageId;
 
         return $this;
     }
 
     /**
-     * Get botToken
+     * Get targetMessageId
      *
      * @return string
      */
-    public function getBotToken()
+    public function getTargetMessageId()
     {
-        return $this->bot_token;
+        return $this->target_message_id;
     }
 
     /**
-     * Set askPhoto
+     * Set targetMessageDate
      *
-     * @param string $askPhoto
+     * @param string $targetMessageDate
      *
-     * @return TelegramBotQueryLog
+     * @return TelegramBotVoucherLog
      */
-    public function setAskPhoto($askPhoto)
+    public function setTargetMessageDate($targetMessageDate)
     {
-        $this->ask_photo = $askPhoto;
+        $this->target_message_date = $targetMessageDate;
 
         return $this;
     }
 
     /**
-     * Get askPhoto
+     * Get targetMessageDate
      *
      * @return string
      */
-    public function getAskPhoto()
+    public function getTargetMessageDate()
     {
-        return $this->ask_photo;
+        return $this->target_message_date;
     }
 }
