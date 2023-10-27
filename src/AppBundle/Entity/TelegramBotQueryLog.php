@@ -42,6 +42,11 @@ class TelegramBotQueryLog
     private $plantform_order_no = ''; //平台订单号
 	
 	/**
+     * @ORM\Column(type="string", length=50)
+     */
+    private $sh_order_no = ''; //平台的商户订单号
+	
+	/**
      * @ORM\Column(type="string", length=15)
      */
     private $order_status = '';
@@ -576,5 +581,29 @@ class TelegramBotQueryLog
     public function getReplyResult()
     {
         return $this->reply_result;
+    }
+
+    /**
+     * Set shOrderNo
+     *
+     * @param string $shOrderNo
+     *
+     * @return TelegramBotQueryLog
+     */
+    public function setShOrderNo($shOrderNo)
+    {
+        $this->sh_order_no = $shOrderNo;
+
+        return $this;
+    }
+
+    /**
+     * Get shOrderNo
+     *
+     * @return string
+     */
+    public function getShOrderNo()
+    {
+        return $this->sh_order_no;
     }
 }
