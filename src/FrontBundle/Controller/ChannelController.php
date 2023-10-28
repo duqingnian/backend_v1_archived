@@ -42,6 +42,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
     {
 		$uid = $this->GetId($request->request->get('access_token',''));
 		
+		$category = $request->request->get('category','');		
 		$name = $request->request->get('name','');
 		$slug = $request->request->get('slug','');
 		$telegram_group_id = $request->request->get('telegram_group_id','');
@@ -50,6 +51,10 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		if('' == $name)
 		{
 			$this->e('名称不能为空');
+		}
+		else if('' == $category)
+		{
+			$this->e('类别不能为空');
 		}
 		else if('' == $slug)
 		{
@@ -72,6 +77,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		}
 		$channel = new \AppBundle\Entity\Channel();
 		$channel->setName($name);
+		$channel->setCategory($category);
 		$channel->setSlug($slug);
 		$channel->setCountry($country);
 		$channel->setTelegramGroupId($telegram_group_id);
@@ -122,6 +128,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 			
 			$json['channels'][] = [
 				'id'=>$channel->getId(),
+				'category'=>$channel->getCategory(),
 				'name'=>$channel->getName(),
 				'country'=>$country,
 				'telegram_group_id'=>$channel->getTelegramGroupId(),
@@ -171,6 +178,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$timezone = $request->request->get('timezone','');
 		$note = $request->request->get('note','');
 		$name = $request->request->get('name','');
+		$category = $request->request->get('category','');
 		$slug = $request->request->get('slug','');
 		$telegram_group_id = $request->request->get('telegram_group_id','');
 		$country = $request->request->get('country','');
@@ -223,6 +231,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 			$this->e("slug存在:".$slug);
 		}
 		$channel->setName($name);
+		$channel->setCategory($category);
 		$channel->setSlug($slug);
 		$channel->setTelegramGroupId($telegram_group_id);
 		$channel->setIsActive($is_active);
@@ -278,6 +287,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$detail = [
 			'master_id'=>$_channel->getId(),
 			'name'=>$_channel->getName(),
+			'category'=>$_channel->getCategory(),
 			'slug'=>$_channel->getSlug(),
 			'telegram_group_id'=>$_channel->getTelegramGroupId(),
 			'country'=>$_channel->getCountry(),
@@ -518,7 +528,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$display_type = $request->request->get('display_type','');
 		$default_value = $request->request->get('default_value','');
 		$label = $request->request->get('label','');
-		$idx = $request->request->get('idx',0);			 
+		$idx = $request->request->get('idx',0);
 		$is_require = $request->request->get('is_require','');
 		$channel_id = $request->request->get('channel_id','');
 		

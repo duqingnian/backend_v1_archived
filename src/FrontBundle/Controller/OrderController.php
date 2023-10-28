@@ -48,22 +48,9 @@ class OrderController extends \AppBundle\Controller\BaseController
 		$statusMap = $StatusMeta->GetAll();
 		$order_status = $statusMap[$order->getOrderStatus()];
 		
-		$sh_fee = '??';
-		$channel_fee = '??';
-		if('PAYIN' == $order_bundle)
-		{
-			$sh_fee = $order->getFee().'=('.$order->getAmount().'×'.($order->getPayinPct()).'%='.($order->getAmount() * ($order->getPayinPct()/100)).')+'.$order->getPayinSigleFee();
-			
-			$_channel_fee = $order->getAmount()*($order->getChannelPayinPct()/100) + $order->getChannelPayinSigleFee();
-			$channel_fee = $_channel_fee.'=('.$order->getAmount().'×'.($order->getChannelPayinPct()).'%='.($order->getAmount() * ($order->getChannelPayinPct()/100)).')+'.$order->getChannelPayinSigleFee();
-		}
-		else
-		{
-			$sh_fee = $order->getFee().'=('.$order->getAmount().'×'.($order->getPayoutPct()).'%='.($order->getAmount() * ($order->getPayoutPct()/100)).')+'.$order->getPayoutSigleFee();
-			
-			$_channel_fee = $order->getAmount()*($order->getChannelPayoutPct()/100) + $order->getChannelPayoutSigleFee();
-			$channel_fee = $_channel_fee.'=('.$order->getAmount().'×'.($order->getChannelPayoutPct()).'%='.($order->getAmount() * ($order->getChannelPayoutPct()/100)).')+'.$order->getChannelPayoutSigleFee();
-		}
+		$sh_fee = $order->getShFee().'=('.$order->getAmount().'×'.($order->getShPct()).'%='.($order->getAmount() * ($order->getShPct()/100)).')+'.$order->getShSigleFee();
+		
+		$channel_fee = $order->getChannelFee().'=('.$order->getAmount().'×'.($order->getChannelPct()).'%='.($order->getAmount() * ($order->getChannelPct()/100)).')+'.$order->getChannelSigleFee();
 		
 		$detail = [
 			'amount'=>$order->getAmount(),
@@ -109,7 +96,7 @@ class OrderController extends \AppBundle\Controller\BaseController
 		}
 		
 		$order = 'a.id desc';
-		$prepage=25;
+		$prepage=10;
 		
 		$StatusMeta = new \AppBundle\Utils\StatusMeta();
 		$statusMap = $StatusMeta->GetAll();
@@ -123,12 +110,11 @@ class OrderController extends \AppBundle\Controller\BaseController
 				$status = $statusMap[$order['order_status']];
 			}
 			
-			/*//查询通道
 			$order['channel'] = '-';
 			$channel = $this->db('channel')->find($order['channel_id']);
 			if($channel)
 			{
-				$order['channel'] = '?'.$channel->getName();
+				$order['channel'] = $channel->getName();
 			}
 			else
 			{
@@ -140,25 +126,40 @@ class OrderController extends \AppBundle\Controller\BaseController
 			$shanghu = $this->db('shanghu')->find($order['shanghu_id']);
 			if($shanghu)
 			{
-				$order['shanghu'] = '?'.$shanghu->getName();
+				$order['shanghu'] = $shanghu->getName();
 			}
 			else
 			{
-				$order['shanghu'] = $order->getShanghuId();
-			}*/
+				$order['shanghu'] = '?'.$order->getShanghuId();
+			}
 			
-			$order['key'] = 'payin_order_'.$order['id'];
+			$order['key'] = 'payout_order_'.$order['id'];
 			$order['created_time'] = date('Y-m-d H:i:s',$order['created_at']);
 			$order['payed_time'] = '-';
 			$order['status_label'] = $status;
-			$order['bundle'] = 'PAYIN';
+			$order['bundle'] = 'PAYOUT';
 			
 			$order['detail'] = [
 				'qrcode_src'=>'',
 			];
 		}
+   //所有的渠道
+		$channel_list = [['key'=>'ALL','text'=>'全部']];
+		$_channels = $this->db('channel')->findAll();
+		foreach($_channels as $_channel)
+		{
+			$channel_list[] = ['key'=>$_channel->getId(),'text'=>$_channel->getName()];
+		}
 		
-		echo json_encode(['pager'=>$pager]);
+		//所有的商户
+		$sh_list = [['key'=>'ALL','text'=>'全部']];
+		$_sh_list = $this->db('shanghu')->findAll();
+		foreach($_sh_list as $_sh)
+		{
+			$sh_list[] = ['key'=>$_sh->getId(),'text'=>$_sh->getName()];
+		}
+		
+		echo json_encode(['pager'=>$pager,'order_status'=>$this->order_status,'channel_list'=>$channel_list,'sh_list'=>$sh_list]);
 		exit();
 	}
 	public function _load_payin($request)
@@ -189,7 +190,7 @@ class OrderController extends \AppBundle\Controller\BaseController
 		}
 		
 		$order = 'a.id desc';
-		$prepage=25;
+		$prepage=10;
 		
 		$StatusMeta = new \AppBundle\Utils\StatusMeta();
 		$statusMap = $StatusMeta->GetAll();

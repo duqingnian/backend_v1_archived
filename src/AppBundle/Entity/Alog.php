@@ -24,6 +24,11 @@ class Alog
 	/**
      * @ORM\Column(type="integer")
      */
+    private $sh_id = 0;
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
     private $order_id = 0;
 	
 	/**
@@ -169,5 +174,29 @@ class Alog
     public function getOrderId()
     {
         return $this->order_id;
+    }
+
+    /**
+     * Set shId
+     *
+     * @param integer $shId
+     *
+     * @return Alog
+     */
+    public function setShId($shId)
+    {
+        $this->sh_id = $shId;
+
+        return $this;
+    }
+
+    /**
+     * Get shId
+     *
+     * @return integer
+     */
+    public function getShId()
+    {
+        return $this->sh_id;
     }
 }

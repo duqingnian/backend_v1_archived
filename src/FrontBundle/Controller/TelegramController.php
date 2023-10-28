@@ -191,6 +191,7 @@ class TelegramController extends \AppBundle\Controller\BaseController
 			['key'=>'QUERY','text'=>'代收查询','custom_name'=>'','const_content'=>''],
 			['key'=>'VOUCHER','text'=>'获取凭证','custom_name'=>'','const_content'=>''],
 			['key'=>'ORDER','text'=>'获取订单详情','custom_name'=>'','const_content'=>''],
+			['key'=>'WHOAMI','text'=>'获取当前群组id','custom_name'=>'','const_content'=>''],
 		];
 	}
 }

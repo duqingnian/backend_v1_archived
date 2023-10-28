@@ -18,7 +18,7 @@ class DispatchController extends \AppBundle\Controller\BaseController
 		return $this->{$method}($request);
     }
 
-	public function _list($request)
+	private function _list($request)
 	{
 		$bundle = $request->request->get('bundle','');
 		if('' == $bundle || !in_array($bundle,['TOPUP','WITHRAWAL']))
@@ -52,8 +52,165 @@ class DispatchController extends \AppBundle\Controller\BaseController
 		exit();
 	}
 	
+//冻结
+	private function _freeze($request)
+	{
+		$uid = $this->GetId($request->request->get('access_token',''));
+		$sh_id = $this->GetId($request->request->get('request_token',''));
+		$freeze_number = $request->request->get('freeze_number','');
+		$freeze_number = str_replace(',','',$freeze_number);
+		
+		if(is_numeric($freeze_number) && $freeze_number > 0)
+		{
+			//do nothing
+		}
+		else
+		{
+			$this->e("金额错误");
+		}
+		
+		if(is_numeric($sh_id) && $sh_id > 0)
+		{
+			$sh = $this->db('shanghu')->find($sh_id);
+			if(!$sh)
+			{
+				$this->e('商户状态异常');
+			}
+			
+			$balance = $sh->getBalance();
+			if($freeze_number > $balance)
+			{
+				$this->e('冻结金额:'.$freeze_number.'不能大于商户余额:'.$balance);
+			}
+			
+			//开始冻结金额
+			//创建记录
+			$note = '';
+			
+			$model = new \AppBundle\Entity\Dispatch();
+			$model->setBundle('FREEZE');
+			$model->setOldMoney($balance);
+			$model->setMoney($freeze_number);
+			$model->setUid($uid);
+			$model->setShanghuId($sh->getId());
+			$model->setNote($note);
+			$model->setStatus('-');
+			$model->setCreatedAt(time());
+			$this->save($model);
+			
+			//创建日志
+			if($model->getId() > 0)
+			{
+				$new_money = $balance - (float)$freeze_number;
+				$model->setNewMoney($new_money);
+				$sh->setBalance($new_money);
+				$sh->setFreezePool($sh->getFreezePool() + $freeze_number);
+				
+				$data = json_encode(['uid'=>$uid,'sh_id'=>$sh->getId(),'old_money'=>$balance,'freeze_number'=>$freeze_number,'new_money'=>$new_money,'note'=>$note,'dispatch_id'=>$model->getId()]);
+				
+				$log = new \AppBundle\Entity\Alog(); 
+				$log->setUid($uid);
+				$log->setShId($sh->getId());
+				$log->setBundle('FREEZE');
+				$log->setData($data);
+				$log->setCreatedAt(time());
+				$log->setOrderId(0);
+				$this->save($log);
+			}
+			else
+			{
+				$this->e('操作失败');
+			}
+			
+			$this->succ('操作成功');
+		}
+		else
+		{
+			$this->e("参数错误");
+		}
+	}
+	
+	//冻结
+	private function _unfreeze($request)
+	{
+		$uid = $this->GetId($request->request->get('access_token',''));
+		$sh_id = $this->GetId($request->request->get('request_token',''));
+		$unfreeze_number = $request->request->get('unfreeze_number','');
+		$unfreeze_number = str_replace(',','',$unfreeze_number);
+		
+		if(is_numeric($unfreeze_number) && $unfreeze_number > 0)
+		{
+			//do nothing
+		}
+		else
+		{
+			$this->e("金额错误");
+		}
+		
+		if(is_numeric($sh_id) && $sh_id > 0)
+		{
+			$sh = $this->db('shanghu')->find($sh_id);
+			if(!$sh)
+			{
+				$this->e('商户状态异常');
+			}
+			
+			$FreezePool = $sh->getFreezePool();
+			if($unfreeze_number > $FreezePool)
+			{
+				$this->e('解冻金额:'.$unfreeze_number.'不能大于商户冻结金额:'.$FreezePool);
+			}
+			
+			//开始冻结金额
+			//创建记录
+			$balance = $sh->getBalance();
+			$note = '';
+			
+			$model = new \AppBundle\Entity\Dispatch();
+			$model->setBundle('UNFREEZE');
+			$model->setOldMoney($balance);
+			$model->setMoney($unfreeze_number);
+			$model->setUid($uid);
+			$model->setShanghuId($sh->getId());
+			$model->setNote($note);
+			$model->setStatus('-');
+			$model->setCreatedAt(time());
+			$this->save($model);
+			
+			//创建日志
+			if($model->getId() > 0)
+			{
+				$new_money = $balance + (float)$unfreeze_number;
+				$model->setNewMoney($new_money);
+				$sh->setBalance($new_money);
+				$sh->setFreezePool($sh->getFreezePool() - $unfreeze_number);
+				
+				$data = json_encode(['uid'=>$uid,'sh_id'=>$sh->getId(),'old_money'=>$balance,'unfreeze_number'=>$unfreeze_number,'new_money'=>$new_money,'note'=>$note,'dispatch_id'=>$model->getId()]);
+				
+				$log = new \AppBundle\Entity\Alog(); 
+				$log->setUid($uid);
+				$log->setShId($sh->getId());
+				$log->setBundle('UNFREEZE');
+				$log->setData($data);
+				$log->setCreatedAt(time());
+				$log->setOrderId(0);
+				$this->save($log);
+			}
+			else
+			{
+				$this->e('操作失败');
+			}
+			
+			$this->succ('操作成功');
+		}
+		else
+		{
+			$this->e("参数错误");
+		}
+	}
+	
 	//发起提现或者充值
-	public function _create($request)
+	private function _create($request)
 	{
 		$token = $request->request->get('token','');
 		$rand = $request->request->get('rand','');
@@ -82,32 +239,28 @@ class DispatchController extends \AppBundle\Controller\BaseController
 		{
 			$this->e('商户参数未传递');
 		}
-		$shanghu_id = str_replace('sh-','',$shanghu);
+		$shanghu_id = $this->GetId($shanghu);
 		if('' == $shanghu_id || !is_numeric($shanghu_id) || $shanghu_id <= 0)
 		{
 			$this->e('商户id异常');
 		}
-
-		if(!is_numeric($uid) || $uid <= 0)
+		$sh = $this->db('shanghu')->find($shanghu_id);
+		if(!$sh)
 		{
-			$this->e('账户id异常！');
+			$this->e('商户状态异常');
 		}
-		$user = $this->db('user')->find($uid);
-		if(!$user)
+
+		$sh_user = $this->db('user')->find($sh->getUid());
+		if(!$sh_user)
 		{
 			$this->e('账号不存在，无法执行此操作');
 		}
 		
-		if('' == $money || !is_numeric($money) || $money <= 0 || $money >= 99999)
+		if('' == $money || !is_numeric($money) || $money <= 0 || $money >= 1000000)
 		{
 			$this->e('金额异常');
 		}
 		
-		$sh = $this->db('Shanghu')->find($shanghu_id);
-		if(!$sh)
-		{
-			$this->e('商户不存在');
-		}
 		
 		$balance = $sh->getBalance();
 		if('WITHRAWAL' == $bundle)
@@ -124,6 +277,7 @@ class DispatchController extends \AppBundle\Controller\BaseController
 		$model->setOldMoney($balance);
 		$model->setMoney($money);
 		$model->setUid($uid);
+		$log->setShId($sh->getId());
 		$model->setShanghuId($shanghu_id);
 		$model->setNote($note);
 		$model->setStatus('-');

@@ -28,17 +28,51 @@ class CountryController extends \AppBundle\Controller\BaseController
 		foreach($_cccodes as $cc)
 		{
 			$cccodes[] = [
-				'id'=>$cc->getId(),
+				'request_token'=>$this->authcode('ID'.$cc->getId()),
 				'slug'=>$cc->getSlug(),
 				'name'=>$cc->getName(),
 				'code'=>$cc->getCode(),
 				'currency'=>$cc->getCurrency(),
 				'currency_name'=>$cc->getCurrencyName(),
+				'rate_usdt'=>$cc->getRateUsdt(),
+				'rate_rmb'=>$cc->getRateRmb(),
 			];
 		}
 		
 		echo json_encode(['code'=>0,'msg'=>'OK','cccodes'=>$cccodes]);
 		exit();
+	}
+	
+	private function _sync($request)
+	{
+		$request_token = $request->request->get("request_token","");
+		$name = $request->request->get("name","");
+		$text = $request->request->get("text","");
+		$id = $this->GetId($request_token);
+
+		if(is_numeric($id) && $id > 0)
+		{
+			$cccode = $this->db('Country')->find($id);
+			if(!$cccode)
+			{
+				$this->e('不存在');
+			}
+			if('rate_usdt' == $name)
+			{
+				$cccode->setRateUsdt($text);
+			}
+			if('rate_rmb' == $name)
+			{
+				$cccode->setRateRmb($text);
+			}
+			$this->update();
+			echo json_encode(['code'=>0,'msg'=>'已更新']);
+			exit();
+		}
+		else
+		{
+			$this->e('参数错误');
+		}
 	}
 }
 

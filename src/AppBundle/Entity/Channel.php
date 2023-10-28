@@ -15,11 +15,26 @@ class Channel
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
+    private $category = 0;
     
     /**
      * @ORM\Column(type="string", length=50)
      */
     private $name; //名称
+	
+	/**
+     * @ORM\Column(type="decimal", scale=2)
+     */
+    private $balance = 0.00; //余额
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
+    private $balance_last_update_at = 0;
 	
 	/**
      * @ORM\Column(type="string", length=30)
@@ -749,5 +764,77 @@ class Channel
     public function getPayoutMax()
     {
         return $this->payout_max;
+    }
+
+    /**
+     * Set category
+     *
+     * @param integer $category
+     *
+     * @return Channel
+     */
+    public function setCategory($category)
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * Get category
+     *
+     * @return integer
+     */
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    /**
+     * Set balance
+     *
+     * @param string $balance
+     *
+     * @return Channel
+     */
+    public function setBalance($balance)
+    {
+        $this->balance = $balance;
+
+        return $this;
+    }
+
+    /**
+     * Get balance
+     *
+     * @return string
+     */
+    public function getBalance()
+    {
+        return $this->balance;
+    }
+
+    /**
+     * Set balanceLastUpdateAt
+     *
+     * @param integer $balanceLastUpdateAt
+     *
+     * @return Channel
+     */
+    public function setBalanceLastUpdateAt($balanceLastUpdateAt)
+    {
+        $this->balance_last_update_at = $balanceLastUpdateAt;
+
+        return $this;
+    }
+
+    /**
+     * Get balanceLastUpdateAt
+     *
+     * @return integer
+     */
+    public function getBalanceLastUpdateAt()
+    {
+        return $this->balance_last_update_at;
     }
 }

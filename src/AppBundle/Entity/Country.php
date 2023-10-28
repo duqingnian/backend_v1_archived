@@ -40,6 +40,16 @@ class Country
      * @ORM\Column(type="string", length=30)
      */
     private $currency_name="";
+	
+	/**
+     * @ORM\Column(type="decimal", scale=4)
+     */
+    private $rate_usdt = 0.0000; //USDT汇率
+	
+	/**
+     * @ORM\Column(type="decimal", scale=4)
+     */
+    private $rate_rmb = 0.0000; //人民币汇率
 
     /**
      * Get id
@@ -49,6 +59,30 @@ class Country
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set code
+     *
+     * @param string $code
+     *
+     * @return Country
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    /**
+     * Get code
+     *
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->code;
     }
 
     /**
@@ -124,30 +158,6 @@ class Country
     }
 
     /**
-     * Set code
-     *
-     * @param string $code
-     *
-     * @return Country
-     */
-    public function setCode($code)
-    {
-        $this->code = $code;
-
-        return $this;
-    }
-
-    /**
-     * Get code
-     *
-     * @return string
-     */
-    public function getCode()
-    {
-        return $this->code;
-    }
-
-    /**
      * Set currencyName
      *
      * @param string $currencyName
@@ -169,5 +179,53 @@ class Country
     public function getCurrencyName()
     {
         return $this->currency_name;
+    }
+
+    /**
+     * Set rateUsdt
+     *
+     * @param string $rateUsdt
+     *
+     * @return Country
+     */
+    public function setRateUsdt($rateUsdt)
+    {
+        $this->rate_usdt = $rateUsdt;
+
+        return $this;
+    }
+
+    /**
+     * Get rateUsdt
+     *
+     * @return string
+     */
+    public function getRateUsdt()
+    {
+        return $this->rate_usdt;
+    }
+
+    /**
+     * Set rateRmb
+     *
+     * @param string $rateRmb
+     *
+     * @return Country
+     */
+    public function setRateRmb($rateRmb)
+    {
+        $this->rate_rmb = $rateRmb;
+
+        return $this;
+    }
+
+    /**
+     * Get rateRmb
+     *
+     * @return string
+     */
+    public function getRateRmb()
+    {
+        return $this->rate_rmb;
     }
 }

@@ -267,7 +267,7 @@ class BaseController extends Controller
 			'User'=>'a.id,a.username,a.display_name,a.group_id,a.is_active',
 			'Channel'=>'a.id,a.name',
 			'PayinOrder'=>'a.id,a.shanghu_id,a.channel_id,a.amount,a.channel_order_no,a.shanghu_order_no,a.plantform_order_no,a.order_status,a.sh_pct,a.sh_sigle_fee,a.sh_fee,a.channel_pct,a.channel_sigle_fee,a.channel_fee,a.order_type,a.created_at',
-			'PayoutOrder'=>'a.id,a.shanghu_id,a.channel_id,a.amount,a.channel_order_no,a.shanghu_order_no,a.plantform_order_no,a.order_status,a.payout_pct,a.payout_sigle_fee,a.fee,a.order_type,a.created_at',
+			'PayoutOrder'=>'a.id,a.shanghu_id,a.channel_id,a.amount,a.channel_order_no,a.shanghu_order_no,a.plantform_order_no,a.order_status,a.sh_pct,a.sh_sigle_fee,a.sh_fee,a.channel_pct,a.channel_sigle_fee,a.channel_fee,a.order_type,a.created_at',
 			'Alog'=>'a.id,a.uid,a.order_id,a.bundle,a.data,a.created_at',
 			'Dispatch'=>'a.id,a.uid,a.old_money,a.money,a.new_money,a.bundle,a.shanghu_id,a.note,a.created_at', 
         );

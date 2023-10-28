@@ -158,7 +158,6 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 			$user = $this->db('user')->find($uid);
 			
 			$json['shanghus'][] = [
-				'id'=>$shanghu->getId(),
 				'name'=>$shanghu->getName(),
 				'category'=>$shanghu->getCategory(),
 				'currency'=>$currency,
@@ -175,7 +174,8 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 				'is_test'=>$shanghu->getIsTest(),
 				'is_active'=>$shanghu->getIsActive(),
 				'account'=>$user->getUsername(),
-				'request_token'=>$this->authcode('ID'.$shanghu->getId())
+				'request_token'=>$this->authcode('ID'.$shanghu->getId()),
+	            'google_bind'=>$user->getGoogleAuthBind(),
 			];
 		}
 		
@@ -249,11 +249,11 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 				//商户的金额设置不能大于小于通道的设置
 				if(0 != $channel_payin_min && $payin_min < $channel_payin_min)
 				{
-					$this->e("通道最小代收金额:".$payin_min." 不能小于 通道最小代收金额:".$channel_payin_min);
+					$this->e("最小代收金额:".$payin_min." 不能小于 通道最小代收金额:".$channel_payin_min);
 				}
 				if(0 != $channel_payin_max && $payin_max > $channel_payin_max)
 				{
-					$this->e("通道最大代收金额:".$payin_max." 不能大于 通道最大代收金额:".$channel_payin_max);
+					$this->e("最大代收金额:".$payin_max." 不能大于 通道最大代收金额:".$channel_payin_max);
 				}
 			}
 			else
@@ -273,11 +273,11 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 				//商户的金额设置不能大于小于通道的设置
 				if(0 != $channel_payout_min && $payout_min < $channel_payout_min)
 				{
-					$this->e("通道最小代付金额:".$payout_min." 不能小于 通道最小代付金额:".$channel_payout_min);
+					$this->e("最小代付金额:".$payout_min." 不能小于 通道最小代付金额:".$channel_payout_min);
 				}
 				if(0 != $channel_payout_max && $payout_max > $channel_payout_max)
 				{
-					$this->e("通道最大代付金额:".$payout_max." 不能大于 通道最大代付金额:".$channel_payout_max);
+					$this->e("最大代付金额:".$payout_max." 不能大于 通道最大代付金额:".$channel_payout_max);
 				}
 			}
 			else
@@ -346,17 +346,21 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		}
 		
 		$shanghu = [
-			'id'=>$_shanghu->getId(),
 			'account'=>$user->getUsername(),
 			'name'=>$_shanghu->getName(),
 			'category'=>$_shanghu->getCategory(),
 			'is_test'=>$_shanghu->getIsTest(),
 			'is_active'=>$_shanghu->getIsActive(),
+			'google_bind'=>$user->getGoogleAuthBind(),		 
 			'request_token'=>$this->authcode('ID'.$_shanghu->getId()),
 		];
 		$detail = [
 			'master_id'=>$_shanghu->getId(),
 			'name'=>$_shanghu->getName(),
+			'balance'=>$_shanghu->getBalance(),
+			'df_pool'=>$_shanghu->getDfPool(),
+			'freeze_pool'=>$_shanghu->getFreezePool(),
+			
 			'account'=>$user->getUsername(),
 			'is_test'=>$_shanghu->getIsTest(),
 			'category'=>$_shanghu->getCategory(),
@@ -385,6 +389,7 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 			'payout_sign_method'=>$config->getPayoutSignMethod(),
 			
 			'ip_whitelist'=>$ip_whitelist,
+			'google_bind'=>$user->getGoogleAuthBind(),
 		];
 		
 		$data = ['code'=>0,'msg'=>'OK','shanghu'=>$shanghu,'detail'=>$detail];
