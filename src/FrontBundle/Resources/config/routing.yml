@@ -1,7 +1,9 @@
 front_homepage:
     path:     /
     defaults: { _controller: FrontBundle:Default:index }
-
+front_home:
+    path:     /home.api
+    defaults: { _controller: FrontBundle:Home:index }
 front_debug:
     path:     /debug
     defaults: { _controller: FrontBundle:Default:debug }

@@ -23,7 +23,7 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		$name = $request->request->get('name','');
 		$account = $request->request->get('account','');
 		$password = $request->request->get('password','');
-		$country = $request->request->get('country','');
+		$category = $request->request->get('category','');
 		$is_active = $request->request->get('is_active',0);
 		$is_test = $request->request->get('is_test',0);
 		$is_test = 'true' == $is_test ? 1 : 0;
@@ -41,10 +41,6 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		{
 			$this->e('名称不能为空');
 		}
-		if('' == $country)
-		{
-			$this->e('国家不能为空');
-		}
 		
 		$shanghu = $this->db('Shanghu')->findOneBy(['name'=>$name]);
 		if($shanghu)
@@ -60,7 +56,8 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		
 		$shanghu = new \AppBundle\Entity\Shanghu();
 		$shanghu->setName($name);
-		$shanghu->setCountry($country);
+		$shanghu->setCategory($category);
+		$shanghu->setCountry('');
 		$shanghu->setIsActive($is_active);
 		$shanghu->setIsTest($is_test);
 		$shanghu->setCreatedAt(time());
@@ -129,12 +126,33 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		$json = ['code'=>0,'msg'=>'OK','shanghus'=>[]];
 		
 		$countries = $this->get_countries();
-		
 		$shanghus = $this->db('Shanghu')->findAll();
+		
 		foreach($shanghus as $shanghu)
 		{
-			$country = $countries[$shanghu->getCountry()]['name'];
-			$currency = $countries[$shanghu->getCountry()]['currency'];
+			$payin_channel_name = '-';
+			$payout_channel_name = '-';
+			$country = '-';
+			
+			$sh_conf = $this->db('shanghuConfig')->findOneBy(['master_id'=>$shanghu->getId()]);
+			$payin_fee = $sh_conf->getPayinPct().'% + '.$sh_conf->getPayinSigleFee();
+			$payout_fee = $sh_conf->getPayoutPct().' + '.$sh_conf->getPayoutSigleFee();
+			
+			$payin_channel_id = $sh_conf->getPayinChannelId();
+			$payout_channel_id = $sh_conf->getPayoutChannelId();
+			if(0 != $payin_channel_id)
+			{
+				$payin_channel = $this->db('channel')->find($payin_channel_id);
+				$payin_channel_name = $payin_channel->getName();
+				$country = $countries[$payin_channel->getCountry()]['name'];
+				$currency = $countries[$payin_channel->getCountry()]['currency'];
+				
+				$country = $country.'('.$currency.')';
+			}
+			if(0 != $payout_channel_id)
+			{
+				$payout_channel_name = $this->db('channel')->find($payout_channel_id)->getName();
+			}
 			
 			$uid = $shanghu->getUid();
 			$user = $this->db('user')->find($uid);
@@ -142,8 +160,15 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 			$json['shanghus'][] = [
 				'id'=>$shanghu->getId(),
 				'name'=>$shanghu->getName(),
-				'country'=>$country,
+				'category'=>$shanghu->getCategory(),
 				'currency'=>$currency,
+				
+				'payin_channel_name'=>$payin_channel_name,
+				'payout_channel_name'=>$payout_channel_name,
+				'payin_fee'=>$payin_fee,
+				'payout_fee'=>$payout_fee,
+				
+				'country'=>$country,
 				'balance'=>$shanghu->getBalance(),
 				'df_pool'=>$shanghu->getDfPool(),
 				'freeze_pool'=>$shanghu->getFreezePool(),
@@ -183,7 +208,7 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		
 		$name = $request->request->get('name','');
 		$account = $request->request->get('account','');
-		$country = $request->request->get('country','');
+		$category = $request->request->get('category','');
 		$is_test = $request->request->get('is_test',0);
 		$is_active = $request->request->get('is_active',0);
 		
@@ -264,7 +289,7 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		$shanghu->setName($name);
 		$shanghu->setIsTest($is_test);
 		$shanghu->setIsActive($is_active);
-		$shanghu->setCountry($country);
+		$shanghu->setCategory($category);
 		$shanghu->setPayinMin($payin_min);
 		$shanghu->setPayinMax($payin_max);
 		$shanghu->setPayoutMin($payout_min);
@@ -324,7 +349,7 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 			'id'=>$_shanghu->getId(),
 			'account'=>$user->getUsername(),
 			'name'=>$_shanghu->getName(),
-			'country'=>$_shanghu->getCountry(),
+			'category'=>$_shanghu->getCategory(),
 			'is_test'=>$_shanghu->getIsTest(),
 			'is_active'=>$_shanghu->getIsActive(),
 			'request_token'=>$this->authcode('ID'.$_shanghu->getId()),
@@ -334,7 +359,7 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 			'name'=>$_shanghu->getName(),
 			'account'=>$user->getUsername(),
 			'is_test'=>$_shanghu->getIsTest(),
-			'country'=>$_shanghu->getCountry(),
+			'category'=>$_shanghu->getCategory(),
 			'currency'=>$countries[$_shanghu->getCountry()]['currency'],
 			'is_active'=>$_shanghu->getIsActive(),
 			'request_token'=>$this->authcode('ID'.$_shanghu->getId()),

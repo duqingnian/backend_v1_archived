@@ -19,6 +19,11 @@ class Shanghu
 	/**
      * @ORM\Column(type="integer")
      */
+    private $category = 0;
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
     private $uid = 0;
 	
     /**
@@ -488,5 +493,29 @@ class Shanghu
     public function getPayoutRequireReviewNumber()
     {
         return $this->payout_require_review_number;
+    }
+
+    /**
+     * Set category
+     *
+     * @param integer $category
+     *
+     * @return Shanghu
+     */
+    public function setCategory($category)
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * Get category
+     *
+     * @return integer
+     */
+    public function getCategory()
+    {
+        return $this->category;
     }
 }
