@@ -49,7 +49,12 @@ class CountryController extends \AppBundle\Controller\BaseController
 		$name = $request->request->get("name","");
 		$text = $request->request->get("text","");
 		$id = $this->GetId($request_token);
-
+		
+		if('' == $text)
+		{
+			$text = 0.00;
+		}
+		
 		if(is_numeric($id) && $id > 0)
 		{
 			$cccode = $this->db('Country')->find($id);
