@@ -170,11 +170,10 @@ class BaseController extends Controller
         {
             $page['page'] = 1;
         }
-        $page['prepage']=$prepage;
+        $page['prepage'] = (int)$prepage;
 
         $em = $this->getDoctrine()->getManager($conn);
 		
-        $page['prepage'] = $page['prepage'];
         $poffset = 3;
 		
         $page['total'] = $em->createQuery("select count(a.id) as c from ".$bundle.":".$model." a ".$where.' '.$groupby)->getSingleScalarResult();
@@ -265,11 +264,12 @@ class BaseController extends Controller
         $model = ucfirst($model); 
         $_columns = array(
 			'User'=>'a.id,a.username,a.display_name,a.group_id,a.is_active',
-			'Channel'=>'a.id,a.name',
+			'Channel'=>'a.id,a.category ,a.name,a.balance,a.balance_last_update_at ,a.slug,a.telegram_group_id,a.timezone,a.country,a.merchant_id ,a.payin_appid ,a.payin_secret ,a.payout_appid ,a.payout_secret ,a.payin_pct ,a.payin_sigle_fee,a.payout_pct,a.payout_sigle_fee,a.payin_sign_method,a.payout_sign_method ,a.payin_sign_col_name,a.payout_sign_col_name,a.is_active,a.created_at,a.payin_min,a.payin_max,a.payout_min,a.payout_max',
 			'PayinOrder'=>'a.id,a.shanghu_id,a.channel_id,a.amount,a.channel_order_no,a.shanghu_order_no,a.plantform_order_no,a.order_status,a.sh_pct,a.sh_sigle_fee,a.sh_fee,a.channel_pct,a.channel_sigle_fee,a.channel_fee,a.order_type,a.created_at',
 			'PayoutOrder'=>'a.id,a.shanghu_id,a.channel_id,a.amount,a.channel_order_no,a.shanghu_order_no,a.plantform_order_no,a.order_status,a.sh_pct,a.sh_sigle_fee,a.sh_fee,a.channel_pct,a.channel_sigle_fee,a.channel_fee,a.order_type,a.created_at',
 			'Alog'=>'a.id,a.uid,a.order_id,a.bundle,a.data,a.created_at',
-			'Dispatch'=>'a.id,a.uid,a.old_money,a.money,a.new_money,a.bundle,a.shanghu_id,a.note,a.created_at', 
+			'Dispatch'=>'a.id,a.uid,a.old_money,a.money,a.new_money,a.bundle,a.shanghu_id,a.note,a.created_at',
+			'Shanghu'=>'a.id,a.category,a.uid,a.name,a.country,a.balance,a.df_pool,a.freeze_pool,a.is_active,a.is_test,a.created_at,a.payin_min,a.payin_max,a.payout_min,a.payout_max,a.payin_review_switch,a.payout_review_switch,a.payout_require_review_number', 
         );
         return $_columns[$model];
     }

@@ -139,11 +139,23 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 	{
 		$json = ['code'=>0,'msg'=>'OK','shanghus'=>[]];
 		
+		$filter_name = $request->request->get('filter_name','');
+		$filter_account = $request->request->get('filter_account','');
+		$filter_category = $request->request->get('filter_category','');
+		$prepage = $request->request->get('prepage',10);
 		$countries = $this->get_countries();
 		
 		//分页查找商户
 		$where = 'a.id > 0';
-		$prepage = 5;
+		if('' != $filter_category)
+		{
+			$where .= ' and a.category='.$filter_category;
+		}
+		if('' != $filter_name)
+		{
+			$where .= " and a.name like '%".$filter_name."%'";
+		}
+
 		$pager = $this->pager($request,'shanghu',$where,'a.id desc','',$prepage,'',true);
 		
 		foreach($pager['data'] as $shanghu)

@@ -96,7 +96,7 @@ class OrderController extends \AppBundle\Controller\BaseController
 		}
 		
 		$order = 'a.id desc';
-		$prepage=10;
+		$prepage = $request->request->get('prepage',10);
 		
 		$StatusMeta = new \AppBundle\Utils\StatusMeta();
 		$statusMap = $StatusMeta->GetAll();
@@ -162,6 +162,7 @@ class OrderController extends \AppBundle\Controller\BaseController
 		echo json_encode(['pager'=>$pager,'order_status'=>$this->order_status,'channel_list'=>$channel_list,'sh_list'=>$sh_list]);
 		exit();
 	}
+	
 	public function _load_payin($request)
 	{
 		$access_token = $request->request->get('access_token','');
@@ -190,7 +191,7 @@ class OrderController extends \AppBundle\Controller\BaseController
 		}
 		
 		$order = 'a.id desc';
-		$prepage=10;
+		$prepage = $request->request->get('prepage',10);
 		
 		$StatusMeta = new \AppBundle\Utils\StatusMeta();
 		$statusMap = $StatusMeta->GetAll();
@@ -257,7 +258,8 @@ class OrderController extends \AppBundle\Controller\BaseController
 		echo json_encode(['pager'=>$pager,'order_status'=>$this->order_status,'channel_list'=>$channel_list,'sh_list'=>$sh_list]);
 		exit();
 	}
-		//模拟成功和失败
+	
+	//模拟成功和失败
 	public function _simulation($request)
 	{
 		$status = $request->request->get('status','');

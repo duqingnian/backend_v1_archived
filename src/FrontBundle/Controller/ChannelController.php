@@ -111,27 +111,41 @@ class ChannelController extends \AppBundle\Controller\BaseController
 	{
 		$json = ['code'=>0,'msg'=>'OK','channels'=>[]];
 		
+		$filter_name = $request->request->get('filter_name','');
+		$filter_category = $request->request->get('filter_category','');
+		$prepage = $request->request->get('prepage',10);
 		$countries = $this->get_countries();
 		
-		$channels = $this->db('Channel')->findAll();
-		foreach($channels as $channel)
+		$where = 'a.id > 0';
+		if('' != $filter_category)
 		{
-			$country = $countries[$channel->getCountry()]['name'];
-			$payin_pct = $channel->getPayinPct();
-			$payin_sigle_fee = $channel->getPayinSigleFee();
+			$where .= ' and a.category='.$filter_category;
+		}
+		if('' != $filter_name)
+		{
+			$where .= " and a.name like '%".$filter_name."%'";
+		}
+		
+		$pager = $this->pager($request,'Channel',$where,'a.id desc','',$prepage,'',true);
+		
+		foreach($pager['data'] as $channel)
+		{
+			$country = $countries[$channel['country']]['name'];
+			$payin_pct = $channel['payin_pct'];
+			$payin_sigle_fee = $channel['payin_sigle_fee'];
 			
-			$payout_pct = $channel->getPayoutPct();
-			$payout_sigle_fee = $channel->getPayoutSigleFee();
+			$payout_pct = $channel['payout_pct'];
+			$payout_sigle_fee = $channel['payout_sigle_fee'];
 			
-			$payin_sign_method = $channel->getPayinSignMethod();
-			$payout_sign_method = $channel->getPayoutSignMethod();
+			$payin_sign_method = $channel['payin_sign_method'];
+			$payout_sign_method = $channel['payout_sign_method'];
 			
 			$json['channels'][] = [
-				'id'=>$channel->getId(),
-				'category'=>$channel->getCategory(),
-				'name'=>$channel->getName(),
+				'id'=>$channel['id'],
+				'category'=>$channel['category'],
+				'name'=>$channel['name'],
 				'country'=>$country,
-				'telegram_group_id'=>$channel->getTelegramGroupId(),
+				'telegram_group_id'=>$channel['telegram_group_id'],
 				
 				'payin_pct'=>$payin_pct,
 				'payin_sigle_fee'=>$payin_sigle_fee,
@@ -141,9 +155,9 @@ class ChannelController extends \AppBundle\Controller\BaseController
 				'payin_sign_method'=>$payin_sign_method,
 				'payout_sign_method'=>$payout_sign_method,
 				
-				'created_time'=>date('Y-m-d H:i:s',$channel->getCreatedAt()),
-				'is_active'=>$channel->getIsActive(),
-				'request_token'=>$this->authcode('ID'.$channel->getId())
+				'created_time'=>date('Y-m-d H:i:s',$channel['created_at']),
+				'is_active'=>$channel['is_active'],
+				'request_token'=>$this->authcode('ID'.$channel['id'])
 			];
 		}
 		
@@ -166,6 +180,9 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		foreach($payin_request_consts as $key=>$text){$json['const']['PAYIN']['REQUEST'][] = ['key'=>$key,'text'=>$text.'('.$key.')'];}
 		foreach($payin_result_consts as $key=>$text){$json['const']['PAYIN']['RESULT'][] = ['key'=>$key,'text'=>$text.'('.$key.')'];}
 		foreach($payin_notify_consts as $key=>$text){$json['const']['PAYIN']['NOTIFY'][] = ['key'=>$key,'text'=>$text.'('.$key.')'];}
+		
+		unset($pager['data']);
+		$json['pager'] = $pager;
 		
 		echo json_encode($json);exit();
 	}
