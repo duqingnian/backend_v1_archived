@@ -277,8 +277,7 @@ class DispatchController extends \AppBundle\Controller\BaseController
 		$model->setOldMoney($balance);
 		$model->setMoney($money);
 		$model->setUid($uid);
-		$model->setShId($sh->getId());
-		$model->setShanghuId($shanghu_id);
+		$model->setShanghuId($sh->getId());
 		$model->setNote($note);
 		$model->setStatus('-');
 		$model->setCreatedAt(time());
