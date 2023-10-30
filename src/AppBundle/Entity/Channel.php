@@ -27,6 +27,11 @@ class Channel
     private $name; //名称
 	
 	/**
+     * @ORM\Column(type="string", length=50)
+     */
+    private $display_name; //给商户看的名称，便于查询银行代码
+	
+	/**
      * @ORM\Column(type="decimal", scale=2)
      */
     private $balance = 0.00; //余额
@@ -130,6 +135,11 @@ class Channel
      * @ORM\Column(type="integer")
      */
     private $created_at = 0;
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
+    private $payout_check_bankcode = 0;
 	
 	/**
      * @ORM\Column(type="text")
@@ -836,5 +846,53 @@ class Channel
     public function getBalanceLastUpdateAt()
     {
         return $this->balance_last_update_at;
+    }
+
+    /**
+     * Set payoutCheckBankcode
+     *
+     * @param integer $payoutCheckBankcode
+     *
+     * @return Channel
+     */
+    public function setPayoutCheckBankcode($payoutCheckBankcode)
+    {
+        $this->payout_check_bankcode = $payoutCheckBankcode;
+
+        return $this;
+    }
+
+    /**
+     * Get payoutCheckBankcode
+     *
+     * @return integer
+     */
+    public function getPayoutCheckBankcode()
+    {
+        return $this->payout_check_bankcode;
+    }
+
+    /**
+     * Set displayName
+     *
+     * @param string $displayName
+     *
+     * @return Channel
+     */
+    public function setDisplayName($displayName)
+    {
+        $this->display_name = $displayName;
+
+        return $this;
+    }
+
+    /**
+     * Get displayName
+     *
+     * @return string
+     */
+    public function getDisplayName()
+    {
+        return $this->display_name;
     }
 }

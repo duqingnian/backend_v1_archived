@@ -113,6 +113,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		
 		$filter_name = $request->request->get('filter_name','');
 		$filter_category = $request->request->get('filter_category','');
+		$filter_country = $request->request->get('filter_country','');
 		$prepage = $request->request->get('prepage',10);
 		$countries = $this->get_countries();
 		
@@ -124,6 +125,10 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		if('' != $filter_name)
 		{
 			$where .= " and a.name like '%".$filter_name."%'";
+		}
+		if('' != $filter_country)
+		{
+			$where .= " and a.country = '".$filter_country."'";
 		}
 		
 		$pager = $this->pager($request,'Channel',$where,'a.id desc','',$prepage,'',true);
@@ -140,12 +145,16 @@ class ChannelController extends \AppBundle\Controller\BaseController
 			$payin_sign_method = $channel['payin_sign_method'];
 			$payout_sign_method = $channel['payout_sign_method'];
 			
+			//银行数量
+			$bank_count = $this->count('ChannelBankCode','a.channel_id='.$channel['id']);
+			
 			$json['channels'][] = [
 				'id'=>$channel['id'],
 				'category'=>$channel['category'],
 				'name'=>$channel['name'],
 				'country'=>$country,
 				'telegram_group_id'=>$channel['telegram_group_id'],
+				'bank_count'=>$bank_count,
 				
 				'payin_pct'=>$payin_pct,
 				'payin_sigle_fee'=>$payin_sigle_fee,
@@ -163,6 +172,8 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		
 		//国家货币
 		$json['countries'] = [];
+		$json['countries'][] = ['key'=>'','text'=>'全部'];
+		
 		$countries = $this->get_countries();
 		foreach($countries as $key=>$county)
 		{
@@ -232,6 +243,9 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$payin_sign_col_name = $request->request->get('payin_sign_col_name','');
 		$payout_sign_col_name = $request->request->get('payout_sign_col_name','');
 		
+		//代付检查银行代码
+		$payout_check_bankcode = $request->request->get('payout_check_bankcode',0);
+		
 		$channel = $this->db('Channel')->find($id);
 		if(!$channel)
 		{
@@ -283,6 +297,9 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$channel->setPayinSignColName($payin_sign_col_name);
 		$channel->setPayoutSignColName($payout_sign_col_name);
 		
+		//代付是不是需要检查银行代码
+		$channel->setPayoutCheckBankcode($payout_check_bankcode);
+		
 		$this->update();
 		$this->succ("已更新");
 	}
@@ -300,6 +317,13 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		}
 
 		$countries = $this->get_countries();
+		
+		$bank_list = [];
+		$_bank_list = $this->db('ChannelBankCode')->findBy(['channel_id'=>$_channel->getId()]);
+		foreach($_bank_list as $bank)
+		{
+			$bank_list[] = ['request_token'=>$this->authcode('ID'.$bank->getId()),'name'=>$bank->getName(),'slug'=>$bank->getSlug(),'code'=>$bank->getCode()];
+		}
 		
 		$detail = [
 			'master_id'=>$_channel->getId(),
@@ -341,6 +365,10 @@ class ChannelController extends \AppBundle\Controller\BaseController
 			'payout_sign_col_name'=>$_channel->getPayoutSignColName(),
 			
 			'request_token'=>$this->authcode('ID'.$_channel->getId()),
+			
+			//代付是不是需要检查银行代码
+			'payout_check_bankcode'=>$_channel->getPayoutCheckBankcode(),
+			'bank_list'=>$bank_list,
 		];
 
 		$channel = ['id'=>$_channel->getId(),'name'=>$_channel->getName(),'country'=>$_channel->getCountry(),'is_active'=>$_channel->getIsActive()];
@@ -439,6 +467,154 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$detail['status_map'] = $status_map;
 
 		echo json_encode(['code'=>0,'msg'=>'OK','channel'=>$channel,'detail'=>$detail]);exit();
+	}
+	
+	//一键导入银行
+	private function _import_bank_row($request)
+	{
+		$channel_id = $this->GetId($request->request->get('channel',''));
+		$content = trim($request->request->get('content',''));
+		if('' == $content)
+		{
+			$this->e('导入内容不能为空');
+		}
+		
+		$channel = $this->db('channel')->find($channel_id);
+		if(!$channel)
+		{
+			$this->e("通道不存在");
+		}
+		
+		$err = 0;
+		$succ = 0;
+		$total = 0;
+		
+		$content = str_replace("\t",' ',$content);
+		$lines = explode("\n", $content);
+		foreach($lines as $line)
+		{
+			$total++;
+			
+			$line = trim($line);
+			if('' == $line)
+			{
+				continue;
+			}
+			
+			$first_space = strpos($line," ");
+			$code = substr($line,0,$first_space);
+			$slug = trim(substr($line,$first_space+1));
+			
+			$name = $slug;
+			$name = str_replace(' ','_',$name);
+			$name = str_replace('.','',$name);
+			$name = strtoupper($name);
+
+			$name_check = $this->db('ChannelBankCode')->findOneBy(['channel_id'=>$channel->getId(),'name'=>$name]);
+			if($name_check)
+			{
+				$err++;
+				continue;
+			}
+			$slug_check = $this->db('ChannelBankCode')->findOneBy(['channel_id'=>$channel->getId(),'slug'=>$slug]);
+			if($slug_check)
+			{
+				$err++;
+				continue;
+			}
+			$code_check = $this->db('ChannelBankCode')->findOneBy(['channel_id'=>$channel->getId(),'code'=>$code]);
+			if($code_check)
+			{
+				$err++;
+				continue;
+			}
+			
+			$channel_bank_code = new \AppBundle\Entity\ChannelBankCode();
+			$channel_bank_code->setChannelId($channel->getId());
+			$channel_bank_code->setName($name);
+			$channel_bank_code->setSlug($slug);
+			$channel_bank_code->setCode($code);
+			$this->save($channel_bank_code);
+			
+			if($channel_bank_code->getId() > 0)
+			{
+				$succ++;
+			}
+			else
+			{
+				$err++;
+			}
+		}
+	
+		echo json_encode([
+			'code'=>0,
+			'msg'=>'导入完成！一共：'.$total.'条记录，成功:'.$succ.'条，失败:'.$err.'条',
+		]);
+		die();
+	}
+	
+	//保存银行
+	private function _save_bank_row($request)
+	{
+		$name = trim($request->request->get('name',''));
+		$slug = trim($request->request->get('slug',''));
+		$code = trim($request->request->get('code',''));
+		$channel_id = $this->GetId($request->request->get('channel',''));
+		
+		if('' == $name)
+		{
+			$this->e('平台银行名称不能为空');
+		}
+		if('' == $slug)
+		{
+			$this->e('银行名称不能为空');
+		}
+		if('' == $code)
+		{
+			$this->e('代码不能为空');
+		}
+		
+		$name = str_replace(' ','_',$name);
+		$name = str_replace('.','',$name);
+		$name = strtoupper($name);
+		
+		$channel = $this->db('channel')->find($channel_id);
+		if(!$channel)
+		{
+			$this->e("通道不存在");
+		}
+		
+		$name_check = $this->db('ChannelBankCode')->findOneBy(['channel_id'=>$channel->getId(),'name'=>$name]);
+		if($name_check)
+		{
+			$this->e('名称：'.$name.'已经存在');
+		}
+		$slug_check = $this->db('ChannelBankCode')->findOneBy(['channel_id'=>$channel->getId(),'slug'=>$slug]);
+		if($slug_check)
+		{
+			$this->e('通道银行名称:'.$slug.'已经存在');
+		}
+		$code_check = $this->db('ChannelBankCode')->findOneBy(['channel_id'=>$channel->getId(),'code'=>$code]);
+		if($code_check)
+		{
+			$this->e('银行代码:'.$code.'已经存在');
+		}
+		
+		$channel_bank_code = new \AppBundle\Entity\ChannelBankCode();
+		$channel_bank_code->setChannelId($channel->getId());
+		$channel_bank_code->setName($name);
+		$channel_bank_code->setSlug($slug);
+		$channel_bank_code->setCode($code);
+		$this->save($channel_bank_code);
+		
+		if($channel_bank_code->getId() > 0)
+		{
+			$this->succ('保存成功');
+		}
+		else
+		{
+			$this->e('保存失败了');
+		}
 	}
 	
 	private function _fetch_column_detail($request)

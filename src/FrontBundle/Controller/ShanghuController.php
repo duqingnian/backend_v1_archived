@@ -142,6 +142,7 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		$filter_name = $request->request->get('filter_name','');
 		$filter_account = $request->request->get('filter_account','');
 		$filter_category = $request->request->get('filter_category','');
+		$filter_country = $request->request->get('filter_country','');
 		$prepage = $request->request->get('prepage',10);
 		$countries = $this->get_countries();
 		
@@ -154,6 +155,10 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		if('' != $filter_name)
 		{
 			$where .= " and a.name like '%".$filter_name."%'";
+		}
+		if('' != $filter_country)
+		{
+			$where .= " and a.country = '".$filter_country."'";
 		}
 
 		$pager = $this->pager($request,'shanghu',$where,'a.id desc','',$prepage,'',true);
@@ -209,6 +214,7 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		
 		//国家货币
 		$json['countries'] = [];
+		$json['countries'][] = ['key'=>'','text'=>'全部'];
 		$countries = $this->get_countries();
 		foreach($countries as $key=>$county)
 		{
