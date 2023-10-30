@@ -206,6 +206,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$timezone = $request->request->get('timezone','');
 		$note = $request->request->get('note','');
 		$name = $request->request->get('name','');
+		$display_name = $request->request->get('display_name','');
 		$category = $request->request->get('category','');
 		$slug = $request->request->get('slug','');
 		$telegram_group_id = $request->request->get('telegram_group_id','');
@@ -262,6 +263,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 			$this->e("slug存在:".$slug);
 		}
 		$channel->setName($name);
+		$channel->setDisplayName($display_name);
 		$channel->setCategory($category);
 		$channel->setSlug($slug);
 		$channel->setTelegramGroupId($telegram_group_id);
@@ -328,6 +330,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$detail = [
 			'master_id'=>$_channel->getId(),
 			'name'=>$_channel->getName(),
+			'display_name'=>$_channel->getDisplayName(),
 			'category'=>$_channel->getCategory(),
 			'slug'=>$_channel->getSlug(),
 			'telegram_group_id'=>$_channel->getTelegramGroupId(),
@@ -551,6 +554,21 @@ class ChannelController extends \AppBundle\Controller\BaseController
 			'msg'=>'导入完成！一共：'.$total.'条记录，成功:'.$succ.'条，失败:'.$err.'条',
 		]);
 		die();
+	}
+	
+	//删除银行
+	private function _delete_bank($request)
+	{
+		$bank_id = $this->GetId($request->request->get('request_token'));
+		$bank = $this->db('ChannelBankCode')->find($bank_id);
+		if(!$bank)
+		{
+			$this->e('数据不存在');
+		}
+		$this->em()->remove($bank);
+		$this->update();
+		
+		$this->succ("已删除");
 	}
 	
 	//保存银行

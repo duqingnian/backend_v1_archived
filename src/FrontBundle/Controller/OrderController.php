@@ -81,18 +81,16 @@ class OrderController extends \AppBundle\Controller\BaseController
 			$this->e('uid err!');
 		}
 
-		$where = 'a.id > 0';
+		$where = 'a.id>0';
 		
-		$filter_plantform_order_no = $request->request->get('filter_plantform_order_no','');
-		$filter_shanghu_order_no = $request->request->get('filter_shanghu_order_no','');
+		$filter_order_no = $request->request->get('filter_order_no','');
+																				  
 		
-		if('' != $filter_plantform_order_no)
+		if('' != $filter_order_no)
 		{
-			$where .= " and a.plantform_order_no like '%".$filter_plantform_order_no."%' ";
-		}
-		if('' != $filter_shanghu_order_no)
-		{
-			$where .= " and a.shanghu_order_no like '%".$filter_shanghu_order_no."%' ";
+			$where .= " and a.plantform_order_no like '%".$filter_order_no."%' or a.shanghu_order_no like '%".$filter_order_no."%'";
+   
+		  
 		}
 		
 		$order = 'a.id desc';
@@ -178,16 +176,12 @@ class OrderController extends \AppBundle\Controller\BaseController
 
 		$where = 'a.id>0';
 		
-		$filter_plantform_order_no = $request->request->get('filter_plantform_order_no','');
-		$filter_shanghu_order_no = $request->request->get('filter_shanghu_order_no','');
+		$filter_order_no = $request->request->get('filter_order_no','');
+																				  
 		
-		if('' != $filter_plantform_order_no)
+		if('' != $filter_order_no)
 		{
-			$where .= " and a.plantform_order_no like '%".$filter_plantform_order_no."%' ";
-		}
-		if('' != $filter_shanghu_order_no)
-		{
-			$where .= " and a.shanghu_order_no like '%".$filter_shanghu_order_no."%' ";
+			$where .= " and a.plantform_order_no like '%".$filter_order_no."%' or a.shanghu_order_no like '%".$filter_order_no."%'";
 		}
 		
 		$order = 'a.id desc';
