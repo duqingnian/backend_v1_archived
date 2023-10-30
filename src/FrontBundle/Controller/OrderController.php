@@ -84,13 +84,9 @@ class OrderController extends \AppBundle\Controller\BaseController
 		$where = 'a.id>0';
 		
 		$filter_order_no = $request->request->get('filter_order_no','');
-																				  
-		
 		if('' != $filter_order_no)
 		{
 			$where .= " and a.plantform_order_no like '%".$filter_order_no."%' or a.shanghu_order_no like '%".$filter_order_no."%'";
-   
-		  
 		}
 		
 		$order = 'a.id desc';

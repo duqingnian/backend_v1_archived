@@ -511,6 +511,12 @@ class ChannelController extends \AppBundle\Controller\BaseController
 			$name = $slug;
 			$name = str_replace(' ','_',$name);
 			$name = str_replace('.','',$name);
+			$name = str_replace('，','',$name);
+			$name = str_replace(',','',$name);
+			$name = str_replace('(','',$name);
+			$name = str_replace(')','',$name);
+			$name = str_replace('（','',$name);
+			$name = str_replace('）','',$name);
 			$name = strtoupper($name);
 
 			$name_check = $this->db('ChannelBankCode')->findOneBy(['channel_id'=>$channel->getId(),'name'=>$name]);
