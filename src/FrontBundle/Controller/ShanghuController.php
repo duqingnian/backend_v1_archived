@@ -524,12 +524,13 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 			$this->e("商户id错误");
 		}
 		
-		$valid = ip2long($ip) !== false;
+		/*$valid = ip2long($ip) !== false;
 		if(!$valid)
 		{
 			$this->e('invalidate ip address!');
 		}
 		else
+		
 		{
 			if(in_array($ip,['127.0.0.1','0.0.0.0','255.255.255.255','192.168.0.1']))
 			{
@@ -552,7 +553,7 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		{
 			$this->e('不允许全部一样');
 		}
-		
+		*/
 		$sh = $this->db('shanghu')->find($sh_id);
 		if(!$sh)
 		{
