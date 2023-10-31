@@ -58,7 +58,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		}
 		else if('' == $slug)
 		{
-			$this->e('slug别名不能为空，影响代付');
+			//$this->e('slug别名不能为空，影响代付');
 		}
 		else if('' == $country)
 		{

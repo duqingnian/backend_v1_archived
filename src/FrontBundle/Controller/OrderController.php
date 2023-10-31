@@ -52,6 +52,14 @@ class OrderController extends \AppBundle\Controller\BaseController
 		
 		$channel_fee = $order->getChannelFee().'=('.$order->getAmount().'×'.($order->getChannelPct()).'%='.($order->getAmount() * ($order->getChannelPct()/100)).')+'.$order->getChannelSigleFee();
 		
+		$qrcode = '';
+		$jump_url = '';
+		if('PAYIN' == $order_bundle)
+		{
+			$qrcode = $order->getQrcodeSrc();
+			$jump_url = $order->getJumpUrl();
+		}
+		
 		$detail = [
 			'amount'=>$order->getAmount(),
 			'shanghu_order_no'=>$order->getShanghuOrderNo(),
@@ -59,8 +67,8 @@ class OrderController extends \AppBundle\Controller\BaseController
 			'order_status'=>$order_status,
 			'sh_fee'=>$sh_fee,
 			'channel_fee'=>$channel_fee,
-			'qrcode_src'=>$order->getQrcodeSrc(),
-			'jump_url'=>$order->getJumpUrl(),
+			'qrcode_src'=>$qrcode,
+			'jump_url'=>$jump_url,
 			'created_time'=>date('Y-m-d H:i:s',$order->getCreatedAt()),
 		];
 		
