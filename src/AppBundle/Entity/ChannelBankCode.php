@@ -15,26 +15,36 @@ class ChannelBankCode
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+
+	/**
+     * @ORM\Column(type="string", length=30)
+     */
+    private $country=""; //国家别名
 	
 	/**
      * @ORM\Column(type="integer")
      */
-    private $channel_id = 0;
+    private $channel_id = 0; //通道id
+
+    /**
+     * @ORM\Column(type="string", length=50)
+     */
+    private $original_name=""; //通道的国家别名
+	
+	/**
+     * @ORM\Column(type="string", length=30)
+     */
+    private $original_code = ""; //通道的银行代码
+	
+	/**
+     * @ORM\Column(type="string", length=15)
+     */
+    private $const_code = ""; //平台清洗后的银行代码
 	
 	/**
      * @ORM\Column(type="string", length=50)
      */
-    private $name=""; //平台银行名称
-	
-	/**
-     * @ORM\Column(type="string", length=50)
-     */
-    private $slug=""; //通道银行名称
-	
-	/**
-     * @ORM\Column(type="string", length=50)
-     */
-    private $code=""; //通道银行代码
+    private $const_name="";
 
     /**
      * Get id
@@ -44,6 +54,30 @@ class ChannelBankCode
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set country
+     *
+     * @param string $country
+     *
+     * @return ChannelBankCode
+     */
+    public function setCountry($country)
+    {
+        $this->country = $country;
+
+        return $this;
+    }
+
+    /**
+     * Get country
+     *
+     * @return string
+     */
+    public function getCountry()
+    {
+        return $this->country;
     }
 
     /**
@@ -71,74 +105,98 @@ class ChannelBankCode
     }
 
     /**
-     * Set name
+     * Set originalName
      *
-     * @param string $name
+     * @param string $originalName
      *
      * @return ChannelBankCode
      */
-    public function setName($name)
+    public function setOriginalName($originalName)
     {
-        $this->name = $name;
+        $this->original_name = $originalName;
 
         return $this;
     }
 
     /**
-     * Get name
+     * Get originalName
      *
      * @return string
      */
-    public function getName()
+    public function getOriginalName()
     {
-        return $this->name;
+        return $this->original_name;
     }
 
     /**
-     * Set slug
+     * Set originalCode
      *
-     * @param string $slug
+     * @param string $originalCode
      *
      * @return ChannelBankCode
      */
-    public function setSlug($slug)
+    public function setOriginalCode($originalCode)
     {
-        $this->slug = $slug;
+        $this->original_code = $originalCode;
 
         return $this;
     }
 
     /**
-     * Get slug
+     * Get originalCode
      *
      * @return string
      */
-    public function getSlug()
+    public function getOriginalCode()
     {
-        return $this->slug;
+        return $this->original_code;
     }
 
     /**
-     * Set code
+     * Set constCode
      *
-     * @param string $code
+     * @param string $constCode
      *
      * @return ChannelBankCode
      */
-    public function setCode($code)
+    public function setConstCode($constCode)
     {
-        $this->code = $code;
+        $this->const_code = $constCode;
 
         return $this;
     }
 
     /**
-     * Get code
+     * Get constCode
      *
      * @return string
      */
-    public function getCode()
+    public function getConstCode()
     {
-        return $this->code;
+        return $this->const_code;
+    }
+
+    /**
+     * Set constName
+     *
+     * @param string $constName
+     *
+     * @return ChannelBankCode
+     */
+    public function setConstName($constName)
+    {
+        $this->const_name = $constName;
+
+        return $this;
+    }
+
+    /**
+     * Get constName
+     *
+     * @return string
+     */
+    public function getConstName()
+    {
+        return $this->const_name;
     }
 }

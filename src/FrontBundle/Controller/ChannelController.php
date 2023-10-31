@@ -322,10 +322,10 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$countries = $this->get_countries();
 		
 		$bank_list = [];
-		$_bank_list = $this->db('ChannelBankCode')->findBy(['channel_id'=>$_channel->getId()]);
+		$_bank_list = $this->db('ChannelBankCode')->findBy(['channel_id'=>$_channel->getId()],['id'=>'desc']);
 		foreach($_bank_list as $bank)
 		{
-			$bank_list[] = ['request_token'=>$this->authcode('ID'.$bank->getId()),'name'=>$bank->getName(),'slug'=>$bank->getSlug(),'code'=>$bank->getCode()];
+			$bank_list[] = ['request_token'=>$this->authcode('ID'.$bank->getId()),'name'=>$bank->getOriginalName(),'code'=>$bank->getOriginalCode(),'const_code'=>$bank->getConstCode()];
 		}
 		
 		$detail = [
@@ -478,6 +478,10 @@ class ChannelController extends \AppBundle\Controller\BaseController
 	{
 		$channel_id = $this->GetId($request->request->get('channel',''));
 		$content = trim($request->request->get('content',''));
+		$bank_import_header = $request->request->get('bank_import_header','');
+		$bank_import_splite_type = $request->request->get('bank_import_splite_type','');
+		$bank_import_header = explode(',',$bank_import_header);
+		
 		if('' == $content)
 		{
 			$this->e('导入内容不能为空');
@@ -488,10 +492,12 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		{
 			$this->e("通道不存在");
 		}
+		$country = $channel->getCountry();
 		
 		$err = 0;
 		$succ = 0;
 		$total = 0;
+		$error_list = [];
 		
 		$content = str_replace("\t",' ',$content);
 		$lines = explode("\n", $content);
@@ -505,45 +511,98 @@ class ChannelController extends \AppBundle\Controller\BaseController
 				continue;
 			}
 			
-			$first_space = strpos($line," ");
-			$code = substr($line,0,$first_space);
-			$slug = trim(substr($line,$first_space+1));
+			//开始分割每条记录
+			$row_data_0 = '';
+			$row_data_1 = '';
+			$row_data_2 = '';
+			$row_data_3 = '';
+			if('space1' == $bank_import_splite_type)
+			{
+				$first_space = strpos($line," ");
+				$row_data_0 = substr($line,0,$first_space);
+				$row_data_1 = trim(substr($line,$first_space+1));
+			}
+			else if('|' == $bank_import_splite_type)
+			{
+				$row_datas = explode('|',$line);
+				$row_data_0 = $row_datas[0];
+				$row_data_1 = $row_datas[1];
+				$row_data_2 = $row_datas[2];
+				$row_data_3 = $row_datas[3];
+			}
+			else
+			{}
 			
-			$name = $slug;
-			$name = str_replace(' ','_',$name);
-			$name = str_replace('.','',$name);
-			$name = str_replace('，','',$name);
-			$name = str_replace(',','',$name);
-			$name = str_replace('(','',$name);
-			$name = str_replace(')','',$name);
-			$name = str_replace('（','',$name);
-			$name = str_replace('）','',$name);
-			$name = strtoupper($name);
-
-			$name_check = $this->db('ChannelBankCode')->findOneBy(['channel_id'=>$channel->getId(),'name'=>$name]);
-			if($name_check)
+			$original_code = '';
+			if('code' == $bank_import_header[0]){$original_code = $row_data_0;}
+			if('code' == $bank_import_header[1]){$original_code = $row_data_1;}
+			if('code' == $bank_import_header[2]){$original_code = $row_data_2;}
+			if('code' == $bank_import_header[3]){$original_code = $row_data_3;}
+			
+			$original_name = '';
+			if('name' == $bank_import_header[0]){$original_name = $row_data_0;}
+			if('name' == $bank_import_header[1]){$original_name = $row_data_1;}
+			if('name' == $bank_import_header[2]){$original_name = $row_data_2;}
+			if('name' == $bank_import_header[3]){$original_name = $row_data_3;}
+			
+			if('' == $original_name)
 			{
 				$err++;
+				$error_list[] = '银行名称为空';
 				continue;
 			}
-			$slug_check = $this->db('ChannelBankCode')->findOneBy(['channel_id'=>$channel->getId(),'slug'=>$slug]);
-			if($slug_check)
+			if('' == $original_code)
 			{
 				$err++;
+				$error_list[] = '银行代码为空';
 				continue;
 			}
-			$code_check = $this->db('ChannelBankCode')->findOneBy(['channel_id'=>$channel->getId(),'code'=>$code]);
-			if($code_check)
+			
+			//开始导入
+			$name = trim($original_name);
+			$code = trim($original_code);
+			$const_name = $this->_get_const_bank_name($name);
+			
+			//判断是不是存在，并且添加纪录
+			$bank_check = $this->db('BankCode')->findOneBy(['country'=>$country,'const_name'=>$const_name]);
+			
+			//银行名称是不是存在
+			$channel_bank_check = $this->db('ChannelBankCode')->findOneBy(['channel_id'=>$channel->getId(),'const_name'=>$const_name]);
+			if($channel_bank_check)
 			{
 				$err++;
+				$error_list[] = '银行名称已经存在！名称:'.$name.',银行代码:'.$code;
 				continue;
 			}
+			
+			//银行代码是不是存在
+			$channel_bank_check = $this->db('ChannelBankCode')->findOneBy(['channel_id'=>$channel->getId(),'original_code'=>$code]);
+			if($channel_bank_check)
+			{
+				$err++;
+				$error_list[] = '银行代码已经存在！名称:'.$name.',银行代码:'.$code;
+				continue;
+			}
+			
+			$const_code = 'B0000';
+			$bank_count = $this->count('BankCode','a.id > 0');
+			$const_code = "B".str_pad($bank_count + 1, 4, "0", STR_PAD_LEFT);
+			
+			//开始添加
+			$bank_code = new \AppBundle\Entity\BankCode();
+			$bank_code->setCountry($country);
+			$bank_code->setBankName($name);
+			$bank_code->setConstName($const_name);
+			$bank_code->setConstCode($const_code);
+			$this->save($bank_code);
 			
 			$channel_bank_code = new \AppBundle\Entity\ChannelBankCode();
+			$channel_bank_code->setCountry($country);
 			$channel_bank_code->setChannelId($channel->getId());
-			$channel_bank_code->setName($name);
-			$channel_bank_code->setSlug($slug);
-			$channel_bank_code->setCode($code);
+			$channel_bank_code->setOriginalName($name);
+			$channel_bank_code->setOriginalCode($code);
+			$channel_bank_code->setConstName($const_name);
+			$channel_bank_code->setConstCode($const_code);
 			$this->save($channel_bank_code);
 			
 			if($channel_bank_code->getId() > 0)
@@ -552,6 +611,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 			}
 			else
 			{
+				$error_list[] = '保存失败！名称:'.$name.',银行代码:'.$code;
 				$err++;
 			}
 		}
@@ -559,6 +619,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		echo json_encode([
 			'code'=>0,
 			'msg'=>'导入完成！一共：'.$total.'条记录，成功:'.$succ.'条，失败:'.$err.'条',
+			'error_list'=>$error_list,
 		]);
 		die();
 	}
@@ -582,64 +643,91 @@ class ChannelController extends \AppBundle\Controller\BaseController
 	private function _save_bank_row($request)
 	{
 		$name = trim($request->request->get('name',''));
-		$slug = trim($request->request->get('slug',''));
 		$code = trim($request->request->get('code',''));
 		$channel_id = $this->GetId($request->request->get('channel',''));
 		
 		if('' == $name)
 		{
-			$this->e('平台银行名称不能为空');
-		}
-		if('' == $slug)
-		{
 			$this->e('银行名称不能为空');
 		}
 		if('' == $code)
 		{
-			$this->e('代码不能为空');
+			$this->e('银行代码不能为空');
 		}
-		
-		$name = str_replace(' ','_',$name);
-		$name = str_replace('.','',$name);
-		$name = strtoupper($name);
 		
 		$channel = $this->db('channel')->find($channel_id);
 		if(!$channel)
 		{
 			$this->e("通道不存在");
 		}
+		$country = $channel->getCountry();
 		
-		$name_check = $this->db('ChannelBankCode')->findOneBy(['channel_id'=>$channel->getId(),'name'=>$name]);
-		if($name_check)
+		$name = trim($name);
+		$code = trim($code);
+		$const_name = $this->_get_const_bank_name($name);
+		
+		//判断是不是存在，并且添加纪录
+		$bank_check = $this->db('BankCode')->findOneBy(['country'=>$country,'const_name'=>$const_name]);
+		
+		//银行名称是不是存在
+		$channel_bank_check = $this->db('ChannelBankCode')->findOneBy(['channel_id'=>$channel->getId(),'const_name'=>$const_name]);
+		if($channel_bank_check)
 		{
-			$this->e('名称：'.$name.'已经存在');
+			$this->e('银行名称已经存在！名称:'.$name.',银行代码:'.$code);
 		}
-		$slug_check = $this->db('ChannelBankCode')->findOneBy(['channel_id'=>$channel->getId(),'slug'=>$slug]);
-		if($slug_check)
+		
+		//银行代码是不是存在
+		$channel_bank_check = $this->db('ChannelBankCode')->findOneBy(['channel_id'=>$channel->getId(),'original_code'=>$code]);
+		if($channel_bank_check)
 		{
-			$this->e('通道银行名称:'.$slug.'已经存在');
+			$this->e('银行代码已经存在！名称:'.$name.',银行代码:'.$code);
 		}
-		$code_check = $this->db('ChannelBankCode')->findOneBy(['channel_id'=>$channel->getId(),'code'=>$code]);
-		if($code_check)
-		{
-			$this->e('银行代码:'.$code.'已经存在');
-		}
+		
+		$const_code = 'B0000';
+		$bank_count = $this->count('BankCode','a.id > 0');
+		$const_code = "B".str_pad($bank_count + 1, 4, "0", STR_PAD_LEFT);
+		
+		//开始添加
+		$bank_code = new \AppBundle\Entity\BankCode();
+		$bank_code->setCountry($country);
+		$bank_code->setBankName($name);
+		$bank_code->setConstName($const_name);
+		$bank_code->setConstCode($const_code);
+		$this->save($bank_code);
 		
 		$channel_bank_code = new \AppBundle\Entity\ChannelBankCode();
+		$channel_bank_code->setCountry($country);
 		$channel_bank_code->setChannelId($channel->getId());
-		$channel_bank_code->setName($name);
-		$channel_bank_code->setSlug($slug);
-		$channel_bank_code->setCode($code);
+		$channel_bank_code->setOriginalName($name);
+		$channel_bank_code->setOriginalCode($code);
+		$channel_bank_code->setConstName($const_name);
+		$channel_bank_code->setConstCode($const_code);
 		$this->save($channel_bank_code);
 		
 		if($channel_bank_code->getId() > 0)
 		{
-			$this->succ('保存成功');
+			$this->succ('已添加');
 		}
 		else
 		{
-			$this->e('保存失败了');
+			$this->e('添加失败，save fail！');
 		}
+	}
+	
+	//根据银行名称，返回清洗过后的银行别名
+	private function _get_const_bank_name($bank_name)
+	{
+		$const_name = trim($bank_name);
+		$const_name = str_replace(' ','_',$const_name);
+		$const_name = str_replace('.','',$const_name);
+		$const_name = str_replace('。','',$const_name);
+		$const_name = str_replace('(','',$const_name);
+		$const_name = str_replace(')','',$const_name);
+		$const_name = str_replace('（','',$const_name);
+		$const_name = str_replace('）','',$const_name);
+		$const_name = strtoupper($const_name);
+		
+		return $const_name;
 	}
 	
 	private function _fetch_column_detail($request)
