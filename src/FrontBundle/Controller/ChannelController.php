@@ -77,6 +77,7 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		}
 		$channel = new \AppBundle\Entity\Channel();
 		$channel->setName($name);
+		$channel->setDisplayName("");
 		$channel->setCategory($category);
 		$channel->setSlug($slug);
 		$channel->setCountry($country);
