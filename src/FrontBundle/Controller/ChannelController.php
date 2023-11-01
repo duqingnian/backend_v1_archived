@@ -966,7 +966,12 @@ class ChannelController extends \AppBundle\Controller\BaseController
 		$_channels = $this->db('Channel')->findBy(['country'=>$_country]);
 		foreach($_channels as $channel)
 		{
-			$channels[] = ['key'=>'channel'.$channel->getId(),'text'=>$channel->getName()];
+			$text = $channel->getName();
+			if(is_numeric($channel->getCategory()) && in_array($channel->getCategory(),[1,2,3]))
+			{
+				$text = $channel->getName().'('.$this->channel_categories[$channel->getCategory()].')';
+			}
+			$channels[] = ['key'=>'channel'.$channel->getId(),'text'=>$text];
 		}
 		
 		echo json_encode(['code'=>0,'msg'=>'OK','country'=>['name'=>$country->getName()],'list'=>$channels]);

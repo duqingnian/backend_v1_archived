@@ -6,6 +6,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ShanghuController extends \AppBundle\Controller\BaseController 
 {
+	
+	private $channel_categories = ['','一类','二类','三类'];
+	
     public function indexAction(Request $request)
     {
 		$csrf = $request->request->get("scrf",'');
@@ -168,7 +171,6 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		}
 
 		$pager = $this->pager($request,'shanghu',$where,'a.id desc','',$prepage,'',true);
-		
 		foreach($pager['data'] as $shanghu)
 		{
 			$payin_channel_name = '-';
@@ -243,8 +245,12 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		$channels = $this->db('Channel')->findAll();
 		foreach($channels as $channel)
 		{
-			//$country = $countries[$channel->getCountry()]['name'];
-			$json['channels'][] = ['key'=>'channel'.$channel->getId(),'text'=>$channel->getName()];
+			$text = $channel->getName();
+			if(is_numeric($channel->getCategory()) && in_array($channel->getCategory(),[1,2,3]))
+			{
+				$text = $channel->getName().'('.$this->channel_categories[$channel->getCategory()].')';
+			}
+			$json['channels'][] = ['key'=>'channel'.$channel->getId(),'text'=>$text,'category'=>$channel->getCategory()];
 		}
 		
 		unset($pager['data']);
@@ -487,9 +493,14 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 			$_channels = $this->db('channel')->findBy(['country'=>$country]);
 			foreach($_channels as $channel)
 			{
+				$text = $channel->getName();
+				if(is_numeric($channel->getCategory()) && in_array($channel->getCategory(),[1,2,3]))
+				{
+					$text = $channel->getName().'('.$this->channel_categories[$channel->getCategory()].')';
+				}
 				$data['detail']['channels'][] = [
 					'key'=>'channel'.$channel->getId(),
-					'text'=>$channel->getName(),
+					'text'=>$text,
 				];
 			}
 		}
