@@ -330,11 +330,11 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 				//商户的金额设置不能大于小于通道的设置
 				if(0 != $channel_payin_min && $payin_min < $channel_payin_min)
 				{
-					$this->e("最小代收金额:".$payin_min." 不能小于 通道最小代收金额:".$channel_payin_min);
+					//$this->e("最小代收金额:".$payin_min." 不能小于 通道最小代收金额:".$channel_payin_min);
 				}
 				if(0 != $channel_payin_max && $payin_max > $channel_payin_max)
 				{
-					$this->e("最大代收金额:".$payin_max." 不能大于 通道最大代收金额:".$channel_payin_max);
+					//$this->e("最大代收金额:".$payin_max." 不能大于 通道最大代收金额:".$channel_payin_max);
 				}
 			}
 			else
@@ -354,11 +354,11 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 				//商户的金额设置不能大于小于通道的设置
 				if(0 != $channel_payout_min && $payout_min < $channel_payout_min)
 				{
-					$this->e("最小代付金额:".$payout_min." 不能小于 通道最小代付金额:".$channel_payout_min);
+					//$this->e("最小代付金额:".$payout_min." 不能小于 通道最小代付金额:".$channel_payout_min);
 				}
 				if(0 != $channel_payout_max && $payout_max > $channel_payout_max)
 				{
-					$this->e("最大代付金额:".$payout_max." 不能大于 通道最大代付金额:".$channel_payout_max);
+					//$this->e("最大代付金额:".$payout_max." 不能大于 通道最大代付金额:".$channel_payout_max);
 				}
 			}
 			else
