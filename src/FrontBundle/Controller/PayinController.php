@@ -8,6 +8,12 @@ class PayinController extends \AppBundle\Controller\BaseController
 {
     public function indexAction(Request $request)
     {
+		$csrf = $request->request->get("scrf",'');
+		if($this->get('security.csrf.token_manager')->getToken('authenticate')->getValue() != $csrf)
+		{
+			$this->e('Bad request! csrf is not correct!');
+		}
+		
         $action = $request->request->get("action",'index');
         $method = '_'.$action;
         if(!method_exists($this,$method))
