@@ -22,6 +22,9 @@ class StatusMeta
 		'PENDING'=>'待审核',
 		'NOTSURE'=>'代收成功但金额不一致',
 		'CLOSED'=>'交易关闭',
+		'PAYED'=>'已付款',
+		'YCD'=>'已催单',
+		'NOTIFYED'=>'已回调',
 	];
 	
 	public function Get($name='')
