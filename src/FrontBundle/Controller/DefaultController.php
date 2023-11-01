@@ -14,6 +14,7 @@ class DefaultController extends \AppBundle\Controller\BaseController
 			'access_token'=>$this->authcode('ID'.$this->getUser()->getId()),
 			'title'=>$this->title,
 			'http_url'=>$this->http_url,
+			'csrf'=>$this->get('security.csrf.token_manager')->getToken('authenticate')->getValue(),
 		];
 		
 		$user_permissions = [];
