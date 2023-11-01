@@ -186,11 +186,20 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 			if(0 != $payin_channel_id)
 			{
 				$payin_channel = $this->db('channel')->find($payin_channel_id);
-				$payin_channel_name = $payin_channel->getName();
+				$payin_channel_name = '??';
+				if($payin_channel)
+				{
+					$payin_channel_name = $payin_channel->getName();
+				}
 			}
 			if(0 != $payout_channel_id)
 			{
-				$payout_channel_name = $this->db('channel')->find($payout_channel_id)->getName();
+				$payout_channel_name = '??';
+				$payout_channel = $this->db('channel')->find($payout_channel_id);
+				if($payout_channel)
+				{
+					$payout_channel_name = $payout_channel->getName();
+				}
 			}
 			
 			$uid = $shanghu['uid'];
