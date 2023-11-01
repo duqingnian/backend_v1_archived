@@ -243,7 +243,7 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		$channels = $this->db('Channel')->findAll();
 		foreach($channels as $channel)
 		{
-			$country = $countries[$channel->getCountry()]['name'];
+			//$country = $countries[$channel->getCountry()]['name'];
 			$json['channels'][] = ['key'=>'channel'.$channel->getId(),'text'=>$channel->getName()];
 		}
 		

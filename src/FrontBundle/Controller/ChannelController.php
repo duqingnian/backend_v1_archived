@@ -955,4 +955,21 @@ class ChannelController extends \AppBundle\Controller\BaseController
 			$this->update();
 		}
 	}
+	
+	private function _loadByCountry($request)
+	{
+		$_country = $request->request->get('country','');
+		
+		$country = $this->db('country')->findOneBy(['slug'=>$_country]);
+		
+		$channels = [];
+		$_channels = $this->db('Channel')->findBy(['country'=>$_country]);
+		foreach($_channels as $channel)
+		{
+			$channels[] = ['key'=>'channel'.$channel->getId(),'text'=>$channel->getName()];
+		}
+		
+		echo json_encode(['code'=>0,'msg'=>'OK','country'=>['name'=>$country->getName()],'list'=>$channels]);
+		die();
+	}
 }
