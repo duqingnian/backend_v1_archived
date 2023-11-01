@@ -6,6 +6,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ChannelController extends \AppBundle\Controller\BaseController 
 {
+	private $channel_categories = ['','一类','二类','三类'];
+	
     public function indexAction(Request $request)
     {
 		$csrf = $request->request->get("scrf",'');
