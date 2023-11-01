@@ -21,6 +21,7 @@ class StatusMeta
 		'CANCEL'=>'交易取消',
 		'PENDING'=>'待审核',
 		'NOTSURE'=>'代收成功但金额不一致',
+		'CLOSED'=>'交易关闭',
 	];
 	
 	public function Get($name='')
