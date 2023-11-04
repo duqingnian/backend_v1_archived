@@ -25,6 +25,7 @@ class StatusMeta
 		'PAYED'=>'已付款',
 		'YCD'=>'已催单',
 		'NOTIFYED'=>'已回调',
+		'REJECTED'=>'已驳回',
 	];
 	
 	public function Get($name='')
