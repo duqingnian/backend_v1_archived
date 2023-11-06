@@ -127,6 +127,11 @@ class PayinOrder
     private $qrcode_src = ''; //二维码
 	
 	/**
+     * @ORM\Column(type="string", length=50)
+     */
+    private $note = ''; //备注
+	
+	/**
      * @ORM\Column(type="integer")
      */
     private $created_at = 0; //创建时间
@@ -691,5 +696,29 @@ class PayinOrder
     public function getRealpayAmount()
     {
         return $this->realpay_amount;
+    }
+
+    /**
+     * Set note
+     *
+     * @param string $note
+     *
+     * @return PayinOrder
+     */
+    public function setNote($note)
+    {
+        $this->note = $note;
+
+        return $this;
+    }
+
+    /**
+     * Get note
+     *
+     * @return string
+     */
+    public function getNote()
+    {
+        return $this->note;
     }
 }

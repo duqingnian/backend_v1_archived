@@ -102,6 +102,11 @@ class PayoutOrder
     private $shanghu_notify_url=""; //商户的回调地址
 	
 	/**
+     * @ORM\Column(type="string", length=50)
+     */
+    private $note = ''; //备注
+	
+	/**
      * @ORM\Column(type="integer")
      */
     private $created_at = 0; //创建时间
@@ -546,5 +551,29 @@ class PayoutOrder
     public function getCreatedAt()
     {
         return $this->created_at;
+    }
+
+    /**
+     * Set note
+     *
+     * @param string $note
+     *
+     * @return PayoutOrder
+     */
+    public function setNote($note)
+    {
+        $this->note = $note;
+
+        return $this;
+    }
+
+    /**
+     * Get note
+     *
+     * @return string
+     */
+    public function getNote()
+    {
+        return $this->note;
     }
 }
