@@ -103,7 +103,7 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 			$config->setPayoutAppid($payout_appid);
 			$config->setPayoutSecret($payout_secret);
 			$config->setPayinSignMethod('hmacsha1');
-			$config->setPayoutSignMethod('hmacsha1');
+			$config->setPayoutSignMethod('ShPayOutMd5');
 			$this->save($config);
 			
 			//账号
@@ -386,8 +386,8 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		$config->setPayoutChannelId($payout_channel_id);
 		
 		//签名
-		$config->setPayinSignMethod($payin_sign_method);
-		$config->setPayoutSignMethod($payout_sign_method);
+		//$config->setPayinSignMethod($payin_sign_method);
+		//$config->setPayoutSignMethod($payout_sign_method);
 		
 		$user = $this->db('user')->find($shanghu->getUid());
 		$user->setUsername($account);
