@@ -37,7 +37,7 @@ class ChannelStatusMap
     private $const_name=''; //常量,比如：SUCCESS
 	
 	/**
-     * @ORM\Column(type="string", length=30)
+     * @ORM\Column(type="string", length=100)
      */
     private $channel_var=''; //通道对应的值
 
