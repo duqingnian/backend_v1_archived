@@ -132,7 +132,7 @@ class TelegramBotVoucherLog
     private $reply_result = '';
 	
 	/**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="string", length=1000)
      */
     private $reply_photo = '';
 

@@ -117,7 +117,7 @@ class TelegramBotQueryLog
     private $reply_time = 0; //创建时间
 	
 	/**
-     * @ORM\Column(type="string", length=20)
+     * @ORM\Column(type="string", length=1000)
      */
     private $reply_result = '';
 	
@@ -125,6 +125,21 @@ class TelegramBotQueryLog
      * @ORM\Column(type="text")
      */
     private $ask_photo = '';
+	
+	/**
+     * @ORM\Column(type="string", length=1000)
+     */
+    private $reply_photo = '';
+	
+	/**
+     * @ORM\Column(type="string", length=20)
+     */
+    private $target_message_id = '';
+	
+	/**
+     * @ORM\Column(type="string", length=20)
+     */
+    private $target_message_date = '';
 
     /**
      * Get id
@@ -662,5 +677,77 @@ class TelegramBotQueryLog
     public function getAskPhoto()
     {
         return $this->ask_photo;
+    }
+
+    /**
+     * Set replyPhoto
+     *
+     * @param string $replyPhoto
+     *
+     * @return TelegramBotQueryLog
+     */
+    public function setReplyPhoto($replyPhoto)
+    {
+        $this->reply_photo = $replyPhoto;
+
+        return $this;
+    }
+
+    /**
+     * Get replyPhoto
+     *
+     * @return string
+     */
+    public function getReplyPhoto()
+    {
+        return $this->reply_photo;
+    }
+
+    /**
+     * Set targetMessageId
+     *
+     * @param string $targetMessageId
+     *
+     * @return TelegramBotQueryLog
+     */
+    public function setTargetMessageId($targetMessageId)
+    {
+        $this->target_message_id = $targetMessageId;
+
+        return $this;
+    }
+
+    /**
+     * Get targetMessageId
+     *
+     * @return string
+     */
+    public function getTargetMessageId()
+    {
+        return $this->target_message_id;
+    }
+
+    /**
+     * Set targetMessageDate
+     *
+     * @param string $targetMessageDate
+     *
+     * @return TelegramBotQueryLog
+     */
+    public function setTargetMessageDate($targetMessageDate)
+    {
+        $this->target_message_date = $targetMessageDate;
+
+        return $this;
+    }
+
+    /**
+     * Get targetMessageDate
+     *
+     * @return string
+     */
+    public function getTargetMessageDate()
+    {
+        return $this->target_message_date;
     }
 }
