@@ -22,6 +22,11 @@ class NotifyOriginalData
     private $bundle = ""; //PAYIN  PAYOUT
 	
 	/**
+     * @ORM\Column(type="string", length=1000)
+     */
+    private $headers = ""; 
+	
+	/**
      * @ORM\Column(type="text")
      */
     private $data = "";
@@ -111,5 +116,29 @@ class NotifyOriginalData
     public function getCreatedAt()
     {
         return $this->created_at;
+    }
+
+    /**
+     * Set headers
+     *
+     * @param string $headers
+     *
+     * @return NotifyOriginalData
+     */
+    public function setHeaders($headers)
+    {
+        $this->headers = $headers;
+
+        return $this;
+    }
+
+    /**
+     * Get headers
+     *
+     * @return string
+     */
+    public function getHeaders()
+    {
+        return $this->headers;
     }
 }
