@@ -26,6 +26,7 @@ class StatusMeta
 		'YCD'=>'已催单',
 		'NOTIFYED'=>'已回调',
 		'REJECTED'=>'已驳回',
+		'COMPLETE'=>'业务处理完成',
 	];
 	
 	public function Get($name='')
