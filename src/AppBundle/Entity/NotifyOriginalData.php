@@ -22,7 +22,7 @@ class NotifyOriginalData
     private $bundle = ""; //PAYIN  PAYOUT
 	
 	/**
-     * @ORM\Column(type="string", length=1000)
+     * @ORM\Column(type="text")
      */
     private $headers = ""; 
 	
