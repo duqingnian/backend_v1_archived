@@ -25,6 +25,11 @@ class NotifyOriginalData
      * @ORM\Column(type="text")
      */
     private $data = "";
+	
+	/**
+     * @ORM\Column(type="integer")
+     */
+    private $created_at = 0;
 
     /**
      * Get id
@@ -82,5 +87,29 @@ class NotifyOriginalData
     public function getData()
     {
         return $this->data;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param integer $createdAt
+     *
+     * @return NotifyOriginalData
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->created_at = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return integer
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
     }
 }
