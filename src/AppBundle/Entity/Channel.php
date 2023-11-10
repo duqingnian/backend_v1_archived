@@ -165,6 +165,16 @@ class Channel
      * @ORM\Column(type="integer")
      */
     private $payout_max = 9999; //9999
+	
+	/**
+     * @ORM\Column(type="string", length=15)
+     */
+    private $payin_succ_str = "success";
+	
+	/**
+     * @ORM\Column(type="string", length=15)
+     */
+    private $payout_succ_str = "success";
 
     /**
      * Get id
@@ -894,5 +904,53 @@ class Channel
     public function getDisplayName()
     {
         return $this->display_name;
+    }
+
+    /**
+     * Set payinSuccStr
+     *
+     * @param string $payinSuccStr
+     *
+     * @return Channel
+     */
+    public function setPayinSuccStr($payinSuccStr)
+    {
+        $this->payin_succ_str = $payinSuccStr;
+
+        return $this;
+    }
+
+    /**
+     * Get payinSuccStr
+     *
+     * @return string
+     */
+    public function getPayinSuccStr()
+    {
+        return $this->payin_succ_str;
+    }
+
+    /**
+     * Set payoutSuccStr
+     *
+     * @param string $payoutSuccStr
+     *
+     * @return Channel
+     */
+    public function setPayoutSuccStr($payoutSuccStr)
+    {
+        $this->payout_succ_str = $payoutSuccStr;
+
+        return $this;
+    }
+
+    /**
+     * Get payoutSuccStr
+     *
+     * @return string
+     */
+    public function getPayoutSuccStr()
+    {
+        return $this->payout_succ_str;
     }
 }
