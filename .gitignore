@@ -40,6 +40,7 @@
 /web/bundles/
 /web/uploads/
 /web/favicon.ico
+/web/static
 
 # PHPUnit
 /app/phpunit.xml
