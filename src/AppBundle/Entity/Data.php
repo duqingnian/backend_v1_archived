@@ -32,7 +32,7 @@ class Data
     private $atype = ""; // PAYIN PAYOUT
 	
 	/**
-     * @ORM\Column(type="string", length=15)
+     * @ORM\Column(type="string", length=50)
      */
     private $bundle = ""; // CLI_DATA API_RESULT API_NOTIFY
     
@@ -52,9 +52,21 @@ class Data
     private $data = '';
 	
 	/**
+     * @ORM\Column(type="string", length=36)
+     */
+    private $ip = "";
+
+	/**
+     * @ORM\Column(type="string", length=50)
+     */
+    private $content_type = "";
+	
+	/**
      * @ORM\Column(type="integer")
      */
     private $created_at = 0;
+
+    
 
     /**
      * Get id
@@ -232,6 +244,54 @@ class Data
     public function getData()
     {
         return $this->data;
+    }
+
+    /**
+     * Set ip
+     *
+     * @param string $ip
+     *
+     * @return Data
+     */
+    public function setIp($ip)
+    {
+        $this->ip = $ip;
+
+        return $this;
+    }
+
+    /**
+     * Get ip
+     *
+     * @return string
+     */
+    public function getIp()
+    {
+        return $this->ip;
+    }
+
+    /**
+     * Set contentType
+     *
+     * @param string $contentType
+     *
+     * @return Data
+     */
+    public function setContentType($contentType)
+    {
+        $this->content_type = $contentType;
+
+        return $this;
+    }
+
+    /**
+     * Get contentType
+     *
+     * @return string
+     */
+    public function getContentType()
+    {
+        return $this->content_type;
     }
 
     /**

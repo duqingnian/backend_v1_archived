@@ -177,6 +177,16 @@ class Channel
     private $payout_succ_str = "success";
 
     /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $ip_whitelist = "";
+	
+	/**
+     * @ORM\Column(type="string", length=5)
+     */
+    private $amount_unit="Y";
+	
+    /**
      * Get id
      *
      * @return integer
@@ -952,5 +962,53 @@ class Channel
     public function getPayoutSuccStr()
     {
         return $this->payout_succ_str;
+    }
+
+    /**
+     * Set ipWhitelist
+     *
+     * @param string $ipWhitelist
+     *
+     * @return Channel
+     */
+    public function setIpWhitelist($ipWhitelist)
+    {
+        $this->ip_whitelist = $ipWhitelist;
+
+        return $this;
+    }
+
+    /**
+     * Get ipWhitelist
+     *
+     * @return string
+     */
+    public function getIpWhitelist()
+    {
+        return $this->ip_whitelist;
+    }
+
+    /**
+     * Set amountUnit
+     *
+     * @param string $amountUnit
+     *
+     * @return Channel
+     */
+    public function setAmountUnit($amountUnit)
+    {
+        $this->amount_unit = $amountUnit;
+
+        return $this;
+    }
+
+    /**
+     * Get amountUnit
+     *
+     * @return string
+     */
+    public function getAmountUnit()
+    {
+        return $this->amount_unit;
     }
 }

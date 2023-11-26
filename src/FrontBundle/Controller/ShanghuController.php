@@ -32,6 +32,57 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		$this->e('请联系管理员手工删除');
 	}
 	
+	
+	private function _change_test_account($request)
+	{
+		$request_token = $request->request->get('request_token','');
+		$sh_id = $this->GetId($request_token);
+		
+		if(is_numeric($sh_id) && $sh_id > 0)
+		{
+			$sh = $this->db('shanghu')->find($sh_id);
+			if(!$sh)
+			{
+				$this->e('商户不存在');
+			}
+			//是不是测试商户
+			if(1 != $sh->getIsTest())
+			{
+				$this->e('非测试商户，操作终止');
+			}
+			
+			//删除payin订单
+			$payin_orders = $this->db('PayinOrder')->findBy(['shanghu_id'=>$sh->getId()]);
+			foreach($payin_orders as $payin_order)
+			{
+				$this->em()->remove($payin_order);
+			}
+			
+			//删除payout订单
+			$payout_orders = $this->db('PayoutOrder')->findBy(['shanghu_id'=>$sh->getId()]);
+			foreach($payout_orders as $payout_order)
+			{
+				$this->em()->remove($payout_order);
+			}
+			
+			//更新is_test字段
+			$sh->setIsTest(0);
+			
+			//清除余额 代付金额
+			$sh->setBalance(0);
+			$sh->setDfPool(0);
+			$sh->setFreezePool(0);
+			
+			$this->update();
+			
+			$this->succ('操作已完成');
+		}
+		else
+		{
+			$this->e('商户id错误');
+		}
+	}
+	
 	private function _create($request)
     {
 		$name = $request->request->get('name','');
@@ -183,6 +234,12 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 			$payin_fee = $sh_conf->getPayinPct().'% + '.$sh_conf->getPayinSigleFee();
 			$payout_fee = $sh_conf->getPayoutPct().' + '.$sh_conf->getPayoutSigleFee();
 			
+			$sh = $this->db('shanghu')->find($sh_conf->getMasterId());
+			$payin_min = '-';
+			$payin_max = '-';
+			$payout_min = '-';
+			$payout_max = '-';
+			
 			$payin_channel_id = $sh_conf->getPayinChannelId();
 			$payout_channel_id = $sh_conf->getPayoutChannelId();
 			if(0 != $payin_channel_id)
@@ -192,6 +249,8 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 				if($payin_channel)
 				{
 					$payin_channel_name = $payin_channel->getName();
+					if(-1 == $sh->getPayinMin()){$payin_min = $payin_channel->getPayinMin();;}else{$payin_min = $sh->getPayinMin();}
+					if(-1 == $sh->getPayinMax()){$payin_max = $payin_channel->getPayinMax();;}else{$payin_max = $sh->getPayinMax();}
 				}
 			}
 			if(0 != $payout_channel_id)
@@ -201,6 +260,8 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 				if($payout_channel)
 				{
 					$payout_channel_name = $payout_channel->getName();
+					if(-1 == $sh->getPayoutMin()){$payout_min = $payout_channel->getPayoutMin();}else{$payout_min = $sh->getPayoutMin();}
+					if(-1 == $sh->getPayoutMax()){$payout_max = $payout_channel->getPayoutMax();}else{$payout_max = $sh->getPayoutMax();}
 				}
 			}
 			
@@ -216,6 +277,11 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 				'payout_channel_name'=>$payout_channel_name,
 				'payin_fee'=>$payin_fee,
 				'payout_fee'=>$payout_fee,
+				
+				'payin_min'=>$payin_min,
+				'payin_max'=>$payin_max,
+				'payout_min'=>$payout_min,
+				'payout_max'=>$payout_max,
 				
 				'country'=>$country,
 				'balance'=>$shanghu['balance'],
@@ -252,6 +318,11 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 			}
 			$json['channels'][] = ['key'=>'channel'.$channel->getId(),'text'=>$text,'category'=>$channel->getCategory()];
 		}
+		
+		
+		//多少个测试商户
+		$json['test_sh_count'] = $this->count('shanghu','a.is_test=1');
+		
 		
 		unset($pager['data']);
 		$json['pager'] = $pager;
@@ -324,18 +395,7 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 			$payin_channel = $this->db('channel')->find($payin_channel_id);
 			if($payin_channel)
 			{
-				$channel_payin_min = $payin_channel->getPayinMin();
-				$channel_payin_max = $payin_channel->getPayinMax();
-				
-				//商户的金额设置不能大于小于通道的设置
-				if(0 != $channel_payin_min && $payin_min < $channel_payin_min)
-				{
-					//$this->e("最小代收金额:".$payin_min." 不能小于 通道最小代收金额:".$channel_payin_min);
-				}
-				if(0 != $channel_payin_max && $payin_max > $channel_payin_max)
-				{
-					//$this->e("最大代收金额:".$payin_max." 不能大于 通道最大代收金额:".$channel_payin_max);
-				}
+				//
 			}
 			else
 			{
@@ -348,18 +408,7 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 			$payout_channel = $this->db('channel')->find($payout_channel_id);
 			if($payout_channel)
 			{
-				$channel_payout_min = $payout_channel->getPayoutMin();
-				$channel_payout_max = $payout_channel->getPayoutMax();
-				
-				//商户的金额设置不能大于小于通道的设置
-				if(0 != $channel_payout_min && $payout_min < $channel_payout_min)
-				{
-					//$this->e("最小代付金额:".$payout_min." 不能小于 通道最小代付金额:".$channel_payout_min);
-				}
-				if(0 != $channel_payout_max && $payout_max > $channel_payout_max)
-				{
-					//$this->e("最大代付金额:".$payout_max." 不能大于 通道最大代付金额:".$channel_payout_max);
-				}
+				//
 			}
 			else
 			{

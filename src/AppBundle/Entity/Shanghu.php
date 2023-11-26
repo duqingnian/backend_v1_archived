@@ -100,7 +100,17 @@ class Shanghu
      * @ORM\Column(type="integer")
      */
     private $payout_require_review_number = 0; //代付 大于多少金额 开启人工审核,0不开启
-
+    
+	/**
+     * @ORM\Column(type="integer")
+     */
+    private $vip_bind = 0;
+	
+    /**
+     * @ORM\Column(type="string", length=50)
+     */
+    private $vip_secret="";
+    
     /**
      * Get id
      *
@@ -517,5 +527,53 @@ class Shanghu
     public function getCategory()
     {
         return $this->category;
+    }
+
+    /**
+     * Set vipSecret
+     *
+     * @param string $vipSecret
+     *
+     * @return Shanghu
+     */
+    public function setVipSecret($vipSecret)
+    {
+        $this->vip_secret = $vipSecret;
+
+        return $this;
+    }
+
+    /**
+     * Get vipSecret
+     *
+     * @return string
+     */
+    public function getVipSecret()
+    {
+        return $this->vip_secret;
+    }
+
+    /**
+     * Set vipBind
+     *
+     * @param integer $vipBind
+     *
+     * @return Shanghu
+     */
+    public function setVipBind($vipBind)
+    {
+        $this->vip_bind = $vipBind;
+
+        return $this;
+    }
+
+    /**
+     * Get vipBind
+     *
+     * @return integer
+     */
+    public function getVipBind()
+    {
+        return $this->vip_bind;
     }
 }

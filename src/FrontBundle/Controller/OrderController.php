@@ -53,29 +53,108 @@ class OrderController extends \AppBundle\Controller\BaseController
 		$StatusMeta = new \AppBundle\Utils\StatusMeta();
 		$statusMap = $StatusMeta->GetAll();
 		$order_status = $statusMap[$order->getOrderStatus()];
+
+		$sh_fee = '('.$order->getAmount().'×'.($order->getShPct()).'%)+'.$order->getShSigleFee().'= '.(($order->getAmount() * ($order->getShPct()/100)) .'+' . $order->getShSigleFee()).'= '.$order->getShFee();
+			
+		$channel_fee = '('.$order->getAmount().'×'.($order->getChannelPct()).'%)+'.$order->getChannelSigleFee().'= '.(($order->getAmount() * ($order->getChannelPct()/100)).'+'.$order->getChannelSigleFee()).'= '.$order->getChannelFee();
 		
-		$sh_fee = $order->getShFee().'=('.$order->getAmount().'×'.($order->getShPct()).'%='.($order->getAmount() * ($order->getShPct()/100)).')+'.$order->getShSigleFee();
+		//商户是不是测试账号
+		$sh = $this->db('shanghu')->find($order->getShanghuId());
 		
-		$channel_fee = $order->getChannelFee().'=('.$order->getAmount().'×'.($order->getChannelPct()).'%='.($order->getAmount() * ($order->getChannelPct()/100)).')+'.$order->getChannelSigleFee();
+		//平台给商户的回调记录
+		$sh_notify_log = [];
+		$plantform_order_no = $order->getPlantformOrderNo();
 		
-		$qrcode = '';
-		$jump_url = '';
+		$notify_datas = $this->db('PAYIN' == $order_bundle ? 'ShNotifyData' : 'ShNotifyData2')->findBy(['order_id'=>$order->getId()]);
+		foreach($notify_datas as $notify_data)
+		{
+			$sh_notify_log[] = [
+				'id'=>$notify_data->getId(),
+				'time_pip'=>$notify_data->getTimePip(),
+				'notify_url'=>$notify_data->getNotifyUrl(),
+				'notify_data'=>$notify_data->getNotifyData(),
+				'result_http_code'=>$notify_data->getResultHttpCode(),
+				'result_data'=>$notify_data->getResultData(),
+				'created_at'=>$notify_data->getCreatedAt(),
+				'pip_time'=>date('Y-m-d H:i:s',$notify_data->getPipTime()),
+				'send_time'=>date('Y-m-d H:i:s',$notify_data->getSendTime()),
+				'status'=>$notify_data->getStatus(),
+				'time_left'=>$notify_data->getSendTime() - $notify_data->getPipTime(),
+			];
+		}
+		
+		$jump_url  = '';
+		$qrcode_src  = '';
 		if('PAYIN' == $order_bundle)
 		{
-			$qrcode = $order->getQrcodeSrc();
+			$qrcode_src = $order->getQrcodeSrc();
 			$jump_url = $order->getJumpUrl();
 		}
 		
+		//1.商户发来的数据
+		$sh_request = $this->db('Data')->findOneBy(['sh_id'=>$sh->getId(),'bundle'=>'SH_REQUEST','plant_order_no'=>$plantform_order_no]);
+		$data1 = ['title'=>'1.商户发来的数据','time'=>'','data'=>''];
+		if($sh_request)
+		{
+			$data1['time'] = date('Y-m-d H:i:s',$sh_request->getCreatedAt());
+			$data1['data'] = $sh_request->getData();
+		}
+		
+		//2.平台提交给通道的数据
+		$sh_request = $this->db('Data')->findOneBy(['sh_id'=>$sh->getId(),'bundle'=>'PLANT_REQUEST','plant_order_no'=>$plantform_order_no]);
+		$data2 = ['title'=>'2.平台提交给通道的数据','time'=>'','data'=>''];
+		if($sh_request)
+		{
+			$data2['time'] = date('Y-m-d H:i:s',$sh_request->getCreatedAt());
+			$data2['data'] = $sh_request->getData();
+		}
+		
+		//3.通道返回的数据
+		$sh_request = $this->db('Data')->findOneBy(['sh_id'=>$sh->getId(),'bundle'=>'CHANNEL_RESPONSE','plant_order_no'=>$plantform_order_no]);
+		$data3 = ['title'=>'3.通道返回的数据','time'=>'','data'=>''];
+		if($sh_request)
+		{
+			$data3['time'] = date('Y-m-d H:i:s',$sh_request->getCreatedAt());
+			$data3['data'] = $sh_request->getData();
+		}
+		
+		//4.平台发给商户的数据
+		$sh_request = $this->db('Data')->findOneBy(['sh_id'=>$sh->getId(),'bundle'=>'PLANT_DISPATCH','plant_order_no'=>$plantform_order_no]);
+		$data4 = ['title'=>'4.平台发给商户的数据','time'=>'','data'=>''];
+		if($sh_request)
+		{
+			$data4['time'] = date('Y-m-d H:i:s',$sh_request->getCreatedAt());
+			$data4['data'] = $sh_request->getData();
+		}
+		
+		//5.通道回调的数据
+		$notify_data = $this->db('PAYIN' == $order_bundle ? 'ChannelNotifyData' : 'ChannelNotifyData2')->findOneBy(['sh_id'=>$sh->getId(),'bundle'=>$order_bundle,'order_id'=>$order->getId()]);
+		$data5 = ['title'=>'5.通道回调的数据','time'=>'','data'=>''];
+		if($sh_request)
+		{
+			$data5['time'] = date('Y-m-d H:i:s',$notify_data->getCreatedAt());
+			$data5['data'] = $notify_data->getReciveData();
+		}
+		
+		$data = [$data1,$data2,$data3,$data4,$data5];
+		
 		$detail = [
 			'amount'=>$order->getAmount(),
+			'channel_order_no'=>$order->getChannelOrderNo(),
 			'shanghu_order_no'=>$order->getShanghuOrderNo(),
-			'plantform_order_no'=>$order->getPlantformOrderNo(),
+			'plantform_order_no'=>$plantform_order_no,
 			'order_status'=>$order_status,
 			'sh_fee'=>$sh_fee,
 			'channel_fee'=>$channel_fee,
-			'qrcode_src'=>$qrcode,
+			'qrcode_src'=>$qrcode_src,
+			'shanghu_notify_url'=>$order->getShanghuNotifyUrl(),
 			'jump_url'=>$jump_url,
 			'created_time'=>date('Y-m-d H:i:s',$order->getCreatedAt()),
+			'data'=>$data,
+			'sh'=>[
+				'is_test'=>$sh->getIsTest(),
+			],
+			'sh_notify_log'=>$sh_notify_log,
 		];
 		
 		echo json_encode(['code'=>0,'msg'=>'OK','detail'=>$detail]);
@@ -84,6 +163,7 @@ class OrderController extends \AppBundle\Controller\BaseController
 	
 	public function _load_payout($request)
 	{
+		$prepage = $request->request->get('prepage',10);
 		$access_token = $request->request->get('access_token','');
 		if('' == $access_token)
 		{
@@ -97,14 +177,31 @@ class OrderController extends \AppBundle\Controller\BaseController
 
 		$where = 'a.id>0';
 		
-		$filter_order_no = $request->request->get('filter_order_no','');
+		$filter_order_no = $request->request->get('filter_order_no',''); //订单号
+		$filter_channel  = $request->request->get('filter_channel',''); //通道
+		$filter_sh       = $request->request->get('filter_sh',''); //商户
+		$filter_status   = $request->request->get('filter_status',''); //状态
+		
 		if('' != $filter_order_no)
 		{
 			$where .= " and a.plantform_order_no like '%".$filter_order_no."%' or a.shanghu_order_no like '%".$filter_order_no."%'";
 		}
-		
+		if('' != $filter_channel && 'ALL' != $filter_channel)
+		{
+			$where .= ' and a.channel_id in ('.$filter_channel.')';
+		}
+		if('' != $filter_sh  && 'ALL' != $filter_sh)
+		{
+			$where .= ' and a.shanghu_id in ('.$filter_sh.')';
+		}
+		if('' != $filter_status  && 'ALL' != $filter_status)
+		{
+			$filter_status = explode(',',$filter_status);
+			$status = implode("','",$filter_status);
+			$where .= " and a.order_status in ('".$status."')";
+		}
+		//echo $where;die();
 		$order = 'a.id desc';
-		$prepage = $request->request->get('prepage',10);
 		
 		$StatusMeta = new \AppBundle\Utils\StatusMeta();
 		$statusMap = $StatusMeta->GetAll();
@@ -112,97 +209,12 @@ class OrderController extends \AppBundle\Controller\BaseController
 		$pager = $this->pager($request,'PayoutOrder',$where,$order,'',$prepage,'',true);
 		foreach($pager['data'] as &$order)
 		{
-			$status = $order['order_status'];
-			if('' != $status && array_key_exists($status,$statusMap))
-			{
-				$status = $statusMap[$order['order_status']];
-			}
+			$order['request_token'] = $this->authcode('ID'.$order['id']);
+			$plantform_order_no = $order['plantform_order_no'];
 			
-			$order['channel'] = '-';
-			$channel = $this->db('channel')->find($order['channel_id']);
-			if($channel)
-			{
-				$order['channel'] = $channel->getName();
-			}
-			else
-			{
-				$order['channel'] = '?'.$order->getChannelId().'?';
-			}
-			
-			//查询商户
-			$order['shanghu'] = '-';
-			$shanghu = $this->db('shanghu')->find($order['shanghu_id']);
-			if($shanghu)
-			{
-				$order['shanghu'] = $shanghu->getName();
-			}
-			else
-			{
-				$order['shanghu'] = '?'.$order->getShanghuId();
-			}
-			
-			$order['key'] = 'payout_order_'.$order['id'];
-			$order['created_time'] = date('Y-m-d H:i:s',$order['created_at']);
+			//完成时间
 			$order['payed_time'] = '-';
-			$order['status_label'] = $status;
-			$order['bundle'] = 'PAYOUT';
 			
-			$order['detail'] = [
-				'qrcode_src'=>'',
-			];
-		}
-   //所有的渠道
-		$channel_list = [['key'=>'ALL','text'=>'全部']];
-		$_channels = $this->db('channel')->findAll();
-		foreach($_channels as $_channel)
-		{
-			$channel_list[] = ['key'=>$_channel->getId(),'text'=>$_channel->getName()];
-		}
-		
-		//所有的商户
-		$sh_list = [['key'=>'ALL','text'=>'全部']];
-		$_sh_list = $this->db('shanghu')->findAll();
-		foreach($_sh_list as $_sh)
-		{
-			$sh_list[] = ['key'=>$_sh->getId(),'text'=>$_sh->getName()];
-		}
-		
-		echo json_encode(['pager'=>$pager,'order_status'=>$this->order_status,'channel_list'=>$channel_list,'sh_list'=>$sh_list]);
-		exit();
-	}
-	
-	public function _load_payin($request)
-	{
-		$access_token = $request->request->get('access_token','');
-		if('' == $access_token)
-		{
-			$this->e('access_token is missing.');
-		}
-		$uid = $this->GetId($access_token);
-		if(!is_numeric($uid))
-		{
-			$this->e('uid err!');
-		}
-
-		$where = 'a.id>0';
-		
-		$filter_order_no = $request->request->get('filter_order_no','');
-																				  
-		
-		if('' != $filter_order_no)
-		{
-			$where .= " and a.plantform_order_no like '%".$filter_order_no."%' or a.shanghu_order_no like '%".$filter_order_no."%'";
-		}
-		
-		$order = 'a.id desc';
-		$prepage = $request->request->get('prepage',10);
-		
-		$StatusMeta = new \AppBundle\Utils\StatusMeta();
-		$statusMap = $StatusMeta->GetAll();
-
-		$pager = $this->pager($request,'PayinOrder',$where,$order,'',$prepage,'',true);
-		foreach($pager['data'] as &$order)
-		{
 			$status = $order['order_status'];
 			if('' != $status && array_key_exists($status,$statusMap))
 			{
@@ -233,9 +245,178 @@ class OrderController extends \AppBundle\Controller\BaseController
 				$order['shanghu'] = '?'.$order->getShanghuId();
 			}
 			
+			//回调状态 - 通道是不是回调了
+			$order['channel_notified'] = 'N';
+			$channel_notify = $this->db("ChannelNotifyData2")->findOneBy(['plantform_order_no'=>$plantform_order_no],['id'=>'desc']);
+			if($channel_notify)
+			{
+				$order['channel_notified'] = 'Y';
+				$order['payed_time'] = date('Y-m-d H:i:s',$channel_notify->getCreatedAt());
+			}
+			
+			//回调状态 - 商户是不是回调了
+			$order['sh_notified'] = 'N';
+			$sh_notify = $this->db("ShNotifyData2")->findOneBy(['order_id'=>$order['id']],['id'=>'desc']);
+			if($sh_notify)
+			{
+				$order['sh_notified'] = 'FAIL';
+				if('SUCC' == $sh_notify->getStatus())
+				{
+					$order['sh_notified'] = 'SUCC';
+				}
+			}
+			
+			$order['key'] = 'payout_order_'.$order['id'];
+			$order['created_time'] = date('Y-m-d H:i:s',$order['created_at']);
+			
+			$order['status_label'] = $status;
+			$order['bundle'] = 'PAYOUT';
+			
+			$order['detail'] = [
+				'qrcode_src'=>'',
+			];
+			
+			//付款人信息
+			//平台提交给通道的数据
+			$sh_request = $this->db('Data')->findOneBy(['sh_id'=>$shanghu->getId(),'bundle'=>'PLANT_REQUEST','plant_order_no'=>$plantform_order_no]);
+			$order['payer'] = ['bank_code'=>'','account_name'=>'','account_no'=>''];
+			if($sh_request)
+			{
+				$arr = json_decode($sh_request->getData(),true);
+				if(array_key_exists('bank_code',$arr)) $order['payer']['bank_code'] = $arr['bank_code'];
+				if(array_key_exists('account_name',$arr)) $order['payer']['account_name'] = $arr['account_name'];
+				if(array_key_exists('account_no',$arr)) $order['payer']['account_no'] = $arr['account_no'];
+			}
+			
+		}
+		//所有的渠道
+		$channel_list = [['key'=>'ALL','text'=>'全部']];
+		$_channels = $this->db('channel')->findAll();
+		foreach($_channels as $_channel)
+		{
+			$channel_list[] = ['key'=>$_channel->getId(),'text'=>$_channel->getName()];
+		}
+		
+		//所有的商户
+		$sh_list = [['key'=>'ALL','text'=>'全部']];
+		$_sh_list = $this->db('shanghu')->findAll();
+		foreach($_sh_list as $_sh)
+		{
+			$sh_list[] = ['key'=>$_sh->getId(),'text'=>$_sh->getName()];
+		}
+		
+		echo json_encode(['pager'=>$pager,'order_status'=>$this->order_status,'channel_list'=>$channel_list,'sh_list'=>$sh_list]);
+		exit();
+	}
+	
+	public function _load_payin($request)
+	{
+		$prepage = $request->request->get('prepage',10);
+		$access_token = $request->request->get('access_token','');
+		if('' == $access_token)
+		{
+			$this->e('access_token is missing.');
+		}
+		$uid = $this->GetId($access_token);
+		if(!is_numeric($uid))
+		{
+			$this->e('uid err!');
+		}
+
+		$where = 'a.id>0';
+		
+		$filter_order_no = $request->request->get('filter_order_no',''); //订单号
+		$filter_channel  = $request->request->get('filter_channel',''); //通道
+		$filter_sh       = $request->request->get('filter_sh',''); //商户
+		$filter_status   = $request->request->get('filter_status',''); //状态
+		
+		if('' != $filter_order_no)
+		{
+			$where .= " and a.plantform_order_no like '%".$filter_order_no."%' or a.shanghu_order_no like '%".$filter_order_no."%'";
+		}
+		if('' != $filter_channel && 'ALL' != $filter_channel)
+		{
+			$where .= ' and a.channel_id in ('.$filter_channel.')';
+		}
+		if('' != $filter_sh  && 'ALL' != $filter_sh)
+		{
+			$where .= ' and a.shanghu_id in ('.$filter_sh.')';
+		}
+		if('' != $filter_status  && 'ALL' != $filter_status)
+		{
+			$filter_status = explode(',',$filter_status);
+			$status = implode("','",$filter_status);
+			$where .= " and a.order_status in ('".$status."')";
+		}
+		//echo $where;die();
+		$order = 'a.id desc';
+		
+		$StatusMeta = new \AppBundle\Utils\StatusMeta();
+		$statusMap = $StatusMeta->GetAll();
+
+		$pager = $this->pager($request,'PayinOrder',$where,$order,'',$prepage,'',true);
+		foreach($pager['data'] as &$order)
+		{
+			$order['request_token'] = $this->authcode('ID'.$order['id']);
+			$plantform_order_no = $order['plantform_order_no'];
+			
+			//完成时间
+			$order['payed_time'] = '-';
+			
+			$status = $order['order_status'];
+			if('' != $status && array_key_exists($status,$statusMap))
+			{
+				$status = $statusMap[$order['order_status']];
+			}
+			
+			//查询通道
+			$order['channel'] = '-';
+			$channel = $this->db('channel')->find($order['channel_id']);
+			if($channel)
+			{
+				$order['channel'] = $channel->getName();
+			}
+			else
+			{
+				$order['channel'] = '?'.$order->getChannelId().'?';
+			}
+			
+			//查询商户
+			$order['shanghu'] = '-';
+			$shanghu = $this->db('shanghu')->find($order['shanghu_id']);
+			if($shanghu)
+			{
+				$order['shanghu'] = $shanghu->getName();
+			}
+			else
+			{
+				$order['shanghu'] = '?'.$order->getShanghuId();
+			}
+			
+			//回调状态 - 通道是不是回调了
+			$order['channel_notified'] = 'N';
+			$channel_notify = $this->db("ChannelNotifyData")->findOneBy(['plantform_order_no'=>$plantform_order_no],['id'=>'desc']);
+			if($channel_notify)
+			{
+				$order['channel_notified'] = 'Y';
+				$order['payed_time'] = date('Y-m-d H:i:s',$channel_notify->getCreatedAt());
+			}
+			
+			//回调状态 - 商户是不是回调了
+			$order['sh_notified'] = 'N';
+			$sh_notify = $this->db("ShNotifyData")->findOneBy(['order_id'=>$order['id']],['id'=>'desc']);
+			if($sh_notify)
+			{
+				$order['sh_notified'] = 'FAIL';
+				if('SUCC' == $sh_notify->getStatus())
+				{
+					$order['sh_notified'] = 'SUCC';
+				}
+			}
+			
 			$order['key'] = 'payin_order_'.$order['id'];
 			$order['created_time'] = date('Y-m-d H:i:s',$order['created_at']);
-			$order['payed_time'] = '-';
+			
 			$order['status_label'] = $status;
 			$order['bundle'] = 'PAYIN';
 			
@@ -263,174 +444,196 @@ class OrderController extends \AppBundle\Controller\BaseController
 		exit();
 	}
 	
-	//模拟成功和失败
-	public function _simulation($request)
+	//删除正式商户的回调数据后重发
+	private function _resend_sh_notify($request)
 	{
-		$status = $request->request->get('status','');
-		$bundle = $request->request->get('bundle','');
-		$order_id = $request->request->get('orderid');
-		
-		if('success' != $status && 'fail' != $status)
+		$order_bundle = $request->request->get('order_bundle','');
+		if(!in_array($order_bundle,['PAYIN','PAYOUT']))
 		{
-			$this->e('状态值错误');
+			$this->e('invalidate order_bundle');
 		}
 		
-		//是不是测试账号
-		$request_token = $request->request->get('request_token','');
-		$uid = $this->GetId($request_token);
-		$user = $this->db('user')->find($uid);
-		$shanghu = $this->db('Shanghu')->findOneBy(['uid'=>$uid]);
-		if(!$shanghu)
+		$order_id = $this->GetId($request->request->get('orderid'));
+		if(is_numeric($order_id) && $order_id > 0)
 		{
-			$this->e('账户账号未创建，无法创建代收订单,uid='.$uid);
-		}
-		if(1 != $shanghu->getIsTest())
-		{
-			$this->e('非测试账号无法使用此功能');
-		}
-		
-		//开始模拟
-		$order = $this->db('PAYIN' == $bundle ? 'PayinOrder' : 'PayoutOrder')->find($order_id);
-		if(!$order)
-		{
-			$this->e('订单不存在，order_id='.$order_id);
-		}
-		if($order->getShanghuId() != $shanghu->getId())
-		{
-			$this->e('商户号不一致，无法操作此订单');
-		}
-		if('TRADE_ING' != $order->getOrderStatus())
-		{
-			$this->e('非 交易中 订单，无法模拟状态');
-		}
-		
-		//开始正式修改订单模拟状态
-		$config = $this->db('ShanghuConfig')->findOneBy(['master_id'=>$shanghu->getId()]);
-		if(!$config)
-		{
-			$this->e('商户未初始化配置信息，无法模拟状态');
-		}
-		//计算
-		$amount = $order->getAmount();
-
-		$payin_pct       = 'PAYIN' == $bundle ? $config->getPayinPct() : $config->getPayoutPct();
-		$payin_sigle_fee = 'PAYIN' == $bundle ? $config->getPayinSigleFee() : $config->getPayoutPct() ;
-		
-		$pct_fee = 0;
-		if(is_numeric($payin_pct) && $payin_pct > 0)
-		{
-			$pct_fee = $amount * ($payin_pct/100);
-		}
-		
-		$channel = $this->db('Channel')->find($order->getChannelId());
-		//更新余额 - 只有模拟成功才加钱
-		if('SUCCESS' == strtoupper($status))
-		{
-			$fee = $pct_fee + $payin_sigle_fee;
-			$old_balance = $shanghu->getBalance();
-			if('PAYIN' == $bundle)
+			$order = $this->db('PAYIN' == $order_bundle ? 'PayinOrder' : 'PayoutOrder')->find($order_id);
+			if(!$order)
 			{
-				$new_balance = $shanghu->getBalance() + ($amount - $fee);
+				$this->e('['.$order_bundle.']['.$order_id.']order not exist!');
 			}
-			else
-			{
-				//
-			}	
 			
-			$shanghu->setBalance($new_balance);
-			$this->update();
-			
-			//日志 - 记录订单创建事件
-			$by = 'PAYIN' == $bundle ? '模拟代收' : '模拟代付';
-			$data = [
-				'by'=>$by,
-				'order_id'=>$order->getId(),
-				'is_test'=>$shanghu->getIsTest(),
-				'type'=>'hand',
-				'amount'=>$amount,
-				'pct'=>$payin_pct,
-				'sigle_fee'=>$payin_sigle_fee,
-				'fee'=>$fee,
-				'old_balance'=>$old_balance,
-				'new_balance'=>$new_balance,
-				'shanghu_id'=>$shanghu->getId(),
-				'channel_id'=>$channel->getId(),
-				'add'=>($amount - $fee),
-			];
-			$data = json_encode($data);
-		
-			$log = new \AppBundle\Entity\MoNiLog();
-			$log->setUid($shanghu->getUid());
-			$log->setOrderId($order->getId());
-			$log->setBundle('ADD_BALANCE');
-			$log->setData($data);
-			$log->setCreatedAt(time());
-			$this->save($log);
-		}
-		$order->setOrderStatus(strtoupper($status));
-		$this->update();
-		
-		if(is_numeric($order->getChannelId()) && $order->getChannelId() > 0)
-		{
-			//do nothing
-		}
-		else
-		{
-			$this->e('未配置通道');
-		}
-		
-		//回调
-		$shanghu_notify_url = $order->getShanghuNotifyUrl();
-		if('' != $shanghu_notify_url && 'http' == substr($shanghu_notify_url,0,4))
-		{
-			$sh_country = $shanghu->getCountry();
-			$countries = $this->get_countries();
-			$currency = '?';
-			if(array_key_exists($sh_country,$countries))
+			$notify_datas = $this->db('PAYIN' == $order_bundle ? 'ShNotifyData' : 'ShNotifyData2')->findBy(['order_id'=>$order->getId()]);
+			foreach($notify_datas as $notify_data)
 			{
-				$currency = $countries[$sh_country]['currency'];
-			}
-			$data = [
-				'order_status'=>$order->getOrderStatus(),
-				'shanghu_order_no'=>$order->getShanghuOrderNo(),
-				'currency'=>$currency,
-				'amount'=>$order->getAmount(),
-				'createtime'=>date('Y-m-d H:i:s',$order->getCreatedAt()),
-				'updatetime'=>date('Y-m-d H:i:s',$order->getCreatedAt()),
-				'error_msg'=>'模拟状态',//正常返回：NONE
-				'attach_data'=>strtoupper($bundle),
-			];
-			//获取签名生成方式
-			{
-				$payin_sign_method = $config->getPayinSignMethod();
-				//生成签名
-				if('md5' == $payin_sign_method)
+				if('5s' == $notify_data->getTimePip())
 				{
-					$SignGenerator = new \AppBundle\Utils\SignGeneratorMd5();
-				}
-				else if('sha256' == $payin_sign_method)
-				{
-					$SignGenerator = new \AppBundle\Utils\SignGeneratorSha256();
+					$notify_data->setResultHttpCode(-1);
+					$notify_data->setResultData('');
+					$notify_data->setSendTime(0);
+					$notify_data->setStatus('');
 				}
 				else
 				{
-					$this->e("未配置代收签名生成方式，无法生成代收订单");
+					$this->em()->remove($notify_data);
 				}
-				$sign = $SignGenerator->generate($post_parameters,$payin_secret);
 			}
-			$data['sign'] = $sign;
-			$ret = $this->http($shanghu_notify_url,$data);
-			if(strlen($ret) > 100)
-			{
-				$ret = substr($ret,0,100);
-			}
-			$this->succ('操作已完成,回调返回值:'.$ret);
+			$this->update();
+			
+			$this->succ('操作成功');
 		}
 		else
 		{
-			$this->e('没有回调地址');
+			$this->e('orderid error!');
+		}
+	}
+
+	//同步操作
+	private function _sync_order($request)
+	{
+		$order_bundle = $request->request->get('order_bundle','');
+		if(!in_array($order_bundle,['PAYIN','PAYOUT']))
+		{
+			$this->e('invalidate order_bundle');
 		}
 		
+		$order_id = $this->GetId($request->request->get('order_id'));
+		if(is_numeric($order_id) && $order_id > 0)
+		{
+			$order = $this->db('PAYIN' == $order_bundle ? 'PayinOrder' : 'PayoutOrder')->find($order_id);
+			if(!$order)
+			{
+				$this->e('['.$order_bundle.']['.$order_id.']order not exist!');
+			}
+			$plantform_order_no = $order->getPlantformOrderNo();
+			$shanghu = $this->db('Shanghu')->find($order->getShanghuId());
+			if(!$shanghu)
+			{
+				$this->e('账户账号未创建，无法创建代收订单,sh_id='.$order->getShanghuId());
+			}
+			$config = $this->db('ShanghuConfig')->findOneBy(['master_id'=>$shanghu->getId()]);
+			if(!$config)
+			{
+				$this->e('商户未初始化配置信息，无法回调');
+			}
+			$_secret = 'PAYIN' == $order_bundle ? $config->getPayinSecret() : $config->getPayoutSecret();
+			
+			$__action = $request->request->get('__action','');
+			
+			if('' == $__action)
+			{
+				$this->e('操作丢失');
+			}
+			else
+			{
+				if(in_array($__action,['notify_curr_status','moni_succ','moni_fail']))
+				{
+					$__status = '';
+					if('notify_curr_status' == $__action) //回调当前状态
+					{
+						$__status = $order->getOrderStatus();
+					}
+					else if('moni_succ' == $__action)
+					{
+						if(0 == $shanghu->getIsTest())
+						{
+							$this->e('非测试商户无法执行此操作');
+						}
+						else
+						{
+							$__status = 'SUCCESS';
+						}
+					}
+					else if('moni_fail' == $__action)
+					{
+						if(0 == $shanghu->getIsTest())
+						{
+							$this->e('非测试商户无法执行此操作');
+						}
+						else
+						{
+							$__status = 'FAIL';
+						}
+					}
+					else
+					{}
+					
+					$data = [
+						'amount'=>$order->getAmount(),
+						'fee'=>$order->getShFee(),
+						'order_status'=>$__status,
+						'plantform_order_no'=>$plantform_order_no,
+						'shanghu_order_no'=>$order->getShanghuOrderNo(),
+						'time'=>time(),
+					];
+				
+					$str = $this->__ascii_params($data);
+					$str = $str.'&key='.$_secret;
+					$sign = md5($str);
+					
+					$data['sign'] = $sign;
+					$data = json_encode($data);
+					
+					$shanghu_notify_url = $order->getShanghuNotifyUrl();
+					$ret = $this->http_post_json($shanghu_notify_url,$data);
+					if(strlen($ret['1']) > 1000)
+					{
+						$ret['1'] = substr($ret['1'],0,1000);
+					}
+					
+					$msg = '操作已完成!';
+					$msg .= '回调状态码:'.$ret[0];
+					$msg .= ',回调返回值:'.$ret[1];
+					$msg .= ',回调地址为:'.$shanghu_notify_url;
+					$this->succ($msg);
+				}
+				else
+				{
+					if('sync_channel_status' == $__action)
+					{
+						$channel_notify_data = $this->db('PAYIN' == $order_bundle ? 'ChannelNotifyData' : 'ChannelNotifyData2')->findOneBy(['plantform_order_no'=>$plantform_order_no]);
+						if(!$channel_notify_data)
+						{
+							$this->e('没有收到商户的回调数据:plantform_order_no='.$plantform_order_no);
+						}
+						if(is_numeric($channel_notify_data->getOrderId()) && $channel_notify_data->getOrderId() > 0)
+						{
+							$this->e('order_id不为0，无法执行当前操作:plantform_order_no='.$plantform_order_no);
+						}
+						if(-1 == $channel_notify_data->getOrderId())
+						{
+							$channel_notify_data->setOrderId(0);
+							$this->update();
+							
+							$this->update('已完成');
+						}
+					}
+					else
+					{
+						$this->e('异常操作!Exception:60501');
+					}
+				}
+			}
+			
+		}
+		else
+		{
+			$this->e('orderid error!');
+		}
 	}
+	
+	private function __ascii_params($params = array())
+	{
+		if (!empty($params)) {
+			$p = ksort($params);
+			if ($p) {
+				$str = '';
+				foreach ($params as $k => $val) {$str .= $k . '=' . $val . '&';}
+				$strs = rtrim($str, '&');
+				return $strs;
+			}
+		}
+		return '';
+	}
+
 }
 

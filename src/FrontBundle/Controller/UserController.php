@@ -621,6 +621,62 @@ class UserController extends \AppBundle\Controller\BaseController
 			$this->e('验证码不匹配!');
 		}
 	}
+
+	private function _password($request)
+    {
+        $uid = $this->GetId($request->request->get('access_token',''));
+		
+		$user = $this->db('user')->find($uid);
+		if(!$user)
+		{
+			$this->e('账号不存在');
+		}
+        
+        $password = $request->request->get('password','');
+		if('' == $password)
+		{
+			$this->e('没有提交任何数据');
+		}
+        $password = json_decode($password,true);
+		if(!is_array($password) || 3 != count($password))
+		{
+			$this->e('提交的数据格式不对');
+		}
+        
+        $password1 = $password['password1'];
+        $password2 = $password['password2'];
+        $password3 = $password['password3'];
+
+		if('' == $password1 || '' == $password2 || '' == $password3)
+		{
+			$this->e('密码不能为空');
+		}
+
+        if($password2!=$password3){
+            $this->e('两次密码不一样');
+        }
+        if($password1==$password3){
+            //$this->e('新密码不能和旧密码相同');
+        }
+        if ($user) {
+            $encoder_service = $this->get('security.encoder_factory');
+            $encoder = $encoder_service->getEncoder($user);
+
+            if ($encoder->isPasswordValid($user->getPassword(), $password1, $user->getSalt())) {
+                $encoder = $this->get('security.password_encoder');
+                $encoded = $encoder->encodePassword($user, $password3);
+                $user->setPassword($encoded);
+                $em = $this->getDoctrine()->getManager();
+                $em->flush();
+                
+                $this->succ('密码修改成功');
+            } else {
+                $this->e('旧密码验证失败');
+            }
+        }
+        exit();
+    }
+	
 }
 
 

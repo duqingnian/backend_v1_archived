@@ -22,17 +22,17 @@ class BankCode
     private $country=""; //国家别名  比如巴西：brazil
 	
 	/**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=200)
      */
     private $bank_name=""; //通道银行名称 不做任何处理
 	
 	/**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=200)
      */
     private $const_name=""; //大写的银行名称 去掉() . - 空格、等特殊字符全部替换为下划线 
 
     /**
-     * @ORM\Column(type="string", length=10)
+     * @ORM\Column(type="string", length=30)
      */
     private $const_code = 0; //平台清洗后的银行代码,比如：001
 

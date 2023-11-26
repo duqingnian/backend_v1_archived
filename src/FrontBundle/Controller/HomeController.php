@@ -26,7 +26,6 @@ class HomeController extends \AppBundle\Controller\BaseController
 	private function _load($request)
 	{
 		$uid = $this->GetId($request->request->get('access_token',''));
-		$date1 = $request->request->get('date1','');
 		$category = $request->request->get('category','');
 		$currency = $request->request->get('currency','');
 		
@@ -80,19 +79,24 @@ class HomeController extends \AppBundle\Controller\BaseController
 				//手续费
 				'channel_fee'=>0,
 				'proxy_fee'=>0,
+				'sh_fee'=>0,
 			];
 		}
+		
+		$date1 = $request->request->get('date1','');
+		$date2 = $request->request->get('date2','');
 		
 		$time_start = strtotime(date('Y-m-d').' 0:0:0');
 		$time_end = strtotime(date('Y-m-d').' 23:59:59');
 		if('' != $date1)
 		{
 			$time_start = strtotime($date1.' 0:0:0');
-			$time_end = strtotime($date1.' 23:59:59');
 		}
-		//$time_start = 0;
-		//$time_end = time();
-		
+		if('' != $date2)
+		{
+			$time_end = strtotime($date2.' 23:59:59');
+		}
+
 		if('' == $category)
 		{
 			$sh_list = $this->db('shanghu')->findAll();
@@ -117,9 +121,11 @@ class HomeController extends \AppBundle\Controller\BaseController
 			
 			//通道手续费
 			$channel_fee = 0;
+			$sh_fee = 0;
 			
 			//查询代收订单
 			$sql = "SELECT a.id,a.shanghu_id,a.sh_fee,a.amount,a.order_status,a.channel_fee from AppBundle:PayinOrder a where a.shanghu_id=".$sh->getId()." and a.created_at > ".$time_start.' and a.created_at < '.$time_end;
+			
 			$payin_orders = $this->em()->createQuery($sql)->getResult();
 			foreach($payin_orders as $payin_order)
 			{
@@ -132,6 +138,7 @@ class HomeController extends \AppBundle\Controller\BaseController
 					$countrys[$sh->getCountry()]['payin_succ_amount'] += $payin_order['amount'];
 					
 					$channel_fee += $payin_order['channel_fee'];
+					$sh_fee += $payin_order['sh_fee'];
 				}
 				
 				$payin_request_count++;
@@ -154,12 +161,13 @@ class HomeController extends \AppBundle\Controller\BaseController
 					$countrys[$sh->getCountry()]['payout_succ_count']++;
 					$countrys[$sh->getCountry()]['payout_succ_amount'] += $payout_order['amount'];
 					
-					$channel_fee += $payin_order['channel_fee'];
+					$channel_fee += $payout_order['channel_fee'];
+					$sh_fee += $payout_order['sh_fee'];
 				}
 			}
 			
 			//等待代付
-			$payout_queue = $this->count('ChannelNotifyData','a.sh_id='.$sh->getId()." and a.created_at > ".$time_start.' and a.created_at < '.$time_end);
+			$payout_queue = $this->count('ChannelNotifyData',"a.bundle='PAYOUT' and a.sh_id=".$sh->getId()." and a.created_at > ".$time_start.' and a.created_at < '.$time_end);
 			
 			//冻结金额
 			$_freeze = $this->sum('dispatch','money',"a.bundle='FREEZE' and a.shanghu_id=".$sh->getId()." and a.created_at > ".$time_start.' and a.created_at < '.$time_end);
@@ -196,6 +204,7 @@ class HomeController extends \AppBundle\Controller\BaseController
 				
 				//手续费
 				'channel_fee'=>$channel_fee,
+				'sh_fee'=>$sh_fee,
 			];
 			
 			$countrys[$sh->getCountry()]['sh_list'][] = $row;
@@ -204,6 +213,7 @@ class HomeController extends \AppBundle\Controller\BaseController
 			$countrys[$sh->getCountry()]['topop'] += $topop;
 			$countrys[$sh->getCountry()]['withrawal'] += $withrawal;
 			$countrys[$sh->getCountry()]['channel_fee'] += $channel_fee;
+			$countrys[$sh->getCountry()]['sh_fee'] += $sh_fee;
 		}
 
 		$country_list = [];

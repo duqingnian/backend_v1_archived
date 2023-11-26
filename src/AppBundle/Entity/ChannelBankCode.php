@@ -27,22 +27,22 @@ class ChannelBankCode
     private $channel_id = 0; //通道id
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=200)
      */
     private $original_name=""; //通道的国家别名
 	
 	/**
-     * @ORM\Column(type="string", length=30)
+     * @ORM\Column(type="string", length=200)
      */
     private $original_code = ""; //通道的银行代码
 	
 	/**
-     * @ORM\Column(type="string", length=15)
+     * @ORM\Column(type="string", length=50)
      */
     private $const_code = ""; //平台清洗后的银行代码
 	
 	/**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=200)
      */
     private $const_name="";
 
