@@ -569,7 +569,11 @@ class ShanghuController extends \AppBundle\Controller\BaseController
 		}
 		
 		$sh_id = $this->GetId($sh_request_token);
-		$sh = $this->db('shanghu')->findOneBy(['uid'=>$sh_id]);
+		$sh = $this->db('shanghu')->find($sh_id);
+		if(!$sh)
+		{
+			$this->e('shanghu not exists');
+		}
 		$sh_conf = $this->db('ShanghuConfig')->findOneBy(['master_id'=>$sh->getId()]);
 		
 		$_ip_whitelist = explode(',',$sh_conf->getIpWhitelist());

@@ -130,7 +130,7 @@ class OrderController extends \AppBundle\Controller\BaseController
 		//5.通道回调的数据
 		$notify_data = $this->db('PAYIN' == $order_bundle ? 'ChannelNotifyData' : 'ChannelNotifyData2')->findOneBy(['sh_id'=>$sh->getId(),'bundle'=>$order_bundle,'order_id'=>$order->getId()]);
 		$data5 = ['title'=>'5.通道回调的数据','time'=>'','data'=>''];
-		if($sh_request)
+		if($notify_data)
 		{
 			$data5['time'] = date('Y-m-d H:i:s',$notify_data->getCreatedAt());
 			$data5['data'] = $notify_data->getReciveData();

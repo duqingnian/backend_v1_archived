@@ -172,7 +172,7 @@ class PayinController extends \AppBundle\Controller\BaseController
 		$sign = $SignGenerator->generate($post_parameters,$payin_secret);
 		$post_parameters['sign'] = $sign;
 		
-		$ret = $this->http('https://pay.baishipay.com/api/payment/order/create',$post_parameters);
+		$ret = $this->http($this->http_url.'/api/payment/order/create',$post_parameters);
 		
 		if('' == $ret)
 		{
@@ -202,7 +202,7 @@ class PayinController extends \AppBundle\Controller\BaseController
 		{
 			$this->e('An error occurred while reading the payin order:'.$data['shanghu_order_no']);
 		}
-		$data['qrcode_img_src'] = 'https://www.baishipay.com/static/qrcode.png';
+		$data['qrcode_img_src'] = $this->http_url.'/static/qrcode.png';
 		if(1 == $shanghu->getIsTest())
 		{
 			//do nothing
@@ -241,7 +241,7 @@ class PayinController extends \AppBundle\Controller\BaseController
 					include $this->root_path().'/lib/phpqrcode/qrlib.php';
 					$result = \QRcode::png($qrcode_content,$qcode);
 				}
-				$data['qrcode_img_src'] = 'https://www.baishipay.com/qrcodes/'.date('Ymd').'/'.$qr_img_name.'.png';
+				$data['qrcode_img_src'] = $this->http_url.'/qrcodes/'.date('Ymd').'/'.$qr_img_name.'.png';
 			}
 			$order->setQrcodeSrc($data['qrcode_img_src']);
 			$this->update();
