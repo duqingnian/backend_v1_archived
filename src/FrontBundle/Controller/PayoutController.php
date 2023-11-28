@@ -124,7 +124,7 @@ class PayoutController extends \AppBundle\Controller\BaseController
 		$sign = $SignGenerator->generate($post_parameters,$payout_secret);
 		$post_parameters['sign'] = $sign;
 		
-		$ret = $this->http('https://pay.baishipay.com/api/payout/order/create',$post_parameters);
+		$ret = $this->http($this->http_url.'/api/payout/order/create',$post_parameters);
 		
 		if('' == $ret)
 		{
